@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col-md-6">
+    <p-radioButton
+      name="createProgram"
+      value="1"
+      [(ngModel)]="typeProgram"
+      (click)="typesProgramEmit('1')"
+    ></p-radioButton>
+    <label for="opc1" class="ms-2">Programas académicos</label>
+  </div>
+  <div class="col-md-6">
+    <p-radioButton
+      name="createRenewal"
+      value="2"
+      [(ngModel)]="typeProgram"
+      (click)="typesProgramEmit('2')"
+    ></p-radioButton>
+    <label for="opc2" class="ms-2">Renovación de registro calificado</label>
+  </div>
+</div>
+
+<app-create-academic-program
+  *ngIf="typeProgram === '1'"
+  (succesCreate)="succesCreate()"
+></app-create-academic-program>
+
+<app-create-renew-program *ngIf="typeProgram === '2'" (succesCreate)="succesCreate()">
+</app-create-renew-program>

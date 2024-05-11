@@ -1,0 +1,19 @@
+/* Importing Bootstrap SCSS file. */
+@import './node_modules/bootstrap/scss/bootstrap';
+
+/* You can add global styles to this file, and also import other style files */
+@import 'primeng/resources/themes/lara-light-blue/theme.css';
+@import 'primeng/resources/primeng.css';
+@import '~primeicons/primeicons.css';
+
+/* Importing Datepicker SCSS file. */
+//@import 'node_modules/ngx-bootstrap/datepicker/bs-datepicker';
+
+@import './assets/styles/main.scss';
+
+@import '../node_modules/angular-calendar/css/angular-calendar.css';
+
+.form-check .form-check-input {
+  width: 22px;
+  height: 22px;
+}

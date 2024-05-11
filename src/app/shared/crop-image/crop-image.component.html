@@ -1,0 +1,44 @@
+<p-dialog
+  [header]="'Cargar imagen'"
+  [(visible)]="visible"
+  [style]="{ width: '40vw' }"
+  [resizable]="false"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  (onHide)="cancel()"
+>
+  <label for="file" class="custom-file-input"> Seleccione un archivo </label>
+  <div class="row">
+    <div class="col-md-12">
+      <input
+        type="file"
+        id="file"
+        name="file"
+        accept="image/*"
+        (change)="fileChangeEvent($event)"
+      />
+    </div>
+    <div class="col-md-12" *ngIf="imageChangedEvent">
+      <image-cropper
+        [imageChangedEvent]="imageChangedEvent"
+        [maintainAspectRatio]="maintainAspectRatio ?? true"
+        [aspectRatio]="aspectRatio"
+        format="png"
+        (imageCropped)="imageCropped($event)"
+        (loadImageFailed)="loadImageFailed()"
+      ></image-cropper>
+    </div>
+    <div class="col-md-12" *ngIf="imageChangedEvent">
+      <div class="button-action align-bottom">
+        <p-button
+          label="Recortar"
+          styleClass="p-button-sm p-button-primary"
+          (click)="cropImage()"
+          *ngIf="croppedImage"
+        >
+        </p-button>
+      </div>
+    </div>
+  </div>
+</p-dialog>

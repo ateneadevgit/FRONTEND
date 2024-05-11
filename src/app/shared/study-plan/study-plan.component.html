@@ -1,0 +1,143 @@
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<div class="container">
+  <div class="container text-end" *ngIf="!monitoringEdit">
+    <button class="btn btn-primary mx-1" [routerLink]="'/programs/create-program/' + idProgram">
+      Regresar
+    </button>
+    <button class="btn btn-primary mx-1" (click)="isEditable = !isEditable">
+      {{ isEditable ? 'Ver plan de estudios' : 'Editar plan de estudios' }}
+    </button>
+  </div>
+
+  <h6>Estructura curricular</h6>
+  <div class="row" *ngIf="isEditable && components.length < 4">
+    <div class="col-md-12 text-center">
+      <div class="create-component">
+        <div class="row d-flex justify-content-center">
+          <div class="col-md-6" *ngIf="!editModule">
+            <span class="span-h6">Crear componente</span
+            ><button class="rounded" (click)="addComponent = true">
+              <span class="rounded-plus">+</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row text-center">
+    <div
+      (click)="activeComponent(component)"
+      class="component-tab d-flex justify-content-center align-items-center"
+      [ngClass]="{ 'component-active': component.curriculumId === currentComponent?.curriculumId }"
+      class="col-md-{{ 12 / components.length }}"
+      *ngFor="let component of components; let index = index"
+      [pTooltip]="component.description"
+      tooltipPosition="top"
+    >
+      <span
+        class="pi pi-trash delete-icon"
+        *ngIf="isEditable && !editModule"
+        (click)="confirmDeleteComponent(component)"
+      ></span>
+      <span
+        class="pi pi-pencil edit-icon"
+        *ngIf="isEditable"
+        (click)="editComponent(component)"
+      ></span>
+      <span>
+        {{ component.name }}
+        <button
+          class="rounded"
+          (click)="addOtherLevel(component, 0)"
+          *ngIf="component.childs.length === 0 && isEditable && !editModule"
+        >
+          <span class="rounded-plus">+</span>
+        </button></span
+      >
+    </div>
+  </div>
+</div>
+
+<app-nodo
+  *ngIf="currentComponent"
+  [component]="currentComponent"
+  [isEditable]="isEditable"
+  [monitoringEdit]="monitoringEdit"
+  (emitResponse)="savedComponent($event)"
+  [editModule]="editModule"
+  (updateObject)="setUpdateObject($event)"
+></app-nodo>
+
+<p-dialog
+  *ngIf="addComponent"
+  [(visible)]="addComponent"
+  [modal]="true"
+  [style]="{ width: '60vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="false"
+>
+  <h6>
+    {{ !editComponent ? 'Creación de ' : 'Edición de ' }}
+    {{
+      typeComponent === studyPlanCatalog.SUBNUCLEUS_SUBJECT
+        ? 'Subnúcleo o asignatura'
+        : 'componente'
+    }}
+  </h6>
+  <button class="status close-modal" (click)="closeModal()">
+    <span class="pi pi-times"></span>
+  </button>
+  <app-create-component
+    [idProgram]="idProgram ?? ''"
+    [idWorkflow]="idWorkflow ?? ''"
+    [idStep]="idStep ?? ''"
+    [typeComponent]="typeComponent"
+    (emitResponse)="savedComponent($event)"
+    [editComponent]="editComponentData"
+    [hasSubject]="hasSubject"
+    [currentComponent]="themeSelected"
+    [editModule]="editModule"
+    (emitUpdateCurriculum)="updateCurriculumEditModule($event)"
+  ></app-create-component>
+</p-dialog>
+
+<p-dialog
+  *ngIf="activeLevel"
+  [(visible)]="activeLevel"
+  [modal]="true"
+  [style]="{ width: '60vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="false"
+>
+  <h6>Asignación de nivel</h6>
+  <button class="status close-modal" (click)="closeModal()">
+    <span class="pi pi-times"></span>
+  </button>
+  <app-add-level
+    *ngIf="currentComponentToAdd"
+    [idProgram]="idProgram ?? ''"
+    [idWorkflow]="idWorkflow ?? ''"
+    [nuevo]="currentLevelAdd"
+    [label]="
+      currentLevelAdd === 1
+        ? 'Añadir al nivel ' +
+          getCatalogName(currentComponentToAdd.childs[0].type) +
+          ' ' +
+          currentComponentToAdd.childs[0].name
+        : 'Nuevo nivel para ' +
+          getCatalogName(currentComponentToAdd.type) +
+          ' ' +
+          currentComponentToAdd.name
+    "
+    [currentComponentToAdd]="currentComponentToAdd"
+    (emitResponse)="savedComponent($event)"
+    [idStep]="idStep ?? ''"
+  >
+  </app-add-level>
+</p-dialog>

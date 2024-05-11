@@ -1,0 +1,47 @@
+@import '../abstracts/variables';
+
+.container-login {
+  background-image: url('../../images/fondo-login.png');
+  margin: 0;
+  padding: 0;
+  background-size: cover;
+  background-color: #ececec;
+  background-repeat: no-repeat;
+  height: 100vh;
+  &-form {
+    padding: 5%;
+    &__center {
+      text-align: center;
+      margin: 0 auto;
+    }
+  }
+}
+
+.login-form {
+  background: $color-white;
+  width: 90%;
+  padding: 40px;
+  margin: 20px auto;
+  border-radius: 20px;
+  &-items {
+    text-align: center;
+  }
+  &__title {
+    margin-top: 10px;
+    color: $color-jelly-bean-blue;
+    font-family: $font-medium;
+    font-family: 14px;
+  }
+  &__line {
+    width: 200px;
+    height: 4px;
+    background-color: $color-tangerine-yellow;
+    margin: -10px auto 20px;
+  }
+}
+
+.icon-label {
+  color: $color-tangerine-yellow;
+  margin-right: 5px;
+  font-size: 13px;
+}

@@ -1,0 +1,38 @@
+{
+  "GRADUATION_PROFILE": {
+    "id": 42,
+    "title": "Perfil de egreso"
+  },
+  "RAE": {
+    "id": 43,
+    "title": "Resultado de aprendizaje esperados (RAE)"
+  },
+  "COMPETENCE": {
+    "id": 44,
+    "title": "Competencias"
+  },
+  "PROGRAM_OBJECTIVE": {
+    "id": 45,
+    "title": "Objetivos de formación"
+  },
+  "ENGLISH_FORMATION": {
+    "id": 46,
+    "title": "Formación en inglés"
+  },
+  "CAMPUS_ACADEMIC_PROGRAM": {
+    "id": 47,
+    "title": "Programa académico de campo"
+  },
+  "INVESTIGATIVE_INFORMATION": {
+    "id": 48,
+    "title": "Investigación Formativa"
+  },
+  "EXTENSION_SOCIAL_PROJECTION": {
+    "id": 49,
+    "title": "Extensión o proyecto social"
+  },
+  "INTERNATIONAL": {
+    "id": 50,
+    "title": "Internacionalización"
+  }
+}

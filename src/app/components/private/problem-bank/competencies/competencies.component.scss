@@ -1,0 +1,21 @@
+@import '../../../../../assets/styles/abstracts/variables';
+
+.header-table {
+  background-color: $color-indigo;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.icon-edit {
+  margin-left: 5px;
+  cursor: pointer;
+  color: $color-tangerine-yellow;
+}
+
+.colored-header th {
+  background-color: $color-indigo;
+}
+
+.pi-trash {
+  color: $color-delete;
+}

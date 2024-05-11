@@ -1,0 +1,21 @@
+.alert-ministerio {
+  margin-bottom: 10px;
+  border-radius: 0.3em;
+  padding-left: 10px;
+  background: #ffce01;
+  color: #16395f;
+  font-weight: 500;
+}
+.input-icon-container {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px; /* Ajusta según sea necesario */
+  transform: translateY(-50%);
+}
+.default-icon {
+  cursor: pointer;
+}

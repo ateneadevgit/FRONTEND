@@ -1,0 +1,49 @@
+@import '../../../../../assets/styles/abstracts/variables';
+
+.pi-pencil {
+  color: #ffce03;
+}
+p {
+  margin-left: 10px;
+}
+.in-update {
+  border: 0;
+}
+
+.pi-user-plus {
+  color: $color-indigo;
+}
+
+.margin-container {
+  padding: 5px 20px;
+}
+
+.space-director {
+  padding: 10px;
+  border-bottom: 1px solid $color-platinum;
+}
+
+input {
+  font-family: $font-medium;
+}
+button {
+  border: 0;
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+p {
+  font-size: 14px;
+  font-family: $font-medium;
+  color: $color-indigo;
+  text-align: center;
+}
+
+.info-user {
+  font-size: 12px;
+  color: $color-jelly-bean-blue-alpha;
+  span {
+    font-weight: bold;
+  }
+}

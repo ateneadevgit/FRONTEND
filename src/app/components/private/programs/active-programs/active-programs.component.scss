@@ -1,0 +1,33 @@
+@import '../../../../../assets/styles/abstracts/variables';
+table {
+  width: 100%;
+}
+.review {
+  background-color: $color-indigo;
+}
+.requested {
+  background-color: $color-ceil;
+}
+.flag {
+  margin-top: 4px;
+  margin-right: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+}
+.subtitle-expand {
+  color: $color-blue-subtitle;
+}
+
+.info-user {
+  font-size: 12px;
+  color: $color-jelly-bean-blue-alpha;
+  span {
+    font-weight: bold;
+  }
+}

@@ -1,0 +1,13 @@
+@import '../../../../../../assets/styles/abstracts/variables';
+
+input:disabled {
+  color: black;
+  font-weight: bold;
+}
+
+.pi-check {
+  color: $color-approved;
+  font-size: 10px;
+  font-weight: bold;
+  margin-left: 10px;
+}

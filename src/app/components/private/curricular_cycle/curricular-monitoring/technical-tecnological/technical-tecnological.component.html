@@ -1,0 +1,63 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<app-module-header [module]="selectedModule" [programId]="idProgram"></app-module-header>
+
+<div class="row">
+  <div class="col-md-3" *ngIf="role === 2">
+    <label for="">Facultad</label>
+    <p-dropdown
+      [options]="faculties"
+      [(ngModel)]="selectFaculty"
+      placeholder="Seleccionar facultad"
+      [group]="false"
+      [filter]="true"
+      [showClear]="true"
+      filterBy="catalogItemName"
+      optionLabel="catalogItemName"
+      (onChange)="filterByFacultyEvent($event)"
+    >
+      <ng-template let-factulty pTemplate="factulty">
+        <div class="flex align-items-center">
+          <span>{{ factulty.catalogItemName }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+</div>
+
+<div *ngIf="!programHistorical" class="row mt-2">
+  <p-table [value]="porpouses">
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="table-bordered">Programa académico</th>
+        <th class="action-center" *ngIf="role === 2">Facultad</th>
+        <th class="action-center">Lugar de desarrollo</th>
+        <th class="action-center">Nivel de formación</th>
+        <th class="action-center">Fecha de Vigencia MEN</th>
+        <th class="action-center">Estado</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+      <tr>
+        <td>
+          <div class="container-image">
+            <img class="container-image__img" [src]="product?.logo" [alt]="" />
+            <span class="container-image__text">
+              {{ product?.name ?? '--' }}
+            </span>
+          </div>
+        </td>
+        <td>
+          <div *ngFor="let item of product?.setCampus">
+            {{ item }}
+          </div>
+        </td>
+        <td>{{ product?.setLevelFormation }}</td>
+        <td class="text-center">{{ (product?.menEndDate | date: 'dd/MM/yyyy') ?? '--' }}</td>
+        <td>
+          <button class="status approved">Activo</button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

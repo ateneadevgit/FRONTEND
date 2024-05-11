@@ -1,0 +1,848 @@
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<h6 class="title">{{ currentStep?.stepName }}</h6>
+
+<div class="row">
+  <div class="col-md-6">
+    <!--This button had this condition [disabled]="countDocuments > 0"-->
+    <button
+      pButton
+      pRipple
+      class="btn btn-primary"
+      *ngIf="permissionsService.permissions.canLoadFiles"
+      [disabled]="
+        currentStep?.isSent ||
+        currentStep?.isDone ||
+        hasCreatedDocument() ||
+        (currentStep?.status !== workflowStatus.ON_PROJECTION &&
+          currentStep?.status !== workflowStatus.ON_UPDATE)
+      "
+      (click)="loadDocuments(loadDocumentsModule.LOAD_DOCUMENT, 'Cargar documentos')"
+    >
+      <span class="pi pi-upload"></span>
+      Cargar documento
+    </button>
+    <button
+      pButton
+      pRipple
+      class="btn btn-secondary"
+      (click)="annexesShowDialog()"
+      *ngIf="!isPaper && currentStep?.orderId !== 0"
+    >
+      Anexos mínimos condición {{ currentStep?.orderId }}
+    </button>
+  </div>
+
+  <div class="col-md-2 text-center">
+    <button
+      pButton
+      pRipple
+      class="btn btn-primary"
+      (click)="sidebarComments = true"
+      *ngIf="permissionsService.permissions.canViewComments"
+    >
+      <span class="pi pi-clone"></span>
+      Comentarios
+    </button>
+  </div>
+
+  <div class="col-md-2 text-center">
+    <button
+      pButton
+      pRipple
+      class="btn declined"
+      (click)="sendDenyApproveCampus(false, false)"
+      [disabled]="!canEvaluatedFiles() || currentStep?.hasEvaluated"
+      *ngIf="
+        (permissionsService.permissions.canApproveCampus ||
+          permissionsService.permissions.canEvaluate) &&
+        !permissionsService.permissions.canLoadFiles
+      "
+    >
+      <span class="pi pi-minus"></span>
+      En actualización
+    </button>
+    <!--Previous condition:
+    *ngIf="
+        permissionsService.permissions.canLoadFiles &&
+        activeButtonApproveCampus &&
+        !summaryEvaluate
+      "
+    -->
+    <button
+      pButton
+      pRipple
+      *ngIf="permissionsService.permissions.canLoadFiles"
+      class="btn btn-secondary"
+      (click)="loadDocuments(loadDocumentsModule.LOAD_EXHIBIT, 'Cargar anexo')"
+      [disabled]="
+        currentStep?.isSent ||
+        currentStep?.attachment?.length === 0 ||
+        (currentStep?.status !== workflowStatus.ON_PROJECTION &&
+          currentStep?.status !== workflowStatus.ON_UPDATE) ||
+        !canUploadAttach()
+      "
+    >
+      Cargar anexo
+    </button>
+  </div>
+  <div class="col-md-2 text-center">
+    <button
+      pButton
+      pRipple
+      class="btn approve"
+      (click)="openDialogApproveCampus()"
+      [disabled]="!canEvaluatedFiles() || currentStep?.hasEvaluated"
+      *ngIf="
+        (permissionsService.permissions.canApproveCampus ||
+          permissionsService.permissions.canEvaluate) &&
+        !permissionsService.permissions.canLoadFiles
+      "
+    >
+      <span class="pi pi-check"></span>
+      Aprobar
+    </button>
+    <!--Previous condition were:
+    *ngIf="
+        permissionsService.permissions.canSendToReview &&
+        activeButtonApproveCampus &&
+        !summaryEvaluate
+      "
+    -->
+    <button
+      pButton
+      pRipple
+      class="btn btn-warning"
+      (click)="sendToReview()"
+      *ngIf="permissionsService.permissions.canSendToReview"
+      [disabled]="
+        currentStep?.isSent ||
+        currentStep?.attachment?.length === 0 ||
+        !hasAllowedFiles() ||
+        (currentStep?.status !== workflowStatus.ON_PROJECTION &&
+          currentStep?.status !== workflowStatus.ON_UPDATE)
+      "
+    >
+      Enviar a revisión
+    </button>
+  </div>
+</div>
+
+<p-tabView *ngIf="permissionsService.permissions.canView">
+  <p-tabPanel header="Documentos">
+    <!--<p-treeTable
+            [value]="files"
+            [columns]="cols"
+            [scrollable]="true"
+            [tableStyle]="{ 'min-width': '50rem' }"
+          >
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th *ngFor="let col of columns">
+                  {{ col.header }}
+                </th>
+                <th></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
+              <tr>
+                <td *ngFor="let col of columns; let i = index">
+                  <p-treeTableToggler [rowNode]="rowNode" *ngIf="i === 0"></p-treeTableToggler>
+                  <div
+                    *ngIf="
+                      col.field === 'setdcStatus' || col.field === 'setacStatus' || col.field === 'setvaStatus';
+                      else showData
+                    "
+                  >
+                  <div
+                      *ngIf="col.field === 'setdcStatus' && !rowData['isOriginal'] && 
+                      (permissionsService.permissions.canSendToReview && !permissionsService.permissions.canEvaluate)"
+                      class="workflow-status"
+                      [ngClass]="{
+                        'in-projection': rowData['dcStatus'] === 32,
+                        'in-review': rowData['dcStatus'] === 31,
+                        'in-update': rowData['dcStatus'] === 30,
+                        'in-summary': rowData['dcStatus'] === 29,
+                        'in-approve': rowData['dcStatus'] === 28
+                      }"
+                    >
+                      {{ rowData[col.field] }}
+                    </div>
+                    <div
+                      *ngIf="col.field === 'setacStatus' && !rowData['isOriginal']"
+                      class="workflow-status"
+                      [ngClass]="{
+                        'in-projection': rowData['acStatus'] === 32,
+                        'in-review': rowData['acStatus'] === 31,
+                        'in-update': rowData['acStatus'] === 30,
+                        'in-summary': rowData['acStatus'] === 29,
+                        'in-approve': rowData['acStatus'] === 28
+                      }"
+                    >
+                      {{ rowData[col.field] }}
+                    </div>
+                    <div
+                      *ngIf="col.field === 'setvaStatus' && !rowData['isOriginal']"
+                      class="workflow-status"
+                      [ngClass]="{
+                        'in-projection': rowData['vaStatus'] === 32,
+                        'in-review': rowData['vaStatus'] === 31,
+                        'in-update': rowData['vaStatus'] === 30,
+                        'in-summary': rowData['vaStatus'] === 29,
+                        'in-approve': rowData['vaStatus'] === 28
+                      }"
+                    >
+                      {{ rowData[col.field] }}
+                    </div>
+                  </div>
+                  <ng-template #showData>
+                    {{ rowData[col.field] }}
+                  </ng-template>
+                </td>
+                <td></td>
+                <td>
+                  <span class="pi pi-eye" (click)="previewDocumentEvent(rowData)"></span>
+                  <span class="pi pi-download" (click)="downloadDocument(rowData)"></span>
+                  <span
+                    class="pi pi-trash"
+                    (click)="deleteAttachment(rowData)"
+                    *ngIf="
+                      (currentStep?.status === workflowStatus.ON_PROJECTION) &&
+                      !rowData['isOriginal'] &&
+                      !summaryEvaluate
+                      && rowData['created_by'] === createdBy
+                    "
+                  ></span>
+
+                  <button class="workflow-status in-update"
+                    *ngIf="rowData['created_by'] !== createdBy && 
+                      permissionsService.permissions.canSendToReview && 
+                      permissionsService.permissions.canEvaluate">
+                    <span class="pi pi-minus"> {{ rowData['created_by'] }} </span>
+                  </button>
+                  <button class="workflow-status in-approve"
+                    *ngIf="rowData['created_by'] !== createdBy && 
+                      permissionsService.permissions.canSendToReview && 
+                      permissionsService.permissions.canEvaluate">
+                    <span class="pi pi-check"> {{ rowData['created_by'] }} </span>
+                  </button>
+                    
+                </td>
+              </tr>
+            </ng-template>
+          </p-treeTable>-->
+    <p-table
+      [value]="currentAttachment || []"
+      dataKey="attachId"
+      class="table-attach"
+      selectionMode="single"
+      [(selection)]="selectedAttach"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th
+            style="width: 2%"
+            *ngIf="
+              permissionsService.permissions.canLoadFiles &&
+              permissionsService.permissions.canEvaluate
+            "
+          ></th>
+          <th style="width: 2%"></th>
+          <th style="width: 30%">Nombre</th>
+          <th style="width: 10%">Fecha</th>
+          <th style="width: 10%">Versión</th>
+          <th style="width: 10%">Estado</th>
+          <th
+            *ngIf="
+              !permissionsService.permissions.canEvaluate &&
+              permissionsService.permissions.canLoadFiles
+            "
+            style="width: 10%"
+          >
+            Decano
+          </th>
+          <th style="width: 10%">Aseguramiento de calidad</th>
+          <th style="width: 10%">Vicerrectoría académica</th>
+          <th style="width: 2%" class="text-center"></th>
+          <th style="width: 2%" class="text-center"></th>
+          <th style="width: 2%" class="text-center"></th>
+          <th
+            style="width: 2%"
+            *ngIf="
+              permissionsService.permissions.canSendToReview &&
+              permissionsService.permissions.canEvaluate &&
+              !currentStep?.hasEvaluated
+            "
+          ></th>
+          <th
+            style="width: 2%"
+            *ngIf="
+              permissionsService.permissions.canSendToReview &&
+              permissionsService.permissions.canEvaluate &&
+              !currentStep?.hasEvaluated
+            "
+          ></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item let-expanded="expanded">
+        <tr
+          [ngClass]="{
+            'attach-declined': item.isDeclined,
+            'attach-old': item.isOriginal
+          }"
+        >
+          <td
+            *ngIf="
+              permissionsService.permissions.canLoadFiles &&
+              permissionsService.permissions.canEvaluate
+            "
+            class="radio"
+          >
+            <p-tableRadioButton [value]="item" *ngIf="!item.isDeclined && !item.isOriginal">
+            </p-tableRadioButton>
+          </td>
+          <td>
+            <button
+              type="button"
+              pButton
+              pRipple
+              [pRowToggler]="item"
+              [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+              class="p-button-text p-button-rounded p-button-plain"
+            >
+              <i class="p-button-text p-button-rounded p-button-plain"></i>
+            </button>
+          </td>
+          <td>{{ item.name }}</td>
+          <td>{{ (item.createdDate | date: 'dd/MM/yyyy') ?? '--' }}</td>
+          <td>{{ item.version }}</td>
+          <td>{{ !item.isOriginal ? item.setstatus : '' }}</td>
+          <td
+            *ngIf="
+              !permissionsService.permissions.canEvaluate &&
+              permissionsService.permissions.canLoadFiles
+            "
+          >
+            <div
+              *ngIf="
+                !item.isOriginal &&
+                !item.isDeclined &&
+                !item.isOriginal &&
+                item.createdBy === createdBy
+              "
+              class="workflow-status"
+              [ngClass]="{
+                'in-projection': item.dcStatus === 32,
+                'in-review': item.dcStatus === 31,
+                'in-update': item.dcStatus === 30,
+                'in-summary': item.dcStatus === 29,
+                'in-approve': item.dcStatus === 28
+              }"
+            >
+              {{ item.setdcStatus }}
+            </div>
+            <div
+              *ngIf="item.status === 41 && item.isDeclined && !item.isOriginal"
+              class="workflow-status in-update"
+            >
+              {{ dissaprovedMessage }}
+            </div>
+          </td>
+          <td>
+            <div
+              *ngIf="!item.isOriginal && !item.isDeclined && !item.isOriginal"
+              class="workflow-status"
+              [ngClass]="{
+                'in-projection': item.acStatus === 32,
+                'in-review': item.acStatus === 31,
+                'in-update': item.acStatus === 30,
+                'in-summary': item.acStatus === 29,
+                'in-approve': item.acStatus === 28
+              }"
+            >
+              {{ item.setacStatus }}
+            </div>
+            <div
+              *ngIf="item.status === 36 && item.isDeclined && !item.isOriginal"
+              class="workflow-status in-update"
+            >
+              {{ dissaprovedMessage }}
+            </div>
+          </td>
+          <td>
+            <div
+              *ngIf="!item.isOriginal && !item.isDeclined && !item.isOriginal"
+              class="workflow-status"
+              [ngClass]="{
+                'in-projection': item.vaStatus === 32,
+                'in-review': item.vaStatus === 31,
+                'in-update': item.vaStatus === 30,
+                'in-summary': item.vaStatus === 29,
+                'in-approve': item.vaStatus === 28
+              }"
+            >
+              {{ item.setvaStatus }}
+            </div>
+            <div
+              *ngIf="item.status === 36 && item.isDeclined && !item.isOriginal"
+              class="workflow-status in-update"
+            >
+              {{ dissaprovedMessage }}
+            </div>
+          </td>
+          <td>
+            <i
+              style="width: 5%"
+              class="pi pi-eye text-center"
+              (click)="previewDocumentEvent(item)"
+            ></i>
+          </td>
+          <td>
+            <i
+              style="width: 5%"
+              class="pi pi-download text-center"
+              (click)="downloadDocument(item)"
+            ></i>
+          </td>
+          <td>
+            <i
+              class="pi pi-trash"
+              (click)="deleteAttachment(item)"
+              *ngIf="
+                currentStep?.status === workflowStatus.ON_PROJECTION &&
+                !item.isOriginal &&
+                item.createdBy === createdBy &&
+                !currentStep?.isSent &&
+                !item.isDeclined
+              "
+            ></i>
+          </td>
+          <td>
+            <button
+              class="workflow-status in-update"
+              *ngIf="
+                item.createdBy !== createdBy &&
+                permissionsService.permissions.canSendToReview &&
+                permissionsService.permissions.canEvaluate &&
+                !currentStep?.hasEvaluated &&
+                !item.isDeclined &&
+                !item.isOriginal
+              "
+              (click)="sendDenyApproveCampus(false, false)"
+            >
+              <span class="pi pi-minus"></span>
+            </button>
+          </td>
+          <td>
+            <button
+              class="workflow-status in-approve"
+              *ngIf="
+                item.createdBy !== createdBy &&
+                permissionsService.permissions.canSendToReview &&
+                permissionsService.permissions.canEvaluate &&
+                !currentStep?.hasEvaluated &&
+                !item.isDeclined &&
+                !item.isOriginal
+              "
+              (click)="openDialogApproveCampus()"
+            >
+              <span class="pi pi-check"></span>
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="rowexpansion" let-item>
+        <tr>
+          <td colspan="12">
+            <div class="anex-container">
+              <p-table [value]="item.attachmentChild" dataKey="attachId" class="header-anex">
+                <ng-template pTemplate="header" *ngIf="item.attachmentChild.length > 0">
+                  <tr class="smaller-header">
+                    <td class="border-left">Nombre</td>
+                    <td>Fecha</td>
+                    <td>Versión</td>
+                    <td>Estado</td>
+                    <td
+                      *ngIf="
+                        !permissionsService.permissions.canEvaluate &&
+                        permissionsService.permissions.canLoadFiles
+                      "
+                      style="width: 10%"
+                    >
+                      Decano
+                    </td>
+                    <td style="width: 10%">Aseguramiento de calidad</td>
+                    <td style="width: 10%">Vicerrectoría académica</td>
+                    <td style="width: 2%"></td>
+                    <td style="width: 2%"></td>
+                    <td class="border-right" style="width: 2%"></td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-child>
+                  <tr>
+                    <td class="text-center">{{ child.name }}</td>
+                    <td>{{ (child.createdDate | date: 'dd/MM/yyyy') ?? '--' }}</td>
+                    <td>{{ child.version }}</td>
+                    <td>{{ item.setstatus }}</td>
+                    <td
+                      *ngIf="
+                        !permissionsService.permissions.canEvaluate &&
+                        permissionsService.permissions.canLoadFiles
+                      "
+                    >
+                      <div
+                        *ngIf="
+                          !child.isOriginal && !item.isDeclined && item.createdBy === createdBy
+                        "
+                        class="workflow-status"
+                        [ngClass]="{
+                          'in-projection': child.dcStatus === 32,
+                          'in-review': child.dcStatus === 31,
+                          'in-update': child.dcStatus === 30,
+                          'in-summary': child.dcStatus === 29,
+                          'in-approve': child.dcStatus === 28
+                        }"
+                      >
+                        {{ child.setdcStatus }}
+                      </div>
+                      <div
+                        *ngIf="item.status === 41 && item.isDeclined && !item.isOriginal"
+                        class="workflow-status in-update"
+                      >
+                        {{ dissaprovedMessage }}
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        *ngIf="!child.isOriginal && !item.isDeclined"
+                        class="workflow-status"
+                        [ngClass]="{
+                          'in-projection': child.acStatus === 32,
+                          'in-review': child.acStatus === 31,
+                          'in-update': child.acStatus === 30,
+                          'in-summary': child.acStatus === 29,
+                          'in-approve': child.acStatus === 28
+                        }"
+                      >
+                        {{ item.setacStatus }}
+                      </div>
+                      <div
+                        *ngIf="item.status === 36 && item.isDeclined && !item.isOriginal"
+                        class="workflow-status in-update"
+                      >
+                        {{ dissaprovedMessage }}
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        *ngIf="!child.isOriginal && !item.isDeclined"
+                        class="workflow-status"
+                        [ngClass]="{
+                          'in-projection': child.vaStatus === 32,
+                          'in-review': child.vaStatus === 31,
+                          'in-update': child.vaStatus === 30,
+                          'in-summary': child.vaStatus === 29,
+                          'in-approve': child.vaStatus === 28
+                        }"
+                      >
+                        {{ child.setvaStatus }}
+                      </div>
+                      <div
+                        *ngIf="item.status === 36 && item.isDeclined && !item.isOriginal"
+                        class="workflow-status in-update"
+                      >
+                        {{ dissaprovedMessage }}
+                      </div>
+                    </td>
+                    <td>
+                      <i class="pi pi-eye" (click)="previewDocumentEvent(child)"></i>
+                    </td>
+                    <td>
+                      <i class="pi pi-download" (click)="downloadDocument(child)"></i>
+                    </td>
+                    <td>
+                      <i
+                        class="pi pi-trash"
+                        (click)="deleteAttachment(child)"
+                        *ngIf="
+                          currentStep?.status === workflowStatus.ON_PROJECTION &&
+                          !child.isOriginal &&
+                          child.createdBy === createdBy &&
+                          !currentStep?.isSent &&
+                          !item.isDeclined
+                        "
+                      ></i>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td colspan="6">No hay anexos adjuntos</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-tabPanel>
+  <p-tabPanel
+    header="Resumen"
+    *ngIf="permissionsService.permissions.canViewSummary"
+    [disabled]="(currentStep?.canCreateSummary ?? false) === false && !summaryEvaluate"
+  >
+    <div class="row">
+      <div class="col-md-9">
+        <div class="container">
+          <app-editor
+            (createHtml)="createHtml($event)"
+            [htmlText]="html"
+            *ngIf="permissionsService.permissions.canViewSummary"
+          ></app-editor>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="container">
+          <button
+            class="btn btn-third"
+            *ngIf="
+              permissionsService.permissions.canCreateCurriculum ||
+              permissionsService.permissions.canViewCurriculum
+            "
+            [routerLink]="
+              '/programs/create-program/' +
+              idProgram +
+              '/curriculum/step/' +
+              currentStep?.stepId +
+              '/workflow/' +
+              workFlowId
+            "
+          >
+            Plan de estudio
+          </button>
+          <button
+            class="btn btn-third"
+            *ngIf="
+              permissionsService.permissions.canCreateProfileEntry ||
+              permissionsService.permissions.canViewProfileEntry
+            "
+            (click)="navigateCurriculumSumary(dataTypes.GRADUATION_PROFILE.id)"
+          >
+            Perfil de egreso
+          </button>
+          <button
+            class="btn btn-third"
+            *ngIf="
+              permissionsService.permissions.canCreateRae ||
+              permissionsService.permissions.canViewRae
+            "
+            (click)="navigateCurriculumSumary(dataTypes.RAE.id)"
+          >
+            RAE
+          </button>
+
+          <button
+            class="btn btn-third"
+            *ngIf="
+              permissionsService.permissions.canCreateCompetencies ||
+              permissionsService.permissions.canViewCompetencies
+            "
+            (click)="navigateCurriculumSumary(dataTypes.COMPETENCE.id)"
+          >
+            Competencias
+          </button>
+          <button
+            class="btn btn-third"
+            *ngIf="
+              permissionsService.permissions.canCreateProgramObjective ||
+              permissionsService.permissions.canViewProgramObjective
+            "
+            (click)="navigateCurriculumSumary(dataTypes.PROGRAM_OBJECTIVE.id)"
+          >
+            Objetivos del programa
+          </button>
+          <button
+            class="btn btn-third"
+            *ngIf="
+              permissionsService.permissions.canCreateSilabus ||
+              permissionsService.permissions.canViewSilabus
+            "
+            (click)="sendOpenSyllabus()"
+          >
+            Sílabos
+          </button>
+          <button
+            class="btn btn-third"
+            *ngIf="
+              permissionsService.permissions.canCreateEnglishFormation ||
+              permissionsService.permissions.canViewEnglishFormation
+            "
+            (click)="navigateCurriculumSumary(dataTypes.ENGLISH_FORMATION.id)"
+          >
+            Formación en ingles
+          </button>
+          <button
+            class="btn btn-third"
+            *ngIf="
+              permissionsService.permissions.canCreateAcademicProgramsOfCampus ||
+              permissionsService.permissions.canViewAcademicProgramsOfCampus
+            "
+            (click)="navigateCurriculumSumary(dataTypes.CAMPUS_ACADEMIC_PROGRAM.id)"
+          >
+            Programas académicos de campo
+          </button>
+
+          <button
+            class="btn btn-third"
+            *ngIf="
+              permissionsService.permissions.canCreateExtensionSocialProjection ||
+              permissionsService.permissions.canViewExtensionSocialProjection
+            "
+            (click)="navigateCurriculumSumary(dataTypes.EXTENSION_SOCIAL_PROJECTION.id)"
+          >
+            Extensión o proyección social
+          </button>
+          <button
+            class="btn btn-third"
+            *ngIf="
+              permissionsService.permissions.canCreateInternational ||
+              permissionsService.permissions.canViewInternational
+            "
+            (click)="navigateCurriculumSumary(dataTypes.INTERNATIONAL.id)"
+          >
+            Internacionalización
+          </button>
+
+          <button
+            class="btn btn-third"
+            *ngIf="
+              permissionsService.permissions.canCreateInvestigativeInformation ||
+              permissionsService.permissions.canViewInvestigativeInformation
+            "
+            (click)="navigateCurriculumSumary(dataTypes.INVESTIGATIVE_INFORMATION.id)"
+          >
+            Investigación Formativa
+          </button>
+
+          <div
+            class="d-flex justify-content-center"
+            *ngIf="
+              permissionsService.permissions.canCreateSummary &&
+              (!summaryEvaluate ||
+                (summaryEvaluate && currentStep?.status === workflowStatus.ON_UPDATE))
+            "
+          >
+            <button class="btn btn-warning" (click)="sendSummary(false)">Guardar resumen</button>
+          </div>
+          <div
+            class="d-flex justify-content-center mt-2"
+            *ngIf="
+              permissionsService.permissions.canSendToReview &&
+              (!summaryEvaluate ||
+                (summaryEvaluate && currentStep?.status === workflowStatus.ON_UPDATE))
+            "
+          >
+            <button class="btn btn-warning" (click)="sendSummary(true)">Enviar a revisión</button>
+          </div>
+          <div
+            class="d-flex justify-content-center mt-2"
+            *ngIf="
+              summaryEvaluate &&
+              permissionsService.permissions.canEvaluateSummary &&
+              currentStep?.status === workflowStatus.CREATE_SUMMARY
+            "
+          >
+            <button
+              pButton
+              pRipple
+              class="btn approve"
+              (click)="this.sendDenyApproveCampus(true, true)"
+            >
+              <span class="pi pi-check"></span>
+              Aprobar Resumen
+            </button>
+          </div>
+          <div
+            class="d-flex justify-content-center mt-2"
+            *ngIf="
+              summaryEvaluate &&
+              permissionsService.permissions.canEvaluateSummary &&
+              currentStep?.status === workflowStatus.CREATE_SUMMARY
+            "
+          >
+            <button
+              pButton
+              pRipple
+              class="btn declined"
+              (click)="sendDenyApproveCampus(false, true)"
+            >
+              <span class="pi pi-minus"></span>
+              En actualización
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </p-tabPanel>
+</p-tabView>
+
+<p-sidebar [(visible)]="sidebarComments" *ngIf="sidebarComments" position="right" class="w-50rem">
+  <app-comments [currentStep]="currentStep" [workFlowId]="workFlowId"></app-comments>
+</p-sidebar>
+
+<app-load-document-with-comment
+  [config]="viewLoadDocuments"
+  (closeModal)="closeModal()"
+  (returnData)="returnData($event)"
+  *ngIf="viewLoadDocuments"
+></app-load-document-with-comment>
+
+<app-preview-document
+  *ngIf="previewDocument"
+  [visible]="visiblePreviewDocument"
+  (closeModal)="closeModalPreviewDocument($event)"
+  [previewDocument]="previewDocument"
+></app-preview-document>
+
+<p-dialog
+  [modal]="true"
+  [(visible)]="hasAnnexesvisible"
+  [style]="{ width: '70vw' }"
+  [maximizable]="true"
+>
+  <div class="container">
+    <h6>{{ currentStep?.stepName }}</h6>
+    <p class="sub-title-annexes">Anexos mínimos requeridos</p>
+    <ul class="annexes">
+      <li *ngFor="let templete of annexesDocuments">
+        <!--<strong>{{ templete?.templateName }}</strong>
+        <br />-->
+        <div [innerHTML]="templete?.description"></div>
+        <ul class="annexes-child" *ngIf="templete?.templateChild?.length">
+          <li *ngFor="let child of templete?.templateChild">
+            <strong>{{ child?.templateName }}</strong>
+            <br />
+            <div [innerHTML]="child?.description"></div>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</p-dialog>
+
+<p-dialog
+  [header]="'Seleccione el(los) lugar(es) de desarrollo'"
+  [(visible)]="visibleApproveCampus"
+  [resizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  [style]="{ width: '40vw' }"
+>
+  <app-approve-campus
+    [workFlowId]="workFlowId"
+    [currentStep]="currentStep"
+    (closeDialog)="closeDialogApproveCampus()"
+  ></app-approve-campus>
+</p-dialog>

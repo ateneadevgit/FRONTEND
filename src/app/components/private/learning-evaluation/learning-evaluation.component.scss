@@ -1,0 +1,32 @@
+@import '../../../../assets/styles/abstracts/variables';
+
+hr {
+  border-width: 3px;
+  color: $color-tangerine-yellow;
+}
+
+.icon-edit {
+  cursor: pointer;
+  color: #ffce01;
+}
+
+.icon-delete {
+  margin-right: 10px;
+  cursor: pointer;
+  color: $color-delete;
+  background-color: rgb(255, 255, 255);
+  padding: 4px;
+  border-radius: 5px;
+}
+
+.description-style {
+  background-color: #fcfbfb;
+  border-radius: 5px;
+  padding: 8px;
+  color: #73767a;
+}
+
+.td-style-border {
+  border-top-color: #ffff;
+  border-bottom-color: #ffff;
+}

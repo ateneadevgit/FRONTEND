@@ -1,0 +1,187 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<br />
+<ol class="breadcrumb">
+  <ng-container *ngFor="let item of breadcrumbItems; let last = last; let index = index">
+    <li class="breadcrumb-item" [ngClass]="{ active: last }">
+      <a *ngIf="!last" [routerLink]="item.routerLink">{{ item.label }}</a>
+      <span *ngIf="last">{{ item.label }}</span>
+    </li>
+    <span *ngIf="!last"> <i class="pi pi-angle-right"></i> </span>
+  </ng-container>
+</ol>
+<div class="row">
+  <form [formGroup]="formCatalog">
+    <div class="col-6">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="">Nombre del catálogo</label>
+        <input pInputText formControlName="catalogName" class="ng-invalid" />
+        <small
+          class="error"
+          *ngIf="formControls['catalogName'].errors && formControls['catalogName'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+        <small
+          class="error"
+          *ngIf="formControls['catalogName'].errors && formControls['catalogName'].invalid"
+        >
+          * Campo no debe sobrepasar los 100 caracteres.
+        </small>
+      </div>
+    </div>
+    <div class="col-8 py-4">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="">Descripción</label>
+        <p class="error-message">Límite máximo de 255 caracteres</p>
+        <input pInputText formControlName="description" class="ng-invalid" />
+        <small
+          class="error"
+          *ngIf="formControls['description'].errors && formControls['description'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+        <small
+          class="error"
+          *ngIf="formControls['description'].errors && formControls['description'].invalid"
+        >
+          * Campo no debe sobrepasar los 255 caracteres.
+        </small>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="row d-flex py-4 justify-content-between">
+  <div class="row d-flex justify-content-between">
+    <div class="col-4">
+      <label htmlFor=""
+        >Creado por <span>{{ currentCatalog?.createdBy }}</span></label
+      >
+      <br />
+      <label htmlFor=""
+        >N. de items <span>{{ currentCatalog?.items }}</span></label
+      >
+    </div>
+    <div class="col-4">
+      <label htmlFor=""
+        >Fecha de creación
+        <span>{{ (currentCatalog?.createdAt | date: 'dd/MM/yyyy') ?? '--' }}</span></label
+      >
+      <br />
+      <label htmlFor=""
+        >Estado <span>{{ currentCatalog?.enabled ? 'Activo' : 'Desactivado' }}</span></label
+      >
+    </div>
+    <div class="col-2">
+      <button class="btn btn-primary" (click)="updateCatalog()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div>
+      <div class="mt-2 shadow-table">
+        <p-table
+          [value]="catalogsItemList || []"
+          [paginator]="catalogsItemList.length > 6"
+          [rows]="6"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 65%" class="border-left">Nombre de item</th>
+              <th style="width: 20%" class="text-center">Orden</th>
+              <th style="width: 15%" colspan="2" class="text-right border-right">
+                <button pButton class="btn-white" (click)="openCreateItem()">+ Crear item</button>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td class="colored-item">{{ item.catalogItemName }}</td>
+              <td class="text-center">{{ item.order || '-' }}</td>
+              <td>
+                <i
+                  class="pi pi-pencil filled-yellow"
+                  (click)="loadItemData(item.catalogItemId)"
+                ></i>
+              </td>
+              <td class="d-flex">
+                <p-inputSwitch
+                  [(ngModel)]="item.enabled"
+                  (click)="disableEnableCatalogItem(item)"
+                ></p-inputSwitch>
+                <span class="py-1 active-label">{{ item.enabled ? 'Activo' : 'Inactivo' }}</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <div class="text-center mt-2" *ngIf="(catalogsItemList || []).length === 0">
+        <p>No se encontraron resultados...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  [header]="popUpItem"
+  [(visible)]="itemVisible"
+  [style]="{ width: '30%' }"
+  [resizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  (onHide)="cleanForm()"
+>
+  <div class="row pop-up-margin">
+    <form [formGroup]="formCatalog">
+      <div class="col-12">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Nombre</label>
+          <input pInputText formControlName="itemName" class="ng-invalid" />
+          <small
+            class="error"
+            *ngIf="formControls['itemName'].errors && formControls['itemName'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+      <div class="col-4 py-4">
+        <label htmlFor="">Orden</label>
+        <br />
+        <p-inputNumber formControlName="orderItem" class="ng-invalid"></p-inputNumber>
+        <small
+          class="error"
+          *ngIf="formControls['orderItem'].errors && formControls['orderItem'].invalid"
+        >
+          * Campo debe ser un número positivo
+        </small>
+      </div>
+      <div class="col-12">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Descripción</label>
+          <input pInputText formControlName="itemDescription" class="ng-invalid" />
+          <small
+            class="error"
+            *ngIf="
+              formControls['itemDescription'].errors && formControls['itemDescription'].invalid
+            "
+          >
+            * Campo no debe sobrepasar los 100 caracteres.
+          </small>
+        </div>
+      </div>
+      <div class="col-12 py-4 text-center">
+        <button class="btn btn-primary" (click)="createCatalogItem()" *ngIf="!editItem">
+          Crear
+        </button>
+        <button class="btn btn-primary" (click)="createCatalogItem()" *ngIf="editItem">
+          Actualizar
+        </button>
+      </div>
+    </form>
+  </div>
+</p-dialog>

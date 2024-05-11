@@ -1,0 +1,97 @@
+@import '../../../../../assets/styles/abstracts/variables';
+
+.icon-edit {
+  margin-left: 5px;
+  cursor: pointer;
+  color: #ffce01;
+  background-color: rgb(255, 255, 255);
+  padding: 4px;
+  border-radius: 5px;
+}
+
+.icon-delete {
+  margin-right: 10px;
+  cursor: pointer;
+  color: $color-delete;
+  background-color: rgb(255, 255, 255);
+  padding: 4px;
+  border-radius: 5px;
+}
+
+.card-program {
+  color: $color-blue-subtitle;
+  font-size: 22px;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+}
+
+.top-btns-actions {
+  z-index: 2;
+  margin-left: 4px;
+  margin-right: 4px;
+  position: absolute;
+  width: 100%;
+  height: 50px; /* Ajusta la altura del div interno según sea necesario */
+  background: rgba(0, 0, 0, 0); /* Degradado de transparente a negro */
+}
+
+.imagen-fondo {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.round-btn {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #91e1fc;
+  color: #fff;
+  font-size: 18px;
+  border: none;
+}
+
+.round-btn-card {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #91e1fc;
+  color: #fff;
+  font-size: 14px;
+  border: none;
+}
+
+.contenedor {
+  position: relative;
+  width: 100%;
+  height: 170px; /* Ajusta la altura según sea necesario */
+  background-size: cover;
+  background-position: center;
+}
+
+.image-cropper-portada-size {
+  height: 100px;
+}
+
+.equal-sign {
+  font-size: 45px;
+  color: #91e1fc;
+  transform: rotate(90deg);
+}
+
+.negrita {
+  font-weight: bold;
+  color: rgb(0, 0, 0);
+  padding: 0px;
+}
+
+.italic-text {
+  font-style: italic;
+}

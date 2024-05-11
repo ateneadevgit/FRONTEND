@@ -1,0 +1,19 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="row">
+  <div class="col-12 col-md-8 text-center">
+    <div class="col-12">
+      <div class="header_guidelines">Lineamientos institucionales de gestión curricular</div>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div *ngFor="let item of guidelineList">
+      <div class="col-12 mt-2">
+        <button pButton type="button" class="p-button-link" (click)="openAttachment(item)">
+          {{ item.name }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

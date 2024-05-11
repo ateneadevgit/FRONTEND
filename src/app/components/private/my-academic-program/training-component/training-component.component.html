@@ -1,0 +1,81 @@
+<!-- eslint-disable @angular-eslint/template/alt-text -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<h6>Plan de estudio</h6>
+<p>Accede a tu plan de estudios, detalle de asignaturas, seguimiento académico y mucho más</p>
+<hr class="w-25" />
+<div *ngIf="activeProgram">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card-program d-flex">
+        {{ activeProgram.name }}
+        <div class="card-sede">{{ activeProgram.nameCampusList }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 mt-2">
+      <img [src]="srcImage" class="w-100" />
+    </div>
+    <div class="col-12">
+      <p [innerHTML]="text"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 card-footer">
+      <div class="row">
+        <div class="col-2 d-flex justify-content-center">
+          <div
+            *ngIf="role === Role.ESTUDIANTE"
+            class="btn-footer"
+            (click)="redirectType(idProgram, curriculumSumaryType.GRADUATION_PROFILE)"
+          >
+            Perfil de Egreso
+          </div>
+          <div
+            *ngIf="role === Role.ESTUDIANTE_NO_FORMAL"
+            class="btn-footer"
+            (click)="redirectType(idProgram, componenteCurricularType.GRADUATE_PROFILE)"
+          >
+            Perfil de Egreso
+          </div>
+        </div>
+        <div class="col-1 d-flex justify-content-center">
+          <div class="btn-footer" (click)="redirectType(idProgram, curriculumSumaryType.RAE)">
+            RAE
+          </div>
+        </div>
+        <div class="col-2 d-flex justify-content-center">
+          <div
+            class="btn-footer"
+            (click)="redirectType(idProgram, curriculumSumaryType.COMPETENCE)"
+          >
+            Competencias
+          </div>
+        </div>
+        <div class="col-3 d-flex justify-content-center">
+          <div
+            *ngIf="role === Role.ESTUDIANTE"
+            class="btn-footer"
+            (click)="redirectType(idProgram, curriculumSumaryType.PROGRAM_OBJECTIVE)"
+          >
+            Objetivos de formación
+          </div>
+          <div
+            *ngIf="role === Role.ESTUDIANTE_NO_FORMAL"
+            class="btn-footer"
+            (click)="redirectType(idProgram, componenteCurricularType.PROGRAM_OBJECTIVE)"
+          >
+            Objetivos del programa
+          </div>
+        </div>
+        <div class="col-2 d-flex justify-content-center" *ngIf="role === Role.ESTUDIANTE">
+          <div class="btn-footer" (click)="redirectBankProblem()">Banco de problemas</div>
+        </div>
+        <div class="col-2 d-flex justify-content-center">
+          <div class="btn-footer" (click)="redirectStudyPlan(idProgram)">Estructura curricular</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,318 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<form [formGroup]="formCreateProgram">
+  <div class="row">
+    <div class="col-md-8 mt-4">
+      <button pButton pRipple class="btn btn-primary" (click)="downloadDocument()">
+        Formato creación / renovación
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="container">
+        <label for="" class="ml-2">Logo</label>
+        <div class="image" (click)="activarImagen()">
+          <div class="image-cropper" *ngIf="!croppedImageLogo"></div>
+          <div class="image-plus" *ngIf="!croppedImageLogo">
+            <i class="pi pi-plus"></i>
+          </div>
+          <img [src]="croppedImageLogo" alt="logo" *ngIf="croppedImageLogo" class="image-cropper" />
+        </div>
+        <p>Inserte logo o insignia representativo del programa a crear</p>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="container">
+        <label for="" class="ml-2">Portada</label>
+        <div class="image" (click)="visiblePortadaModal = true">
+          <div class="image-portada" *ngIf="!croppedImagePortada"></div>
+          <div class="image-plus-portada" *ngIf="!croppedImagePortada">
+            <i class="pi pi-plus"></i>
+          </div>
+          <img
+            [src]="croppedImagePortada"
+            alt="logo"
+            *ngIf="croppedImagePortada"
+            class="image-cropper-portada"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row container">
+    <div class="col-md-8">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="">Denominación programa académico</label>
+        <input pInputText formControlName="programName" class="ng-invalid" />
+        <small
+          class="error"
+          *ngIf="formControls['programName'].errors && formControls['programName'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Fecha de desarrollo</label>
+        <p-inputMask
+          mask="99-9999"
+          placeholder="Mes - Año"
+          formControlName="developmentDate"
+        ></p-inputMask>
+        <small
+          class="error"
+          *ngIf="formControls['developmentDate'].errors && formControls['developmentDate'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row container">
+    <div class="col-md-4" [hidden]="true">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Facultad</label>
+        <p-dropdown
+          formControlName="facultyId"
+          [options]="faculties"
+          placeholder="Seleccione facultad"
+          [group]="false"
+          [filter]="true"
+          [showClear]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+        >
+          <ng-template let-factulty pTemplate="factulty">
+            <div class="flex align-items-center">
+              <span>{{ factulty.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <small
+          class="error"
+          *ngIf="formControls['facultyId'].errors && formControls['facultyId'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Tipo de registro</label>
+        <p-dropdown
+          [options]="typeRegister"
+          formControlName="registryTypeId"
+          placeholder="Seleccione registro"
+          [group]="false"
+          [filter]="true"
+          [showClear]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+          (onChange)="selectRegistry()"
+        >
+          <ng-template let-factulty pTemplate="factulty">
+            <div class="flex align-items-center">
+              <span>{{ factulty.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <small
+          class="error"
+          *ngIf="formControls['registryTypeId'].errors && formControls['registryTypeId'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Tipo de programa</label>
+        <p-dropdown
+          [options]="typeFormation"
+          formControlName="formationTypeId"
+          placeholder="Seleccione formación"
+          [group]="false"
+          [filter]="true"
+          [showClear]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+          (onChange)="selectFormacion()"
+        >
+          <ng-template let-factulty pTemplate="factulty">
+            <div class="flex align-items-center">
+              <span>{{ factulty.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <small
+          class="error"
+          *ngIf="formControls['formationTypeId'].errors && formControls['formationTypeId'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Nivel de formación</label>
+        <p-dropdown
+          [options]="levelFormation"
+          formControlName="formationLevel"
+          placeholder="Seleccione nivel"
+          [group]="false"
+          [filter]="true"
+          [showClear]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+        >
+          <ng-template let-factulty pTemplate="factulty">
+            <div class="flex align-items-center">
+              <span>{{ factulty.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <small
+          class="error"
+          *ngIf="formControls['formationLevel'].errors && formControls['formationLevel'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row container">
+    <div class="col-md-6">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Lugar de desarrollo</label>
+
+        <div class="multi-select flex justify-content-center" *ngIf="multiple">
+          <p-multiSelect
+            [options]="campus"
+            formControlName="campus"
+            placeholder="Seleccione lugar"
+            display="chip"
+            [filter]="true"
+            optionLabel="catalogItemName"
+          >
+          </p-multiSelect>
+        </div>
+
+        <p-dropdown
+          [options]="campus"
+          formControlName="campus"
+          placeholder="Seleccione lugar"
+          [group]="false"
+          [filter]="true"
+          [showClear]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+          *ngIf="!multiple"
+        >
+          <ng-template let-campus pTemplate="campus">
+            <div class="flex align-items-center">
+              <span>{{ campus.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <small
+          class="error"
+          *ngIf="formControls['campus'].errors && formControls['campus'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Modalidad</label>
+        <div class="multi-select flex justify-content-center" *ngIf="multiple">
+          <p-multiSelect
+            [options]="modality"
+            formControlName="modality"
+            placeholder="Seleccione modalidad"
+            display="chip"
+            [filter]="true"
+            optionLabel="catalogItemName"
+          >
+          </p-multiSelect>
+        </div>
+        <p-dropdown
+          [options]="modality"
+          formControlName="modality"
+          placeholder="Seleccione modalidad"
+          [group]="false"
+          [filter]="true"
+          [showClear]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+          *ngIf="!multiple"
+        >
+          <ng-template let-modalidad pTemplate="modalidad">
+            <div class="flex align-items-center">
+              <span>{{ modalidad.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <small
+          class="error"
+          *ngIf="formControls['modality'].errors && formControls['modality'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row container">
+    <div class="col-md-4">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Adjuntar archivo</label>
+        <br />
+        <!--   <label for="file" class="custom-file-input"> Seleccionar </label>
+        <input type="file"  (change)="onFileChange($event)" /> -->
+        <input
+          type="file"
+          id="archivo"
+          name="archivo"
+          class="input-file"
+          [accept]="allowedExtension"
+          (change)="loadFile($event)"
+        />
+        <label for="archivo" class="btn">Elegir archivo</label>
+      </div>
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+      <p>{{ fileName }}</p>
+    </div>
+  </div>
+
+  <div class="row container">
+    <div class="col-md-12 button-action-center">
+      <p-button (click)="createProgram()" [disabled]="!formCreateProgram.valid">
+        Enviar propuesta
+      </p-button>
+    </div>
+  </div>
+</form>
+
+<div *ngIf="visibleLogoModal">
+  <app-crop-image
+    [visible]="visibleLogoModal"
+    [aspectRatio]="4 / 4"
+    (imageUrl)="imageUrlLogo($event)"
+  ></app-crop-image>
+</div>
+
+<app-crop-image
+  *ngIf="visiblePortadaModal"
+  [visible]="visiblePortadaModal"
+  [aspectRatio]="10 / 3"
+  (imageUrl)="imageUrlPortada($event)"
+>
+</app-crop-image>
+<p-toast></p-toast>

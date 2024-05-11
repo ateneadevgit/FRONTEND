@@ -1,0 +1,26 @@
+<div
+  *ngFor="let item of campusProgram; let i = index"
+  class="row container justify-content-center d-flex"
+>
+  <div class="col-md-4">
+    <label for="label">
+      <p-checkbox
+        name="group1"
+        [(ngModel)]="selectedCampus"
+        [value]="item.catalogItemId"
+      ></p-checkbox>
+      {{ item.catalogItemName }}</label
+    >
+  </div>
+</div>
+<div class="row container justify-content-center d-flex">
+  <div class="col-md-6 justify-content-center d-flex">
+    <button
+      class="btn approve right-btn"
+      (click)="sendApproveCampus()"
+      [disabled]="selectedCampus.length === 0"
+    >
+      <span class="pi pi-check"></span>Aprobado
+    </button>
+  </div>
+</div>

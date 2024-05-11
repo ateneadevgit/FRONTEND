@@ -1,0 +1,50 @@
+@import '../../../../../../assets/styles/abstracts/variables';
+
+.container-x {
+  display: flex;
+  width: 100%;
+  max-height: 300px;
+  overflow-x: auto;
+}
+
+.container-area {
+  display: flex;
+  overflow-x: auto;
+}
+.area-title {
+  font-weight: bold;
+}
+.area-label {
+  border-radius: 0.5em;
+  background: aliceblue;
+  margin-left: 5px;
+  padding: 5px;
+  color: $color-indigo;
+}
+.container-curse {
+  background: aliceblue;
+  padding: 10px;
+  border-radius: 0.7em;
+  font-size: 15px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Esto separará los elementos verticalmente y alineará el último al final */
+  height: 100%; /* Asegúrate de que el contenedor tenga una altura definida */
+}
+.container-curse_data {
+  margin-top: 5px;
+  background: antiquewhite;
+  border-radius: 0.7em;
+  padding: 5px;
+  font-size: 14px;
+}
+.bold-text {
+  font-weight: bold;
+}
+
+.p-button-primary {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}

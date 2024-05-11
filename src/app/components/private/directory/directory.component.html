@@ -1,0 +1,107 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<h6>Directorio</h6>
+<p>Encuentra contactos de profesores y personal administrativo</p>
+<hr class="w-25 yellow_line" />
+
+<div class="row space"></div>
+
+<form [formGroup]="formSearch">
+  <div class="row d-flex justify-content-between py-4 header-table">
+    <div class="col-6">
+      <div class="input-icon-container">
+        <input
+          type="text"
+          pInputText
+          formControlName="name"
+          placeholder="Buscar nombre o apellido"
+        />
+        <i
+          class="pi pi-search search-icon default-icon"
+          (click)="onSearchChange()"
+          *ngIf="keyWord === null"
+        ></i>
+        <i
+          class="pi pi-delete-left search-icon default-icon"
+          (click)="cleanSearch()"
+          *ngIf="keyWord !== null"
+        ></i>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="flex flex-column gap-2">
+        <p-multiSelect
+          [options]="facultyList"
+          formControlName="faculty"
+          placeholder="Seleccione facultad"
+          [group]="false"
+          [filter]="true"
+          [showClear]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+        >
+          <ng-template let-item pTemplate="item">
+            <div class="flex align-items-center">
+              <span>{{ item.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-multiSelect>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="flex flex-column gap-2">
+        <p-multiSelect
+          [options]="campusList"
+          formControlName="campus"
+          placeholder="Seleccione sede"
+          [group]="false"
+          [filter]="true"
+          [showClear]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+        >
+          <ng-template let-item pTemplate="item">
+            <div class="flex align-items-center">
+              <span>{{ item.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-multiSelect>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="row">
+  <div class="col-12">
+    <div>
+      <div class="mt-2">
+        <p-table [value]="directoryList || []" [paginator]="directoryList.length > 0" [rows]="10">
+          <ng-template pTemplate="header">
+            <tr>
+              <th></th>
+              <th>Nombre</th>
+              <th>Cargo</th>
+              <th>Correo electrónico</th>
+              <th>Facultad</th>
+              <th>Sede</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td><i class="pi pi-user"></i></td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.charge }}</td>
+              <td class="blue-column">{{ item.email }}</td>
+              <td>{{ item.facultyName }}</td>
+              <td>{{ item.campusName.join(', ') }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <div class="text-center mt-2" *ngIf="(directoryList || []).length === 0">
+        <p>No se encontraron resultados...</p>
+      </div>
+    </div>
+  </div>
+</div>

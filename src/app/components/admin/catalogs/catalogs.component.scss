@@ -1,0 +1,40 @@
+@import '../../../../assets/styles/abstracts/variables';
+
+.filled-blue {
+  color: $color-indigo;
+}
+
+.filled-yellow {
+  color: $color-tangerine-yellow;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.pi {
+  cursor: pointer;
+}
+
+.colored-item {
+  color: $color-indigo;
+  font-weight: bold;
+}
+
+label {
+  span {
+    color: $color-quick-silver;
+  }
+}
+
+.border-left {
+  border-top-left-radius: 10px;
+}
+
+.border-right {
+  border-top-right-radius: 10px;
+}
+
+td {
+  border-bottom: 1.5px solid rgba(128, 128, 128, 0.082);
+}

@@ -1,0 +1,217 @@
+@import '../abstracts/variables';
+.button-action {
+  position: relative;
+  text-align: right;
+  padding: 10px 0px;
+}
+
+.button-action-center {
+  position: relative;
+  text-align: center;
+  padding: 10px 0px;
+}
+
+.p-button-label {
+  font-size: 12px;
+  font-weight: 300;
+}
+.p-button.p-button-secondary {
+  background-color: $color-indigo;
+
+  border-radius: 5px;
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+.p-button.p-button-primary {
+  background-color: $color-jelly-bean-blue;
+  border: none;
+  border-radius: 5px;
+  font-family: $font-medium;
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+.align-bottom {
+  margin-top: 20px;
+  bottom: 0px;
+}
+
+.p-button {
+  //background: $color-indigo;
+  border-radius: 10px;
+}
+
+.p-button.p-button-warning {
+  background-color: $color-tangerine-yellow;
+  border: 0;
+  margin: 10px;
+  border-radius: 10px;
+  padding: 10px 15px;
+}
+
+.btn-action {
+  border: 0;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 13px;
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.declined {
+  background: $color-declined;
+  color: $color-white;
+}
+
+.waiting {
+  background: $color-waiting-request;
+  color: $color-white;
+}
+
+.approve {
+  background: $color-approved;
+  color: $color-white;
+}
+
+.close-modal {
+  background-color: $color-white;
+  color: $color-indigo;
+  float: right;
+}
+
+.btn {
+  border: 0;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: $font-medium;
+  margin: 0 auto;
+  width: fit-content;
+  &-third {
+    width: 100%;
+    background-color: $color-ceil;
+    color: $color-indigo;
+    margin: 5px;
+    &:hover {
+      background-color: $color-indigo;
+      color: $color-white;
+    }
+  }
+}
+
+.btn-primary {
+  background-color: $color-indigo;
+  color: $color-white;
+  &:disabled {
+    background-color: $color-davis-gray;
+  }
+}
+
+.btn-approved {
+  background-color: $color-approved;
+  color: $color-white;
+  &:disabled {
+    background-color: $color-davis-gray;
+  }
+}
+
+.btn-requested {
+  background-color: $color-requested;
+  color: $color-white;
+  &:disabled {
+    background-color: $color-davis-gray;
+  }
+}
+
+.btn-secondary {
+  background-color: $color-jelly-bean-blue;
+  color: $color-white;
+  margin: 0 10px;
+}
+
+.btn-warning {
+  background-color: $color-tangerine-yellow;
+  color: $color-indigo;
+}
+
+.btn-danger {
+  background-color: $color-danger;
+  color: $color-white;
+  margin: 0 10px;
+}
+
+.btn-white {
+  background-color: $color-white;
+  color: $color-jelly-bean-blue;
+  margin: 0 10px;
+}
+
+.btn-clear {
+  background-color: $color-white;
+}
+
+.rounded {
+  background-color: $color-indigo;
+  color: $color-white;
+  border-radius: 50% !important;
+  padding: 0px 13px;
+  width: fit-content;
+  margin: 6px auto;
+  border: 0;
+  font-family: $font-medium;
+  &-plus {
+    font-size: 30px;
+  }
+
+  .pi-eye,
+  .pi-download,
+  .pi-trash {
+    font-size: 16px;
+    cursor: pointer;
+    margin: 5px;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px; /* Ajusta según sea necesario */
+  transform: translateY(-50%);
+}
+.default-icon {
+  cursor: pointer;
+}
+.input-icon-container {
+  position: relative;
+}
+
+.pi-edit-request {
+  background-image: url('./../../icons/small-image.svg');
+  width: 16px;
+  height: 16px;
+  padding: 0 !important;
+  opacity: 0.65 !important;
+  margin: 0 !important;
+  filter: drop-shadow(0 0 0.5px black);
+}
+
+.icon-edit {
+  cursor: pointer;
+  color: $color-icon-edit;
+}
+
+.icon-delete {
+  cursor: pointer;
+  color: $color-icon-delete;
+}
+
+.button-styles {
+  width: 100%;
+}

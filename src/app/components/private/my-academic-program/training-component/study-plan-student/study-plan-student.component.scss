@@ -1,0 +1,19 @@
+@import '../../../../../../assets/styles/abstracts/variables';
+.card-program {
+  color: $color-blue-subtitle;
+  font-size: 22px;
+}
+hr {
+  border-width: 3px;
+  color: $color-tangerine-yellow;
+  margin: 0px;
+  margin-bottom: 10px;
+}
+.card-sede {
+  background-color: $color-indigo;
+  color: $color-white;
+  border-radius: 0.5em;
+  font-size: 15px;
+  padding: 5px 10px;
+  margin-left: 10px;
+}

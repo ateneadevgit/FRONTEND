@@ -1,0 +1,1831 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+
+<div class="col-md-4">
+  <div class="p-d-flex p-ai-center">
+    <h6 [routerLink]="'/' + routerApp.SUBJECT_PROGRAMS">
+      <span class="pi pi-arrow-left"></span>
+      Regresar
+    </h6>
+  </div>
+</div>
+
+<div class="row mt-2">
+  <div class="p-d-flex p-ai-center">
+    <h2 class="title-page">Programa de asignaturas</h2>
+    <p>Cree, actualice y manténgase informado de sus programas de asignatura</p>
+    <hr class="w-25" />
+  </div>
+</div>
+
+<!-- Formulario de Guias de asignatura -->
+<div class="mt-2" *ngIf="isView === false">
+  <form [formGroup]="formSubjectGuide">
+    <div class="row mt-4">
+      <p-card>
+        <div class="row">
+          <div class="col-12 col-md-4">
+            <label for="guideCode">Versión del documento</label>
+            <input
+              id="guideCodeForm2"
+              type="text"
+              pInputText
+              placeholder="Escribir"
+              formControlName="guideCode"
+              [maxlength]="20"
+            />
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['guideCode']?.touched &&
+                formSubjectGuideFormControls['guideCode']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="approvedDate" class="w-100">Fecha de aprobación</label>
+            <p-calendar
+              formControlName="approvedDate"
+              placeholder="Fecha"
+              dateFormat="yy-mm-dd"
+              class="w-100"
+            ></p-calendar>
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['approvedDate']?.touched &&
+                formSubjectGuideFormControls['approvedDate']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <label for="selectNucleo">Núcleo integrador</label>
+            <input
+              type="text"
+              pInputText
+              [value]="formSubjectGuideFormControls['core'].value"
+              [disabled]="true"
+            />
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="selectSubnucleo">Subnúcleo o asignatura</label>
+            <input
+              type="text"
+              pInputText
+              [value]="formSubjectGuideFormControls['subCore'].value"
+              [disabled]="true"
+            />
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>1. Información general del subnúcleo o asignatura</h5>
+        <div class="row">
+          <div class="col-12 col-md-3">
+            <label for="campusIds">Sede</label>
+            <p-multiSelect
+              id="campusIds"
+              [options]="campus"
+              formControlName="campusIds"
+              placeholder="Seleccione Sede"
+              [filter]="true"
+              filterBy="catalogItemName"
+              optionLabel="catalogItemName"
+            >
+            </p-multiSelect>
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['campusIds']?.touched &&
+                formSubjectGuideFormControls['campusIds']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="facultyIds">Facultad</label>
+            <p-dropdown
+              [options]="faculties"
+              [group]="false"
+              [filter]="true"
+              placeholder="Seleccione facultad"
+              formControlName="facultyIds"
+              filterBy="catalogItemName"
+              optionLabel="catalogItemName"
+              (onChange)="loadProgramsSyllabus()"
+              (onSelectAllChange)="loadProgramsSyllabus()"
+            >
+              <ng-template let-factulty pTemplate="factulty">
+                <div class="flex align-items-center">
+                  <span>{{ factulty.catalogItemName }}</span>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['facultyIds']?.touched &&
+                formSubjectGuideFormControls['facultyIds']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="programIds">Programa</label>
+            <p-dropdown
+              [options]="programsSubjectGuide"
+              optionLabel="name"
+              placeholder="Seleccione programa"
+              formControlName="programIds"
+              [group]="false"
+              [filter]="true"
+              filterBy="name"
+              optionLabel="name"
+            >
+              <ng-template let-program pTemplate="program">
+                <div class="flex align-items-center">
+                  <span>{{ program.name }}</span>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['programIds']?.touched &&
+                formSubjectGuideFormControls['programIds']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="modalityIds">Modalidad</label>
+            <p-multiSelect
+              id="modalityIds"
+              [options]="modality"
+              optionLabel="catalogItemName"
+              placeholder="Seleccione Modalidad"
+              formControlName="modalityIds"
+            >
+            </p-multiSelect>
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['modalityIds']?.touched &&
+                formSubjectGuideFormControls['modalityIds']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="selectNucleo">Núcleo integrador</label>
+            <input
+              type="text"
+              pInputText
+              [value]="formSubjectGuideFormControls['core'].value"
+              [disabled]="true"
+            />
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="selectSubnucleo">Subnúcleo o asignatura</label>
+            <input
+              type="text"
+              pInputText
+              [value]="formSubjectGuideFormControls['subCore'].value"
+              [disabled]="true"
+            />
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="code">Código</label>
+            <input
+              type="text"
+              pInputText
+              placeholder="0"
+              [value]="formSubjectGuideFormControls['subjectCode'].value"
+              [disabled]="true"
+            />
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="creditNumber">N° Créditos</label>
+            <input
+              type="text"
+              pInputText
+              placeholder="0"
+              [value]="formSubjectGuideFormControls['creditNumber'].value"
+              [disabled]="true"
+            />
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="prerrequisites">Prerrequisitos</label>
+            <input
+              type="text"
+              pInputText
+              placeholder="Escribir"
+              id="prerrequisites"
+              formControlName="prerrequisites"
+              [maxlength]="1000"
+            />
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['prerrequisites']?.touched &&
+                formSubjectGuideFormControls['prerrequisites']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="hourInteractionTeacher">Horas de interacción con el profesor</label>
+            <br />
+            <input
+              type="text"
+              pInputText
+              placeholder="0"
+              [value]="formSubjectGuideFormControls['hourInteractionTeacher'].value"
+              [disabled]="true"
+            />
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="hourSelfWork">Horas de trabajo autónomo</label>
+            <br />
+            <input
+              type="text"
+              pInputText
+              placeholder="0"
+              [value]="formSubjectGuideFormControls['hourSelfWork'].value"
+              [disabled]="true"
+            />
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="rating">Calificación</label>
+            <input
+              type="text"
+              pInputText
+              placeholder="Escribir"
+              id="rating"
+              formControlName="rating"
+              [maxlength]="50"
+            />
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['rating']?.touched &&
+                formSubjectGuideFormControls['rating']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="attendance">Asistencia</label>
+            <input
+              type="text"
+              pInputText
+              placeholder="Escribir"
+              id="attendance"
+              formControlName="attendance"
+              [maxlength]="1000"
+            />
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['attendance']?.touched &&
+                formSubjectGuideFormControls['attendance']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+        </div>
+      </p-card>
+    </div>
+    <div class="row mt-4">
+      <p-card>
+        <h5>2. Datos de impartición</h5>
+        <div class="row">
+          <div class="col-12 col-md-3">
+            <label for="academicPeriod">Periodo académico</label>
+            <input
+              type="text"
+              pInputText
+              placeholder="Escribir"
+              id="academicPeriod"
+              formControlName="academicPeriod"
+              [maxlength]="1000"
+            />
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['academicPeriod']?.touched &&
+                formSubjectGuideFormControls['academicPeriod']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="courseSchedule">Horario del curso</label>
+            <input
+              type="text"
+              pInputText
+              placeholder="Escribir"
+              id="courseSchedule"
+              formControlName="courseSchedule"
+              [maxlength]="1000"
+            />
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['courseSchedule']?.touched &&
+                formSubjectGuideFormControls['courseSchedule']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="modality">Lugar/Modalidad</label>
+            <p-dropdown
+              [options]="modality"
+              [group]="false"
+              [filter]="true"
+              placeholder="Seleccione Modalidad"
+              formControlName="modality"
+              filterBy="catalogItemName"
+              optionLabel="catalogItemName"
+            >
+              <ng-template let-modality pTemplate="modality">
+                <div class="flex align-items-center">
+                  <span>{{ modality.catalogItemName }}</span>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['modality']?.touched &&
+                formSubjectGuideFormControls['modality']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="studentAcademicWork">Trabajo académico del estudiante</label>
+            <input
+              type="text"
+              pInputText
+              id="studentAcademicWork"
+              placeholder="Escribir"
+              id="studentAcademicWork"
+              formControlName="studentAcademicWork"
+              [maxlength]="1000"
+            />
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['studentAcademicWork']?.touched &&
+                formSubjectGuideFormControls['studentAcademicWork']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="hoursFreelanceWork">Horas de trabajo independiente</label>
+            <br />
+            <input
+              type="text"
+              pInputText
+              placeholder="0"
+              id="hoursFreelanceWork"
+              formControlName="hoursFreelanceWork"
+              [maxlength]="1000"
+            />
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['hoursFreelanceWork']?.touched &&
+                formSubjectGuideFormControls['hoursFreelanceWork']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['hoursFreelanceWork']?.touched &&
+                formSubjectGuideFormControls['hoursFreelanceWork']?.hasError('pattern')
+              "
+              >El campo debe contener solo números enteros positivos.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="hoursTeacherDirectWork">Horas de trabajo directo con el profesor</label>
+            <br />
+            <input
+              type="text"
+              pInputText
+              placeholder="0"
+              id="hoursTeacherDirectWork"
+              formControlName="hoursTeacherDirectWork"
+            />
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['hoursTeacherDirectWork']?.touched &&
+                formSubjectGuideFormControls['hoursTeacherDirectWork']?.hasError('required')
+              "
+            >
+              Campo requerido.
+            </small>
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['hoursTeacherDirectWork']?.touched &&
+                formSubjectGuideFormControls['hoursTeacherDirectWork']?.hasError('pattern')
+              "
+              >El campo debe contener solo números enteros positivos.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="syncAsyncWork">Trabajo síncróno y asíncrono</label>
+              <textarea
+                id="syncAsyncWork"
+                rows="3"
+                style="resize: auto"
+                class="w-100"
+                pInputTextarea
+                placeholder="Escribir"
+                [readOnly]="false"
+                formControlName="syncAsyncWork"
+                [maxlength]="1000"
+              ></textarea>
+              <small
+                class="error"
+                *ngIf="
+                  formSubjectGuideFormControls['syncAsyncWork']?.touched &&
+                  formSubjectGuideFormControls['syncAsyncWork']?.hasError('required')
+                "
+                >Campo requerido.
+              </small>
+            </span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>3. Información del profesor</h5>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <label for="teacherName">Nombre</label>
+            <input
+              type="text"
+              pInputText
+              placeholder="Escribir"
+              id="teacherName"
+              formControlName="teacherName"
+              [maxlength]="200"
+            />
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['teacherName']?.touched &&
+                formSubjectGuideFormControls['teacherName']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="teacherEmail">E-mail</label>
+            <input
+              type="text"
+              pInputText
+              placeholder="Escribir"
+              id="teacherEmail"
+              formControlName="teacherEmail"
+              [maxlength]="200"
+            />
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['teacherEmail']?.touched &&
+                formSubjectGuideFormControls['teacherEmail']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="teacherScheduleOperation">Horario de atención a estudiante</label>
+            <input
+              type="text"
+              pInputText
+              placeholder="Escribir"
+              id="teacherScheduleOperation"
+              formControlName="teacherScheduleOperation"
+              [maxlength]="200"
+            />
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['teacherScheduleOperation']?.touched &&
+                formSubjectGuideFormControls['teacherScheduleOperation']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="teacherProfile">Perfil</label>
+              <textarea
+                id="teacherProfile"
+                rows="3"
+                style="resize: auto"
+                class="w-100"
+                pInputTextarea
+                placeholder="Escribir"
+                [readOnly]="false"
+                formControlName="teacherProfile"
+                [maxlength]="1000"
+              ></textarea>
+              <small
+                class="error"
+                *ngIf="
+                  formSubjectGuideFormControls['teacherProfile']?.touched &&
+                  formSubjectGuideFormControls['teacherProfile']?.hasError('required')
+                "
+                >Campo requerido.
+              </small>
+            </span>
+          </div>
+        </div>
+
+        <h5 class="mt-4 h5-subtittle">3.1 Monitor académico</h5>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <label for="monitorName">Nombre</label>
+            <input
+              type="text"
+              pInputText
+              placeholder="Escribir"
+              id="monitorName"
+              formControlName="monitorName"
+              [maxlength]="200"
+            />
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['monitorName']?.touched &&
+                formSubjectGuideFormControls['monitorName']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="monitorEmail">E-mail</label>
+            <input
+              type="text"
+              pInputText
+              placeholder="Escribir"
+              id="monitorEmail"
+              formControlName="monitorEmail"
+              [maxlength]="200"
+            />
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['monitorEmail']?.touched &&
+                formSubjectGuideFormControls['monitorEmail']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="monitorScheduleOperation">Horario de atención a estudiante</label>
+            <input
+              type="text"
+              pInputText
+              placeholder="Escribir"
+              id="monitorScheduleOperation"
+              formControlName="monitorScheduleOperation"
+              [maxlength]="1000"
+            />
+            <small
+              class="error"
+              *ngIf="
+                formSubjectGuideFormControls['monitorScheduleOperation']?.touched &&
+                formSubjectGuideFormControls['monitorScheduleOperation']?.hasError('required')
+              "
+              >Campo requerido.</small
+            >
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>4. Información particular del núcleo integrador y subnúcleo o asignatura</h5>
+        <div class="row">
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="coreConformation"
+                >4.1 Contexto y conformación del núcleo integrador en el marco de la estructura
+                curricular propuesta</label
+              >
+              <textarea
+                id="coreConformation"
+                rows="3"
+                style="resize: auto"
+                class="w-100"
+                pInputTextarea
+                placeholder="Escribir"
+                [readOnly]="false"
+                formControlName="coreConformation"
+                [maxlength]="1000"
+              ></textarea>
+              <small
+                class="error"
+                *ngIf="
+                  formSubjectGuideFormControls['coreConformation']?.touched &&
+                  formSubjectGuideFormControls['coreConformation']?.hasError('required')
+                "
+                >Campo requerido.
+              </small>
+            </span>
+          </div>
+
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="coreContext"
+                >4.2 Contexto subnúcleo o asignatura dentro de la estructura curricular</label
+              >
+              <textarea
+                id="coreContext"
+                rows="3"
+                style="resize: auto"
+                class="w-100"
+                pInputTextarea
+                placeholder="Escribir"
+                [readOnly]="false"
+                formControlName="coreContext"
+                [maxlength]="1000"
+              ></textarea>
+              <small
+                class="error"
+                *ngIf="
+                  formSubjectGuideFormControls['coreContext']?.touched &&
+                  formSubjectGuideFormControls['coreContext']?.hasError('required')
+                "
+                >Campo requerido.
+              </small>
+            </span>
+          </div>
+
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="coreDescription"
+                >4.3 Descripción general del subnúcleo o asignatura</label
+              >
+              <textarea
+                id="coreDescription"
+                rows="3"
+                style="resize: auto"
+                class="w-100"
+                pInputTextarea
+                placeholder="Escribir"
+                [readOnly]="false"
+                formControlName="coreDescription"
+                [maxlength]="1000"
+              ></textarea>
+              <small
+                class="error"
+                *ngIf="
+                  formSubjectGuideFormControls['coreDescription']?.touched &&
+                  formSubjectGuideFormControls['coreDescription']?.hasError('required')
+                "
+                >Campo requerido.
+              </small>
+            </span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>5. Resultado de aprendizaje esperado</h5>
+        <div class="row">
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="learningGeneral">Globales</label>
+              <textarea
+                id="learningGeneral"
+                rows="3"
+                style="resize: auto"
+                class="w-100"
+                pInputTextarea
+                placeholder="Escribir"
+                [readOnly]="false"
+                formControlName="learningGeneral"
+                [maxlength]="1000"
+              ></textarea>
+              <small
+                class="error"
+                *ngIf="
+                  formSubjectGuideFormControls['learningGeneral']?.touched &&
+                  formSubjectGuideFormControls['learningGeneral']?.hasError('required')
+                "
+                >Campo requerido.
+              </small>
+            </span>
+          </div>
+
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="learningSpecific">Específicos</label>
+              <textarea
+                id="learningSpecific"
+                rows="3"
+                style="resize: auto"
+                class="w-100"
+                pInputTextarea
+                placeholder="Escribir"
+                [readOnly]="false"
+                formControlName="learningSpecific"
+                [maxlength]="1000"
+              ></textarea>
+              <small
+                class="error"
+                *ngIf="
+                  formSubjectGuideFormControls['learningSpecific']?.touched &&
+                  formSubjectGuideFormControls['learningSpecific']?.hasError('required')
+                "
+                >Campo requerido.
+              </small>
+            </span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>6. Estrategias pedagógicas y didácticas</h5>
+        <div class="row">
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <textarea
+                id="strategies"
+                rows="3"
+                style="resize: auto"
+                class="w-100"
+                pInputTextarea
+                placeholder="Escribir"
+                [readOnly]="false"
+                formControlName="strategies"
+                [maxlength]="1000"
+              ></textarea>
+              <small
+                class="error"
+                *ngIf="
+                  formSubjectGuideFormControls['strategies']?.touched &&
+                  formSubjectGuideFormControls['strategies']?.hasError('required')
+                "
+                >Campo requerido.
+              </small>
+            </span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>7. Contenidos generales</h5>
+        <div class="row">
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <textarea
+                id="generalContent"
+                rows="3"
+                style="resize: auto"
+                class="w-100"
+                pInputTextarea
+                placeholder="Escribir"
+                [readOnly]="false"
+                formControlName="generalContent"
+                [maxlength]="1000"
+              ></textarea>
+              <small
+                class="error"
+                *ngIf="
+                  formSubjectGuideFormControls['generalContent']?.touched &&
+                  formSubjectGuideFormControls['generalContent']?.hasError('required')
+                "
+                >Campo requerido.
+              </small>
+            </span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>8. Estrategias y mecanismos de evaluación</h5>
+        <div class="row">
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="evaluationDescription">8.1 Descripción</label>
+              <textarea
+                id="evaluationDescription"
+                rows="3"
+                style="resize: auto"
+                class="w-100"
+                pInputTextarea
+                placeholder="Escribir"
+                [readOnly]="false"
+                formControlName="evaluationDescription"
+                [maxlength]="1000"
+              ></textarea>
+              <small
+                class="error"
+                *ngIf="
+                  formSubjectGuideFormControls['evaluationDescription']?.touched &&
+                  formSubjectGuideFormControls['evaluationDescription']?.hasError('required')
+                "
+                >Campo requerido.
+              </small>
+            </span>
+          </div>
+
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="evaluationSystem">8.2 Sistema de calificaciones</label>
+              <textarea
+                id="evaluationSystem"
+                rows="3"
+                style="resize: auto"
+                class="w-100"
+                pInputTextarea
+                placeholder="Escribir"
+                [readOnly]="false"
+                formControlName="evaluationSystem"
+                [maxlength]="1000"
+              ></textarea>
+              <small
+                class="error"
+                *ngIf="
+                  formSubjectGuideFormControls['evaluationSystem']?.touched &&
+                  formSubjectGuideFormControls['evaluationSystem']?.hasError('required')
+                "
+                >Campo requerido.
+              </small>
+            </span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>9. Bibliografía</h5>
+        <div class="row">
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="bibliographyBasic">9.1 Básica</label>
+              <textarea
+                id="bibliographyBasic"
+                rows="3"
+                style="resize: auto"
+                class="w-100"
+                pInputTextarea
+                placeholder="Escribir"
+                [readOnly]="false"
+                formControlName="bibliographyBasic"
+                [maxlength]="1000"
+              ></textarea>
+              <small
+                class="error"
+                *ngIf="
+                  formSubjectGuideFormControls['bibliographyBasic']?.touched &&
+                  formSubjectGuideFormControls['bibliographyBasic']?.hasError('required')
+                "
+                >Campo requerido.
+              </small>
+            </span>
+          </div>
+
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="bibliographyLanguage">9.2 En otros idiomas</label>
+              <textarea
+                id="bibliographyLanguage"
+                rows="3"
+                style="resize: auto"
+                class="w-100"
+                pInputTextarea
+                placeholder="Escribir"
+                [readOnly]="false"
+                formControlName="bibliographyLanguage"
+                [maxlength]="1000"
+              ></textarea>
+              <small
+                class="error"
+                *ngIf="
+                  formSubjectGuideFormControls['bibliographyLanguage']?.touched &&
+                  formSubjectGuideFormControls['bibliographyLanguage']?.hasError('required')
+                "
+                >Campo requerido.
+              </small>
+            </span>
+          </div>
+
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="bibliographyWeb">9.3 Cibergráfica</label>
+              <textarea
+                id="bibliographyWeb"
+                rows="3"
+                style="resize: auto"
+                class="w-100"
+                pInputTextarea
+                placeholder="Escribir"
+                [readOnly]="false"
+                formControlName="bibliographyWeb"
+                [maxlength]="1000"
+              ></textarea>
+              <small
+                class="error"
+                *ngIf="
+                  formSubjectGuideFormControls['bibliographyWeb']?.touched &&
+                  formSubjectGuideFormControls['bibliographyWeb']?.hasError('required')
+                "
+                >Campo requerido.
+              </small>
+            </span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </form>
+</div>
+
+<!-- Ver información Formulario de Guias de asignatura -->
+<div class="mt-2" *ngIf="isView === true">
+  <form [formGroup]="formSubjectGuide">
+    <div class="row mt-4">
+      <p-card>
+        <div class="row">
+          <div class="col-12 col-md-4">
+            <label for="guideCode">Código</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['guideCode'].value }} </span>
+            </p>
+          </div>
+          <div class="col-12 col-md-4">
+            <label for="approvedDate" class="w-100">Fecha de aprobación</label>
+            <p>
+              <span>
+                {{
+                  (formSubjectGuideFormControls['approvedDate'].value | date: 'dd/MM/yyyy') ?? '--'
+                }}
+              </span>
+            </p>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <label for="selectNucleo">Núcleo integrador</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['core'].value }} </span>
+            </p>
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="selectSubnucleo">Subnúcleo o asignatura</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['subCore'].value }} </span>
+            </p>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>1. Información general del subnúcleo o asignatura</h5>
+        <div class="row">
+          <div class="col-12 col-md-3">
+            <label for="campusIds">Sede</label>
+            <p>
+              <span> {{ getNamesByFormFieldArray('campusIds') }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="facultyIds">Facultad</label>
+            <p>
+              <span> {{ getCatalogItemName('facultyIds') }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="programIds">Programa</label>
+            <p>
+              <span> {{ getProgramName('programIds') }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="modalityIds">Modalidad</label>
+            <p>
+              <span> {{ getNamesByFormFieldArray('modalityIds') }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="selectNucleo">Núcleo integrador</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['core'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="selectSubnucleo">Subnúcleo o asignatura</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['subCore'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="code">Código</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['subjectCode'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="creditNumber">N° Créditos</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['creditNumber'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="prerrequisites">Prerrequisitos</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['prerrequisites'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="hourInteractionTeacher">Horas de interacción con el profesor</label>
+            <br />
+            <p>
+              <span> {{ formSubjectGuideFormControls['hourInteractionTeacher'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="hourSelfWork">Horas de trabajo autónomo</label>
+            <br />
+            <p>
+              <span> {{ formSubjectGuideFormControls['hourSelfWork'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="rating">Calificación</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['rating'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="attendance">Asistencia</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['attendance'].value }} </span>
+            </p>
+          </div>
+        </div>
+      </p-card>
+    </div>
+    <div class="row mt-4">
+      <p-card>
+        <h5>2. Datos de impartición</h5>
+        <div class="row">
+          <div class="col-12 col-md-3">
+            <label for="academicPeriod">Periodo académico</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['academicPeriod'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="courseSchedule">Horario del curso</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['courseSchedule'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="modality">Lugar/Modalidad</label>
+            <p>
+              <span> {{ getCatalogItemName('modality') }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="studentAcademicWork">Trabajo académico del estudiante</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['studentAcademicWork'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="hoursFreelanceWork">Horas de trabajo independiente</label>
+            <br />
+            <p>
+              <span> {{ formSubjectGuideFormControls['hoursFreelanceWork'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label for="hoursTeacherDirectWork">Horas de trabajo directo con el profesor</label>
+            <br />
+            <p>
+              <span> {{ formSubjectGuideFormControls['hoursTeacherDirectWork'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="syncAsyncWork">Trabajo síncrono y asíncrono</label>
+              <p>
+                <span> {{ formSubjectGuideFormControls['syncAsyncWork'].value }} </span>
+              </p>
+            </span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>3. Información del profesor</h5>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <label for="teacherName">Nombre</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['teacherName'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="teacherEmail">E-mail</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['teacherEmail'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="teacherScheduleOperation">Horario de atención a estudiante</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['teacherScheduleOperation'].value }} </span>
+            </p>
+          </div>
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="teacherProfile">Perfil</label>
+              <p>
+                <span> {{ formSubjectGuideFormControls['teacherProfile'].value }} </span>
+              </p>
+            </span>
+          </div>
+        </div>
+
+        <h6 class="mt-4">3.1 Monitor académico</h6>
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <label for="monitorName">Nombre</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['monitorName'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="monitorEmail">E-mail</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['monitorEmail'].value }} </span>
+            </p>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label for="monitorScheduleOperation">Horario de atención a estudiante</label>
+            <p>
+              <span> {{ formSubjectGuideFormControls['monitorScheduleOperation'].value }} </span>
+            </p>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>4. Información particular del núcleo integrador y subnúcleo o asignatura</h5>
+        <div class="row">
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="coreConformation"
+                >4.1 Contexto y conformación del núcleo integrador en el marco de la estructura
+                curricular propuesta</label
+              >
+              <p>
+                <span> {{ formSubjectGuideFormControls['coreConformation'].value }} </span>
+              </p>
+            </span>
+          </div>
+
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="coreContext"
+                >4.2 Contexto subnúcleo o asignatura dentro de la estructura curricular</label
+              >
+              <p>
+                <span> {{ formSubjectGuideFormControls['coreContext'].value }} </span>
+              </p>
+            </span>
+          </div>
+
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="coreDescription"
+                >4.3 Descripción general del subnúcleo o asignatura</label
+              >
+              <p>
+                <span> {{ formSubjectGuideFormControls['coreDescription'].value }} </span>
+              </p>
+            </span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>5. Resultado de aprendizaje esperado</h5>
+        <div class="row">
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="learningGeneral">Globales</label>
+              <p>
+                <span> {{ formSubjectGuideFormControls['learningGeneral'].value }} </span>
+              </p>
+            </span>
+          </div>
+
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="learningSpecific">Específicos</label>
+              <p>
+                <span> {{ formSubjectGuideFormControls['learningSpecific'].value }} </span>
+              </p>
+            </span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>6. Estrategias pedagógicas y didácticas</h5>
+        <div class="row">
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <p>
+                <span> {{ formSubjectGuideFormControls['strategies'].value }} </span>
+              </p>
+            </span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>7. Contenido generales</h5>
+        <div class="row">
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <p>
+                <span> {{ formSubjectGuideFormControls['generalContent'].value }} </span>
+              </p>
+            </span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>8. Estrategias y mecanismos de evaluación</h5>
+        <div class="row">
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="evaluationDescription">8.1 Descripción</label>
+              <p>
+                <span> {{ formSubjectGuideFormControls['evaluationDescription'].value }} </span>
+              </p>
+            </span>
+          </div>
+
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="evaluationSystem">8.2 Sistema de calificaciones</label>
+              <p>
+                <span> {{ formSubjectGuideFormControls['evaluationSystem'].value }} </span>
+              </p>
+            </span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="row mt-4">
+      <p-card>
+        <h5>9. Bibliografía</h5>
+        <div class="row">
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="bibliographyBasic">9.1 Básica</label>
+              <p>
+                <span> {{ formSubjectGuideFormControls['bibliographyBasic'].value }} </span>
+              </p>
+            </span>
+          </div>
+
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="bibliographyLanguage">9.2 En otros idiomas</label>
+              <p>
+                <span> {{ formSubjectGuideFormControls['bibliographyLanguage'].value }} </span>
+              </p>
+            </span>
+          </div>
+
+          <div class="col-12 col-md-12">
+            <span class="p-insite-label">
+              <label for="bibliographyWeb">9.3 Cibergrafíca</label>
+              <p>
+                <span> {{ formSubjectGuideFormControls['bibliographyWeb'].value }} </span>
+              </p>
+            </span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </form>
+</div>
+
+<div class="row mt-4">
+  <p-card>
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <h5>10. Plan de actividades</h5>
+      </div>
+      <div class="col-12 col-md-12 text-end" *ngIf="role === roleType.DOCENTE_BASICO">
+        <button pButton pRipple class="btn btn-primary" (click)="openOptActivityGuide()">
+          Añadir actividad
+        </button>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <p-table [value]="activityRequestList">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="action-center">Fecha</th>
+            <th class="action-center">Resultado de aprendizaje</th>
+            <th class="action-center">Temática</th>
+            <th class="action-center">Actividades síncronas</th>
+            <th class="action-center">Actividades previas y posteriores</th>
+            <th class="action-center">Estrategias pedagógicas y evaluativas</th>
+            <th class="action-center">Link</th>
+            <th class="action-center" *ngIf="role === roleType.DOCENTE_BASICO">Acciónes</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product let-i="rowIndex">
+          <tr>
+            <td class="text-center">
+              {{ (product?.activityDate | date: 'dd/MM/yyyy') ?? '--' }}
+            </td>
+            <td class="text-center">{{ product?.result }}</td>
+            <td class="text-center">{{ product?.topic }}</td>
+            <td class="text-center">{{ product?.syncActivities }}</td>
+            <td class="text-center">{{ product?.previusActivities }}</td>
+            <td class="text-center">{{ product?.strategies }}</td>
+            <td>
+              <a class="color-url-link" [href]="product?.url" target="_blank">{{ product?.url }}</a>
+            </td>
+
+            <td *ngIf="role === roleType.DOCENTE_BASICO && product.canUpdate === true">
+              <div>
+                <button class="status close-modal" (click)="deleteActivityGuideRequest(product, i)">
+                  <span class="pi pi-trash" style="color: hsl(0, 97%, 41%)"></span>
+                </button>
+
+                <button
+                  *ngIf="product?.subjectActivityId !== 0 && product?.canUpdate"
+                  class="status close-modal"
+                  (click)="openEditAddActivityGuide(product)"
+                >
+                  <span class="pi pi-check-square" style="color: #fece04"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </p-card>
+</div>
+
+<div
+  class="row mt-4"
+  *ngIf="
+    (typeAction === 1 || typeAction === 2 || typeAction === 6) &&
+    role === roleType.DOCENTE_COORDINADOR
+  "
+>
+  <div class="col-12 col-md-12">
+    <div class="text-center">
+      <button class="btn btn-primary x-2" (click)="createUpdateSubjetGuide()">
+        {{ typeAction === 2 || typeAction === 6 ? 'Guardar' : 'Crear' }} guía de asignatura
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  class="row mt-4"
+  *ngIf="typeAction === 4 && role === roleType.DIRECTOR && this.subjectGuideData"
+>
+  <div class="col-12 col-md-12">
+    <div class="text-center">
+      <button
+        pButton
+        pRipple
+        class="btn btn-requested mx-1"
+        (click)="evaluatedSubjectGuide('completeness')"
+      >
+        <span class="pi pi-minus mx-1"></span> En Completitud
+      </button>
+      <button
+        pButton
+        pRipple
+        class="btn btn-approved mx-1"
+        (click)="evaluatedSubjectGuide('approved')"
+      >
+        <span class="pi pi-check"></span> Aprobado
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4" *ngIf="typeAction === 3 || typeAction === 5">
+  <div class="col-12 col-md-12">
+    <div class="text-center" *ngIf="role === roleType.DOCENTE_BASICO">
+      <button class="btn btn-warning mx-1" (click)="evaluatedActivity('review')">
+        Enviar a revisión
+      </button>
+    </div>
+    <div class="text-center" *ngIf="role === roleType.DIRECTOR">
+      <button class="btn btn-requested mx-1" (click)="evaluatedActivity('completeness')">
+        <span class="pi pi-minus mx-1"></span> En Completitud
+      </button>
+      <button class="btn btn-approved mx-1" (click)="evaluatedActivity('approved')">
+        <span class="pi pi-check"></span> Aprobado
+      </button>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  [modal]="true"
+  [closable]="true"
+  (close)="closeAddActivity()"
+  [header]="'Evento'"
+  [(visible)]="visibleAddActivity"
+  [style]="{ width: '80%' }"
+>
+  <form [formGroup]="formAddActivityGuide">
+    <div class="row mt-2">
+      <div class="col-12 col-md-2">
+        <label for="session">Sesión</label>
+        <input type="text" pInputText placeholder="0" formControlName="session" />
+        <small
+          class="error"
+          *ngIf="
+            formAddActivityGuide.controls['session']?.touched &&
+            formAddActivityGuide.controls['session']?.hasError('required')
+          "
+          >Campo requerido.</small
+        >
+        <small
+          class="error"
+          *ngIf="
+            formAddActivityGuide.controls['session']?.touched &&
+            formAddActivityGuide.controls['session']?.hasError('pattern')
+          "
+          >El campo debe contener solo números enteros positivos.</small
+        >
+      </div>
+
+      <div class="col-12 col-md-4">
+        <label for="activityDate" class="w-100">Fecha de aprobación</label>
+        <p-calendar formControlName="activityDate" dateFormat="yy-mm-dd" class="w-100"></p-calendar>
+        <small
+          class="error"
+          *ngIf="
+            formAddActivityGuide.controls['activityDate']?.touched &&
+            formAddActivityGuide.controls['activityDate']?.hasError('required')
+          "
+          >Campo requerido.</small
+        >
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label for="result">Resultado de aprendizaje</label>
+        <input
+          type="text"
+          pInputText
+          placeholder="Escribir"
+          formControlName="result"
+          [maxlength]="1000"
+        />
+        <small
+          class="error"
+          *ngIf="
+            formAddActivityGuide.controls['result']?.touched &&
+            formAddActivityGuide.controls['result']?.hasError('required')
+          "
+          >Campo requerido.</small
+        >
+      </div>
+
+      <div class="col-12 col-md-6">
+        <span class="p-insite-label">
+          <label for="topic">Temática</label>
+          <textarea
+            id="topic"
+            rows="2"
+            style="resize: auto"
+            class="w-100"
+            pInputTextarea
+            placeholder="Escribir"
+            [readOnly]="false"
+            formControlName="topic"
+            [maxlength]="1000"
+          ></textarea>
+          <small
+            class="error"
+            *ngIf="
+              formAddActivityGuide.controls['topic']?.touched &&
+              formAddActivityGuide.controls['topic']?.hasError('required')
+            "
+            >Campo requerido.</small
+          >
+        </span>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <span class="p-insite-label">
+          <label for="syncActivities">Actividades síncronas</label>
+          <textarea
+            id="syncActivities"
+            rows="2"
+            style="resize: auto"
+            class="w-100"
+            pInputTextarea
+            placeholder="Escribir"
+            [readOnly]="false"
+            formControlName="syncActivities"
+            [maxlength]="1000"
+          ></textarea>
+          <small
+            class="error"
+            *ngIf="
+              formAddActivityGuide.controls['syncActivities']?.touched &&
+              formAddActivityGuide.controls['syncActivities']?.hasError('required')
+            "
+            >Campo requerido.</small
+          >
+        </span>
+      </div>
+
+      <div class="col-12 col-md-12">
+        <span class="p-insite-label">
+          <label for="previusActivities">Actividades previas o posteriores</label>
+          <textarea
+            id="previusActivities"
+            rows="3"
+            style="resize: auto"
+            class="w-100"
+            pInputTextarea
+            placeholder="Escribir"
+            [readOnly]="false"
+            formControlName="previusActivities"
+            [maxlength]="1000"
+          ></textarea>
+          <small
+            class="error"
+            *ngIf="
+              formAddActivityGuide.controls['previusActivities']?.touched &&
+              formAddActivityGuide.controls['previusActivities']?.hasError('required')
+            "
+            >Campo requerido.</small
+          >
+        </span>
+      </div>
+
+      <div class="col-12 col-md-12">
+        <span class="p-insite-label">
+          <label for="strategies">Estrategias pedagógicas y evaluativas</label>
+          <textarea
+            id="strategies"
+            rows="3"
+            style="resize: auto"
+            class="w-100"
+            pInputTextarea
+            placeholder="Escribir"
+            [readOnly]="false"
+            formControlName="strategies"
+            [maxlength]="1000"
+          ></textarea>
+          <small
+            class="error"
+            *ngIf="
+              formAddActivityGuide.controls['strategies']?.touched &&
+              formAddActivityGuide.controls['strategies']?.hasError('required')
+            "
+            >Campo requerido.</small
+          >
+        </span>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label for="url">Link moddle</label>
+        <input
+          type="text"
+          pInputText
+          placeholder="Escribir"
+          placeholder="Escribir"
+          formControlName="url"
+          [maxlength]="300"
+        />
+        <small
+          class="error"
+          *ngIf="
+            formAddActivityGuide.controls['url']?.touched &&
+            formAddActivityGuide.controls['url']?.hasError('required')
+          "
+          >Campo requerido.</small
+        >
+      </div>
+
+      <div class="col-12 col-md-12 mt-4">
+        <div class="text-center">
+          <button class="btn btn-primary" (click)="saveAddActivityRequest()">
+            {{
+              formAddActivityGuide.controls['subjectActivityId'].value === 0 ? 'Agregar' : 'Guardar'
+            }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</p-dialog>
+
+<!--Modal create activity-->
+<p-dialog
+  [closable]="true"
+  header="Añadir actividad"
+  (close)="closeOptActivityGuide()"
+  [(visible)]="visibleOptActivity"
+  [style]="{ width: '40vw' }"
+  [modal]="true"
+>
+  <div>
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <p-radioButton
+          name="createProgram"
+          value="1"
+          [(ngModel)]="typeActivity"
+          (onClick)="closeOptActivityGuide('1')"
+        ></p-radioButton>
+        <label for="opc1" class="ms-2">Actividad nueva</label>
+      </div>
+      <div class="col-12 col-md-6">
+        <p-radioButton
+          name="createRenewal"
+          value="2"
+          [(ngModel)]="typeActivity"
+          (onClick)="closeOptActivityGuide('2')"
+        ></p-radioButton>
+        <label for="opc2" class="ms-2">Actividad existente</label>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<!--Modal create activity-->
+<p-dialog
+  [closable]="true"
+  header="Añadir actividad"
+  (close)="closeAddExistActivity()"
+  [(visible)]="visibleAddExistActivity"
+  [style]="{ width: '90vw' }"
+  [modal]="true"
+>
+  <div class="row">
+    <div class="col-12 col-md-12 text-end">
+      <button pButton pRipple class="btn btn-primary" (click)="saveAddExistActivity()">
+        Añadir
+      </button>
+    </div>
+  </div>
+  <div class="row mt-2">
+    <p-table [value]="activityPassList">
+      <ng-template pTemplate="header">
+        <tr>
+          <th></th>
+          <th>Nombre actividad</th>
+          <th class="action-center">Fecha de creación</th>
+          <th class="action-center">Link</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-product let-i="rowIndex">
+        <tr>
+          <td>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" [(ngModel)]="product.check" />
+            </div>
+          </td>
+          <td>{{ product?.result }}</td>
+          <td class="text-center">
+            {{ (product?.activityDate | date: 'dd/MM/yyyy') ?? '--' }}
+          </td>
+          <td>
+            <input type="text" class="color-url-link" pInputText [(ngModel)]="product.url" />
+            <br />
+            <small
+              class="error"
+              *ngIf="product.check === true && (!product.url || product.url === '')"
+              >Campo requerido.</small
+            >
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <div class="row mt-2" *ngIf="activityPassList.length === 0">
+      <div class="text-center">No se encontraron resultados...</div>
+    </div>
+  </div>
+</p-dialog>

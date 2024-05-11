@@ -1,0 +1,19 @@
+@import '../../../../assets/styles/abstracts/variables';
+.quantity-levels {
+  font-size: 20px;
+  font-family: $font-medium;
+  margin: 0 10px;
+}
+
+.levels {
+  margin-top: 5px;
+}
+
+.close-modal {
+  background-color: $color-jelly-bean-blue;
+  color: $color-white;
+  border: 0;
+  position: absolute;
+  right: 9px;
+  top: 9px;
+}

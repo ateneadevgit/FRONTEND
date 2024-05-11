@@ -1,0 +1,131 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="row">
+  <div class="p-d-flex p-ai-center">
+    <h2 class="title-page">Noticias</h2>
+  </div>
+</div>
+
+<div class="row mt-2">
+  <div class="col-12">
+    <h5>Nueva Noticia</h5>
+  </div>
+</div>
+
+<div class="row mt-2">
+  <div class="col-12 col-md-7 border-new">
+    <div class="col-md-6">
+      <label htmlFor="username">Lugar de desarrollo</label>
+      <div class="multi-select flex justify-content-center">
+        <p-multiSelect
+          [options]="campus"
+          [(ngModel)]="selectCampus"
+          placeholder="Seleccione"
+          display="chip"
+          [filter]="true"
+          optionLabel="catalogItemName"
+        >
+        </p-multiSelect>
+      </div>
+    </div>
+
+    <div class="col-md-11 mt-2">
+      <label for="levelFormationCredits">Título de noticia</label>
+      <input
+        type="text"
+        pInputText
+        placeholder="Título de noticia"
+        id="title"
+        [(ngModel)]="this.createNew.tittle"
+      />
+    </div>
+
+    <div class="col-md-11 mt-2">
+      <label htmlFor="username">Portada de noticia</label>
+      <br />
+      <label for="archivo" (click)="visiblePortadaModal = true" class="btn">Importar imagen</label>
+    </div>
+
+    <div class="col-md-11 mt-2">
+      <div class="">
+        <div class="image" class="mt-1">
+          <img
+            [src]="this.createNew.cover"
+            alt="logo"
+            *ngIf="this.createNew.cover"
+            class="image-cropper-portada"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12 mt-3">
+      <label htmlFor="username">Adjunto de imagen</label>
+      <br />
+      <label for="archivo" (click)="visibleAddImagesModal = true" class="btn"
+        >Importar imagen</label
+      >
+    </div>
+
+    <div class="col-md-12 mt-2">
+      <div class="row">
+        <div class="col-md-4" *ngFor="let item of this.createNew.images; let i = index">
+          <div class="image" class="mt-1">
+            <button class="status close-modal" (click)="deleteImage(i)">
+              <span class="pi pi-trash icon-delete"></span>
+            </button>
+            <img [src]="item" alt="logo" class="image-cropper-portada" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-11 mt-3">
+      <label htmlFor="username">Noticia</label>
+    </div>
+
+    <div class="col-md-12 mt-1">
+      <div class="col-md-11">
+        <div class="card-html">
+          <app-editor
+            (createHtml)="createHtml($event)"
+            [htmlText]="this.createNew.content"
+          ></app-editor>
+        </div>
+        <small class="error" *ngIf="(this.createNew.content || '').length > lengthContent"
+          >El texto límite permitido es de {{ lengthContent }} caracteres.</small
+        >
+      </div>
+    </div>
+
+    <div class="col-md-12 mt-4">
+      <div class="row d-flex justify-content-center">
+        <div class="col-auto">
+          <button class="btn send" (click)="saveNew()" *ngIf="!isEdit">Crear noticia</button>
+          <button class="btn send" (click)="saveNew()" *ngIf="isEdit">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-5">
+    <app-view-new [newObject]="createNew"></app-view-new>
+  </div>
+</div>
+
+<app-crop-image
+  [visible]="visiblePortadaModal"
+  [aspectRatio]="10 / 3"
+  (imageUrl)="imageUrlPortada($event)"
+  *ngIf="visiblePortadaModal === true"
+>
+</app-crop-image>
+
+<app-crop-image
+  [visible]="visibleAddImagesModal"
+  [aspectRatio]="6 / 6"
+  (imageUrl)="imageUrlAddImages($event)"
+  [maintainAspectRatio]="false"
+  *ngIf="visibleAddImagesModal === true"
+>
+</app-crop-image>

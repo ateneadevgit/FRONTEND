@@ -1,0 +1,64 @@
+<!-- eslint-disable @angular-eslint/template/alt-text -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div *ngIf="currentNif">
+  <div class="card">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h6>Resultados de aprendizaje generales institucionales</h6>
+        </div>
+
+        <div class="col-md-6 mt-2">
+          <label htmlFor="username">Descripción</label>
+          <br />
+          <div class="card-html">
+            <app-editor
+              (createHtml)="createHtml($event)"
+              [htmlText]="currentNif.content"
+            ></app-editor>
+          </div>
+        </div>
+
+        <div class="col-md-6 mt-2">
+          <label htmlFor="username">Imagen principal</label>
+          <br />
+          <div class="card">
+            <ngx-file-drop
+              accept="image/*"
+              [multiple]="false"
+              contentClassName="text-center"
+              browseBtnClassName="btn card"
+              (onFileDrop)="dropped($event, currentNif)"
+            >
+              <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                <h3 for="archivo" (click)="openFileSelector()" class="btn mt-4">
+                  Seleccione o arrastre la imagen
+                </h3>
+                <p>Recuerde utilizar imágenes o fotografías de dominio público</p>
+              </ng-template>
+            </ngx-file-drop>
+          </div>
+
+          <div class="card" *ngIf="getString(currentNif?.image1)">
+            <p-image [src]="currentNif.image1" alt="Image" width="50%"></p-image>
+          </div>
+        </div>
+
+        <div class="col-md-12 text-end mt-2" (click)="createUpdateNif()">
+          <button pButton pRipple class="btn btn-primary">
+            {{ currentNif.nifsId ? 'Guardar' : 'Crear' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-crop-image
+  [visible]="visiblePortadaModal"
+  [aspectRatio]="6 / 6"
+  (imageUrl)="imageUrlPortada($event)"
+  [maintainAspectRatio]="false"
+>
+</app-crop-image>

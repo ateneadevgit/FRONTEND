@@ -1,0 +1,133 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="row">
+  <div class="p-d-flex p-ai-center">
+    <h2 class="title-page">
+      <span class="pi pi pi-copy" style="font-size: 1.7rem"></span>Noticias
+    </h2>
+    <p>Manténgase informado con las últimas novedades y eventos de la universidad..</p>
+    <hr class="w-25" />
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-3">
+    <label htmlFor="username">Lugar de desarrollo</label>
+    <div class="multi-select flex justify-content-center">
+      <p-multiSelect
+        [showToggleAll]="true"
+        [options]="campus"
+        [(ngModel)]="selectCampus"
+        placeholder="Seleccione"
+        [group]="false"
+        display="chip"
+        [filter]="true"
+        optionLabel="catalogItemName"
+        (ngModelChange)="loadNewUpdateById()"
+      >
+      </p-multiSelect>
+    </div>
+  </div>
+
+  <div class="col-md-9" *ngIf="permisionsRole.includes(role)">
+    <div class="button-action align-bottom">
+      <p-button
+        label="Crear noticia"
+        styleClass="p-button-sm p-button-primary"
+        [routerLink]="routesApp.NEWS + '/' + routesApp.CREATE_UPDATE_NEW"
+      ></p-button>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-2">
+  <div
+    class="{{ i === 0 ? 'col-md-7' : i === 1 ? 'col-md-5' : 'col-md-4' }}"
+    *ngFor="let item of listNew; let i = index"
+  >
+    <div class="card" *ngIf="i === 0 || i === 1">
+      <div class="contenedor">
+        <div class="top-btns-actions" *ngIf="permisionsRole.includes(role)">
+          <div class="row d-flex justify-content-around mt-2">
+            <div class="col-4 d-flex">
+              <button
+                class="status close-modal"
+                [routerLink]="routesApp.NEWS + '/' + routesApp.CREATE_UPDATE_NEW + '/' + item.newId"
+              >
+                <span class="pi pi-check-square icon-edit"></span>
+              </button>
+            </div>
+            <div class="col-4 d-flex">
+              <button class="status close-modal text-end" (click)="deleteNew(item)">
+                <span class="pi pi-trash icon-delete"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="imagen-fondo" [style.background-image]="'url(' + item.cover + ')'"></div>
+        <div class="degradado">
+          <div class="row w-100">
+            <div class="col-8 title-news">
+              <div class="date-news">{{ item.createdAt }}</div>
+              {{ item.tittle }}
+            </div>
+            <div class="col-4 text-end d-flex align-items-center">
+              <a
+                [routerLink]="routesApp.NEWS + '/' + routesApp.VIEW_NEW + '/' + item.newId"
+                class="btn btn-light"
+                >Más información</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" *ngIf="i !== 0 && i !== 1">
+      <div class="contenedor">
+        <div class="top-btns-actions" *ngIf="permisionsRole.includes(role)">
+          <div class="row d-flex justify-content-around mt-2">
+            <div class="col-4 d-flex">
+              <button
+                class="status close-modal"
+                [routerLink]="routesApp.NEWS + '/' + routesApp.CREATE_UPDATE_NEW + '/' + item.newId"
+              >
+                <span class="pi pi-check-square icon-edit"></span>
+              </button>
+            </div>
+            <div class="col-4 d-flex">
+              <button class="status close-modal text-end" (click)="deleteNew(item)">
+                <span class="pi pi-trash icon-delete"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="imagen-fondo" [style.background-image]="'url(' + item.cover + ')'"></div>
+        <div
+          class="footer"
+          [style.backgroundColor]="getColor(i)"
+          *ngIf="item.newId"
+          (click)="navigateToNewsView(item.newId)"
+        >
+          <div class="row w-100">
+            <div class="col-12 title-news">
+              <div class="date-news">{{ item.createdAt }}</div>
+              {{ item.tittle }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-confirmDialog #confirmdialog key="confirm-dialog" [style]="{ width: '50vw' }">
+  <ng-template pTemplate="footer">
+    <button pButton class="btn-secondary" severity="secondary" (click)="confirmdialog.reject()">
+      Cancelar
+    </button>
+    <button pButton class="btn-danger" severity="secondary" (click)="confirmdialog.accept()">
+      Eliminar
+    </button>
+  </ng-template></p-confirmDialog
+>

@@ -1,0 +1,5 @@
+export enum SettingEnum {
+  IMAGE_EXTENSION = 'IMAGE_EXTENSION',
+  FILE_EXTENSION = 'DOC_EXTENSION',
+  FILE_SIZE = 'FILE_SIZE',
+}

@@ -1,0 +1,33 @@
+@import '../../../../../assets/styles/abstracts/variables';
+
+.search-button {
+  color: $color-platinum;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 30px;
+  background-color: $color-dodger-blue;
+  border: none;
+  border-radius: 5px;
+}
+
+.clean-button {
+  color: $color-dodger-blue;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 30px;
+  background-color: $color-platinum;
+  border: none;
+  border-radius: 5px;
+}
+
+.header-search {
+  background-color: $color-jelly-bean-blue;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 10px;
+  color: $color-platinum;
+  padding: 20px;
+  margin-bottom: -10px;
+}

@@ -1,0 +1,252 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<h6>Trazabilidad del proceso</h6>
+<div *ngIf="role === 2">
+  <form [formGroup]="formTraceability">
+    <div class="row container">
+      <div class="col-md-4">
+        <label for="label">Fecha de aprobación propuesta</label>
+        <p-calendar [placeholder]="'Fecha'" formControlName="proposalAprovedDate"></p-calendar>
+      </div>
+      <div class="col-md-4">
+        <label for="label">Aprobación vicerrectoría académica</label>
+        <div class="row">
+          <div class="col-md-6">
+            <input
+              pInputText
+              class="ng-invalid"
+              placeholder="Acta"
+              formControlName="viceAcademicMinute"
+            />
+            <!--  <small
+                class="error"
+                *ngIf="formControls['programName'].errors && formControls['programName'].touched"
+                >
+                * Campo obligatorio.
+                </small> -->
+          </div>
+          <div class="col-md-6">
+            <p-calendar
+              [placeholder]="'Fecha'"
+              formControlName="viceAcademicMinuteDate"
+            ></p-calendar>
+            <!--  <small
+                class="error"
+                *ngIf="formControls['programName'].errors && formControls['programName'].touched"
+                >
+                * Campo obligatorio.
+                </small> -->
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label for="label">Recomendación consejo académico</label>
+        <div class="row">
+          <div class="col-md-6">
+            <input
+              pInputText
+              class="ng-invalid"
+              placeholder="Acta"
+              formControlName="academicCouncilMinute"
+            />
+            <!--  <small
+                class="error"
+                *ngIf="formControls['programName'].errors && formControls['programName'].touched"
+                >
+                * Campo obligatorio.
+                </small> -->
+          </div>
+          <div class="col-md-6">
+            <p-calendar
+              [placeholder]="'Fecha'"
+              formControlName="academicCouncilMinuteDate"
+            ></p-calendar>
+            <!--  <small
+                class="error"
+                *ngIf="formControls['programName'].errors && formControls['programName'].touched"
+                >
+                * Campo obligatorio.
+                </small> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row container">
+      <div class="col-md-4">
+        <label for="label">Aprobación consejo superior</label>
+        <div class="row">
+          <div class="col-md-6">
+            <input
+              pInputText
+              class="ng-invalid"
+              placeholder="Acta"
+              formControlName="superiorCouncilMinute"
+            />
+            <!--  <small
+                    class="error"
+                    *ngIf="formControls['programName'].errors && formControls['programName'].touched"
+                    >
+                    * Campo obligatorio.
+                    </small> -->
+          </div>
+          <div class="col-md-6">
+            <p-calendar
+              [placeholder]="'Fecha'"
+              formControlName="superiorCouncilMinuteDate"
+            ></p-calendar>
+            <!--  <small
+                    class="error"
+                    *ngIf="formControls['programName'].errors && formControls['programName'].touched"
+                    >
+                    * Campo obligatorio.
+                    </small> -->
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label for="label">Fecha de radicación NSACES</label>
+        <div class="row">
+          <div class="col-md-12">
+            <p-calendar [placeholder]="'Fecha'" formControlName="nsacesDate"></p-calendar>
+            <!--  <small
+                    class="error"
+                    *ngIf="formControls['programName'].errors && formControls['programName'].touched"
+                    >
+                    * Campo obligatorio.
+                    </small> -->
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="username">Aprobación MEN</label>
+          <br />
+          <!--   <label for="file" class="custom-file-input"> Seleccionar </label>
+          <input type="file"  (change)="onFileChange($event)" /> -->
+          <input
+            type="file"
+            id="archivo"
+            name="archivo"
+            class="input-file"
+            [accept]="allowedExtension"
+            (change)="loadFile($event)"
+          />
+          <label for="archivo" class="btn">Elegir archivo</label>
+          {{ fileName }}
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="row container">
+          <div class="col-md-6">
+            <label for="label">Fecha de finalización MEN</label>
+            <p-calendar [placeholder]="'Fecha'" formControlName="menEndDate"></p-calendar>
+          </div>
+          <div class="col-md-6">
+            <label for="label">SNIES</label>
+            <input pInputText class="ng-invalid" formControlName="sinies" placeholder="00000" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="container">
+          <div formArrayName="campus">
+            <div *ngFor="let item of items.controls; let i = index" class="row">
+              <div [formGroupName]="i" class="col-md-12 container">
+                <label for="label">
+                  <p-checkbox [binary]="true" formControlName="ckeck"></p-checkbox>
+                  {{ item.value.label }}</label
+                >
+                <div class="row">
+                  <div class="col-md-6">
+                    <input
+                      pInputText
+                      class="ng-invalid"
+                      placeholder="Resolución"
+                      formControlName="resolution"
+                    />
+                    <div
+                      *ngIf="
+                        items.controls[i].get('resolution')?.invalid &&
+                        items.controls[i].get('resolution')?.touched
+                      "
+                    >
+                      <small class="text-danger">La resolución es obligatoria.</small>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <p-calendar
+                      [placeholder]="'Fecha'"
+                      formControlName="resolutionDate"
+                    ></p-calendar>
+                    <div
+                      *ngIf="
+                        items.controls[i].get('resolutionDate')?.invalid &&
+                        items.controls[i].get('resolutionDate')?.touched
+                      "
+                    >
+                      <small class="text-danger">La fecha de resolución es obligatoria.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row container">
+      <div class="col-md-12 text-center container">
+        <button class="btn btn-primary" (click)="send()">Guardar</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="row text-center">
+    <div class="col-md-12">
+      <h6>
+        ¿Otorga la <strong>aprobación total</strong> del programa académico
+        <strong>{{ nameProgram }}</strong
+        >?
+      </h6>
+      <div class="workflow text-center justify-content-center">
+        <div class="workflow-status in-update" (click)="approve('declined')">Declinar</div>
+        <div class="workflow-status in-approve" (click)="approve('approved')">Aprobar</div>
+      </div>
+
+      <!-- <div class="workflow text-center">
+    <div class="workflow-status in-update">
+        Declinar
+    </div>
+    <div class="workflow-status in-approve">
+      Aprobar
+    </div>
+  </div>   -->
+    </div>
+  </div>
+</div>
+
+<div *ngIf="role !== 2" class="text-none">
+  Este programa académico se encuentra en espera de aprobación total.
+</div>
+<p-dialog
+  header="Header"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <div class="row container">
+    <div class="col-md-12">
+      <div class="workflow text-center">
+        <div class="workflow-status in-update" (click)="approve('declined')">Declinar</div>
+        <div class="workflow-status in-approve" (click)="approve('approved')">Aprobar</div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-toast></p-toast>

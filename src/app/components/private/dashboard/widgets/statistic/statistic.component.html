@@ -1,0 +1,53 @@
+<p-card>
+  <p-tabView>
+    <p-tabPanel header="Genero de Estudiantes">
+      <div class="contenedor-general">
+        <canvas #pieChartCanvas width="200" height="200" class="centrar"></canvas>
+
+        <div class="d-flex">
+          <div class="icon-color-men"></div>
+          <div *ngIf="gender">Hombres {{ gender.masc }}</div>
+        </div>
+        <div class="d-flex">
+          <div class="icon-color-woman"></div>
+          <div *ngIf="gender">Mujeres {{ gender.fem }}</div>
+        </div>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel header="Cantidad de Estudiantes">
+      <div class="col-12 mt-4">
+        <label for="Facultad">Facultad</label>
+        <p-dropdown
+          id="Facultad"
+          [options]="facultyList"
+          [(ngModel)]="facultySelect"
+          [showClear]="true"
+          placeholder="Seleccione una facultad"
+          [group]="false"
+          [filter]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+          (onChange)="loadCountUsers()"
+        >
+          <ng-template let-catalog pTemplate="catalog">
+            <div class="flex align-items-center">
+              <span>{{ catalog?.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="d-flex justify-content-center w-100">
+        <div class="container-count">
+          {{ countStudent }}
+        </div>
+      </div>
+
+      <div class="text-label-chart">Estudiantes Sanmartinianos</div>
+      <p class="text-size">
+        Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem
+        Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un
+        impreso
+      </p>
+    </p-tabPanel>
+  </p-tabView>
+</p-card>

@@ -1,0 +1,60 @@
+@import '../../../../assets/styles/abstracts/variables';
+
+.header-search {
+  background-color: $color-indigo;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 10px;
+  color: $color-platinum;
+}
+
+.form-search {
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.search-button {
+  color: $color-platinum;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 30px;
+  background-color: $color-dodger-blue;
+  border: none;
+  border-radius: 5px;
+}
+
+.clean-button {
+  color: $color-dodger-blue;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 30px;
+  background-color: $color-platinum;
+  border: none;
+  border-radius: 5px;
+}
+
+.border-left {
+  border-top-left-radius: 10px;
+}
+
+.border-right {
+  border-top-right-radius: 10px;
+}
+
+p-table {
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.blue-column {
+  color: $color-dodger-blue;
+  font-weight: bold;
+}
+
+.yellow-icon {
+  color: $color-tangerine-yellow !important;
+}

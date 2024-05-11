@@ -1,0 +1,24 @@
+.position-relative {
+  position: relative;
+  height: 100%;
+  padding-bottom: 10px;
+}
+
+.notification-circle {
+  position: absolute;
+  margin: -5px;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.btn-primary {
+  background-color: #b0c8e3;
+  color: #16395f;
+  font-weight: bold;
+}
+.btn-padding {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}

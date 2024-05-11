@@ -1,0 +1,41 @@
+@import '../../../../assets/styles/abstracts/variables';
+.card-title {
+  font-size: 12px;
+  color: $color-indigo;
+}
+.card-program {
+  color: $color-blue-subtitle;
+}
+.card-subtitle {
+  font-size: 10px;
+  margin-bottom: 5px;
+}
+
+:host {
+  ::ng-deep .p-card .p-card-body {
+    padding: 0px;
+  }
+}
+.custom-button {
+  width: 100%;
+  color: $color-indigo;
+  text-align: center;
+  line-height: 40px;
+  cursor: pointer;
+  user-select: none; /* Evita la selección de texto al hacer clic */
+  transition: background-color 0.3s ease;
+}
+
+.custom-button:hover {
+  background-color: $color-indigo;
+  color: $color-white;
+}
+
+.custom-button:active {
+  background-color: $color-blue-subtitle;
+  color: $color-white;
+}
+
+.text-regulation {
+  cursor: pointer;
+}

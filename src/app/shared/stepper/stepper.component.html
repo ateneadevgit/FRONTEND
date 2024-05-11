@@ -1,0 +1,48 @@
+<div class="container" *ngIf="!showStepHorizonal">
+  <div class="horizontal-stepper">
+    <div class="horizontal-stepper-index" *ngFor="let step of items; let index = index">
+      <button
+        [ngStyle]="{
+          'margin-left': index === 0 ? '0px' : '25px',
+          'margin-right': index + 1 === items?.length ? '0px' : '25px'
+        }"
+        [ngClass]="{
+          'horizontal-stepper-index__small': step?.isSmall,
+          'horizontal-stepper-index__btn': !step?.isSmall,
+          'in-projection': step?.status === 32,
+          'in-review': step?.status === 31,
+          'in-update': step?.status === 30,
+          'in-summary': step?.status === 29,
+          'in-approve': step?.status === 28,
+          'select-item': step.orderId === activeStep
+        }"
+        [pTooltip]="!viewText ? step?.stepName : ''"
+        (click)="onActiveIndexChange(step)"
+        [tooltipPosition]="'bottom'"
+      >
+        {{ !step?.hasIcon ? step?.orderId : '' }}
+        <span class="{{ step?.icon }}" *ngIf="step?.hasIcon"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="container" *ngIf="showStepHorizonal">
+  <button class="eye-button" (click)="showText()">
+    <span class="pi pi-eye"></span>
+  </button>
+  <div class="stepper">
+    <div class="stepper-index" *ngFor="let step of items; let index = index">
+      <button
+        class="stepper-index__btn"
+        [pTooltip]="!viewText ? step?.stepName : ''"
+        (click)="onActiveIndexChange(step)"
+      >
+        {{ index }}
+      </button>
+      <div class="stepper-index__text">
+        {{ viewText ? step?.stepName : '' }}
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="row">
+  <div class="p-d-flex p-ai-center">
+    <h2 class="title-page">
+      <span class="pi pi-language" style="font-size: 1.7rem"></span>Centro para el aprendizaje de
+      una segunda lengua
+    </h2>
+    <p *ngIf="role === RoleEnum.VICERRECTOR">
+      Construya el módulo que llevará el conocimiento de otras lenguas a la comunidad sanmartiniana
+    </p>
+    <p *ngIf="role !== RoleEnum.VICERRECTOR">
+      Accede a recursos para mejorar tus habilidades lingüísticas
+    </p>
+    <hr class="w-25" />
+  </div>
+</div>
+
+<div class="row">
+  <p-tabView (onChange)="onChangeTabView($event)" [activeIndex]="activeIndex">
+    <p-tabPanel header="Definición">
+      <app-new-justification
+        [typeNif]="nifTypeEnum.DEFINICION_SECOND_LENGUAGE"
+        *ngIf="role === roleType.VICERRECTOR"
+      ></app-new-justification>
+      <app-view-nifs
+        [typeNif]="nifTypeEnum.DEFINICION_SECOND_LENGUAGE"
+        *ngIf="role !== roleType.VICERRECTOR"
+      ></app-view-nifs>
+    </p-tabPanel>
+    <p-tabPanel header="Perfil de ingreso">
+      <app-new-justification
+        [typeNif]="nifTypeEnum.GRADUATE_PROFILE"
+        *ngIf="role === roleType.VICERRECTOR"
+      ></app-new-justification>
+      <app-view-nifs
+        [typeNif]="nifTypeEnum.GRADUATE_PROFILE"
+        *ngIf="role !== roleType.VICERRECTOR"
+      ></app-view-nifs>
+    </p-tabPanel>
+    <p-tabPanel header="Propuestas académicas">
+      <app-academic-proposals></app-academic-proposals>
+    </p-tabPanel>
+  </p-tabView>
+</div>
+
+<div class="row" *ngIf="activeIndex === -1">
+  <app-home-second-language></app-home-second-language>
+</div>

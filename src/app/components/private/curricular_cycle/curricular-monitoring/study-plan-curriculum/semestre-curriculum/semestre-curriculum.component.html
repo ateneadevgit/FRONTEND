@@ -1,0 +1,24 @@
+<div class="row" *ngIf="objSemesterList.length > 0">
+  <div class="col-6 my-4" *ngFor="let item of objSemesterList; let i = index">
+    <div class="row margin-general">
+      <div class="col-10 title-sm" [style.background-color]="getBackgroundColor(i)">
+        Semestre {{ item.semesterRoman }}
+      </div>
+      <div class="col-12 content-sm">
+        <div class="row header">
+          <div class="col-10 header-name">Subnúcleos</div>
+          <div class="col-2 header-num credit">Créditos</div>
+        </div>
+
+        <div class="row border-top" *ngFor="let obj of item.subjectListModel">
+          <div class="col-10 header-name">
+            {{ obj.name }}
+          </div>
+          <div class="col-2 credit number-credit">
+            {{ obj.creditNumber }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

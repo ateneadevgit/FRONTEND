@@ -1,0 +1,269 @@
+<!-- eslint-disable @angular-eslint/template/elements-content -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div>
+  <form [formGroup]="formSecondLanguage">
+    <div class="card">
+      <div class="row">
+        <div class="col-12 col-md-12 mb-2">
+          <label for="tittle" class="mb-1">Imagen principal</label>
+          <ngx-file-drop
+            accept="image/*"
+            [multiple]="false"
+            contentClassName="text-center"
+            browseBtnClassName="btn card"
+            (onFileDrop)="dropped($event)"
+          >
+            <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+              <h3 for="archivo" (click)="openFileSelector()" class="btn mt-4">
+                Seleccione o arrastre la imagen
+              </h3>
+              <p>Recuerde utilizar imágenes o fotografías de dominio público</p>
+            </ng-template>
+          </ngx-file-drop>
+
+          <div class="card" *ngIf="principalImage.length > 0">
+            <p-image [src]="principalImage" alt="Image" width="50%"></p-image>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 mt-2">
+          <label for="tittle">Título del curso</label>
+          <input
+            pInputText
+            placeholder="Título"
+            id="tittle"
+            formControlName="tittle"
+            [maxlength]="200"
+          />
+          <small
+            class="error"
+            *ngIf="
+              formControlsSecondLanguage['tittle']?.touched &&
+              formControlsSecondLanguage['tittle']?.hasError('required')
+            "
+            >Campo requerido.</small
+          >
+        </div>
+
+        <div class="col-12 col-md-6 mt-2">
+          <label for="startLevel">Objetivos propuestos según Marco Común Europeo</label>
+          <div class="row">
+            <div class="col-12 col-md-4 mb-2">
+              <input
+                pInputText
+                placeholder="Nivel inicial"
+                id="startLevel"
+                formControlName="startLevel"
+                [maxlength]="5"
+              />
+              <small
+                class="error"
+                *ngIf="
+                  formControlsSecondLanguage['startLevel']?.touched &&
+                  formControlsSecondLanguage['startLevel']?.hasError('required')
+                "
+                >Campo requerido.</small
+              >
+            </div>
+            <div class="col-12 col-md-4">
+              <input
+                pInputText
+                placeholder="Nivel final"
+                id="endLevel"
+                formControlName="endLevel"
+                [maxlength]="5"
+              />
+              <small
+                class="error"
+                *ngIf="
+                  formControlsSecondLanguage['endLevel']?.touched &&
+                  formControlsSecondLanguage['endLevel']?.hasError('required')
+                "
+                >Campo requerido.</small
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label for="groupId">Grupo a quien va dirigido</label>
+          <p-dropdown
+            id="groupId"
+            [options]="groupSecondLenguage"
+            formControlName="groupId"
+            placeholder="Seleccione grupo"
+            [group]="false"
+            [filter]="true"
+            filterBy="catalogItemName"
+            optionLabel="catalogItemName"
+          >
+            <ng-template let-catalog pTemplate="catalog">
+              <div class="flex align-items-center">
+                <span>{{ catalog.catalogItemName }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small
+            class="error"
+            *ngIf="
+              formControlsSecondLanguage['groupId']?.touched &&
+              formControlsSecondLanguage['groupId']?.hasError('required')
+            "
+            >Campo requerido.</small
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-4">
+      <div class="row">
+        <div class="col-6">
+          <div class="row">
+            <div class="col-12 col-md-12">
+              <label for="description" [style.font-size]="'1em'">{{
+                formControlsSecondLanguage['tittle'].value
+              }}</label>
+            </div>
+
+            <div class="col-12 col-md-12 mt-2">
+              <label for="description">Descripción general</label>
+              <input
+                pInputText
+                placeholder="Descripción"
+                id="description"
+                formControlName="description"
+                [maxlength]="300"
+              />
+              <small
+                class="error"
+                *ngIf="
+                  formControlsSecondLanguage['description']?.touched &&
+                  formControlsSecondLanguage['description']?.hasError('required')
+                "
+                >Campo requerido.</small
+              >
+            </div>
+
+            <div class="col-12 col-md-12">
+              <label for="duration">Duración</label>
+              <input
+                type="text"
+                pInputText
+                placeholder="0"
+                id="duration"
+                formControlName="duration"
+              />
+              <p class="">La información a ingresar deberá ser en número de meses.</p>
+              <small
+                class="error"
+                *ngIf="
+                  formControlsSecondLanguage['duration']?.touched &&
+                  formControlsSecondLanguage['duration']?.hasError('required')
+                "
+                >Campo requerido.</small
+              >
+              <small
+                class="error"
+                *ngIf="
+                  formControlsSecondLanguage['duration']?.touched &&
+                  formControlsSecondLanguage['duration']?.hasError('pattern')
+                "
+                >El campo debe contener solo números enteros positivos.</small
+              >
+            </div>
+
+            <div class="col-12 col-md-12">
+              <label for="hours">Horas</label>
+              <input type="text" pInputText placeholder="0" id="hours" formControlName="hours" />
+              <small
+                class="error"
+                *ngIf="
+                  formControlsSecondLanguage['hours']?.touched &&
+                  formControlsSecondLanguage['hours']?.hasError('required')
+                "
+                >Campo requerido.</small
+              >
+              <small
+                class="error"
+                *ngIf="
+                  formControlsSecondLanguage['hours']?.touched &&
+                  formControlsSecondLanguage['hours']?.hasError('pattern')
+                "
+                >El campo debe contener solo números enteros positivos.</small
+              >
+            </div>
+
+            <div class="col-12 col-md-12">
+              <label for="modalityId">Modalidad</label>
+              <p-dropdown
+                id="modalityId"
+                [options]="modalities"
+                formControlName="modalityId"
+                placeholder="Seleccione modalidad"
+                [group]="false"
+                [filter]="true"
+                filterBy="catalogItemName"
+                optionLabel="catalogItemName"
+              >
+                <ng-template let-catalog pTemplate="catalog">
+                  <div class="flex align-items-center">
+                    <span>{{ catalog.catalogItemName }}</span>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <small
+                class="error"
+                *ngIf="
+                  formControlsSecondLanguage['modalityId']?.touched &&
+                  formControlsSecondLanguage['modalityId']?.hasError('required')
+                "
+                >Campo requerido.</small
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="container">
+                <label for="" class="ml-2">Logo de nivel</label>
+                <div class="image" (click)="visibleLogoModal = true">
+                  <div class="image-portada" *ngIf="!croppedImageLogo"></div>
+                  <div class="image-plus-portada" *ngIf="!croppedImageLogo">
+                    <i class="pi pi-plus"></i>
+                  </div>
+                  <img
+                    [src]="croppedImageLogo"
+                    alt="logo"
+                    *ngIf="croppedImageLogo"
+                    class="image-cropper-portada"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-12 col-md-12">
+        <div class="text-center">
+          <button class="btn btn-primary right-btn" (click)="createUpdate()">
+            {{ secondLanguageIdEdit ? 'Guardar' : 'Crear' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<app-crop-image
+  *ngIf="visibleLogoModal"
+  [visible]="visibleLogoModal"
+  [aspectRatio]="10 / 3"
+  (imageUrl)="imageUrlLogo($event)"
+>
+</app-crop-image>

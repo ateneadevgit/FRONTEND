@@ -1,0 +1,195 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div *ngIf="programHistorical">
+  <div class="mt-2">
+    <p-table [value]="programHistorical || []">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Versión</th>
+          <th>Responsable de edición</th>
+          <th>Fecha de edición</th>
+          <th
+            *ngIf="selectedModule?.type === ModuleTypes.UPDATE_AUTHORIZATIONS"
+            class="action-center"
+          >
+            Ver
+          </th>
+          <th class="action-center">Acta</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td (click)="openHistoryDetail(item)">{{ item.version }}</td>
+          <td (click)="openHistoryDetail(item)">{{ item.createdBy }}</td>
+          <td (click)="openHistoryDetail(item)">
+            {{ (item.editionDate | date: 'dd/MM/yyyy') ?? '--' }}
+          </td>
+          <td
+            *ngIf="selectedModule?.type === ModuleTypes.UPDATE_AUTHORIZATIONS"
+            class="text-center"
+            (click)="viewDocument(item)"
+          >
+            <i class="pi pi-eye"></i>
+          </td>
+          <td class="text-center" (click)="downloadDocument(item)">
+            <i class="pi pi-cloud-download"></i>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <div class="text-center mt-2" *ngIf="(programHistorical || []).length === 0">
+    <p>No se encontraron resultados...</p>
+  </div>
+</div>
+
+<p-dialog
+  [modal]="true"
+  [closable]="false"
+  [closeIcon]="'pi pi-times'"
+  [header]="selectedModule?.name"
+  [(visible)]="visibleHistoryModal"
+  [style]="{ width: '80%' }"
+>
+  <div class="row mt-2" *ngIf="selectedModule?.type === ModuleTypes.ACADEMIC_CREDITS">
+    <label for="">Subnúcleo</label>
+  </div>
+
+  <button class="status close-modal" (click)="closeHistoryDetail()">
+    <span class="pi pi-times"></span>
+  </button>
+
+  <div class="row">
+    <div class="row mt-2">
+      <div class="col-md-4">
+        <label for="">Versión</label>
+        <p>{{ programHistoricalSelect?.version }}</p>
+      </div>
+      <div class="col-md-4">
+        <label for="">Responsable</label>
+        <p>{{ programHistoricalSelect?.createdBy }}</p>
+      </div>
+      <div class="col-md-4">
+        <label for="">Fecha</label>
+        <p>{{ (programHistoricalSelect?.editionDate | date: 'dd/MM/yyyy') ?? '--' }}</p>
+      </div>
+    </div>
+
+    <div class="row mt-2" *ngIf="selectedModule?.type === ModuleTypes.SPECIFIC_SUMARY">
+      <div [innerHTML]="selectValue?.curriculumSummary"></div>
+    </div>
+
+    <div class="row mt-2" *ngIf="selectedModule?.type === ModuleTypes.CURRICULAR_COMPONENTS">
+      <div [innerHTML]="selectValue?.summary"></div>
+    </div>
+
+    <div *ngIf="selectedModule?.type === ModuleTypes.CORE_AND_SUBCORES">
+      <div class="row mt-2">
+        <div class="col-md-4">
+          <label for="">Nombre</label>
+          <p>{{ selectValue?.name }}</p>
+        </div>
+        <div class="col-md-4">
+          <label for="">N° Créditos</label>
+          <p>{{ selectValue?.creditNumber }}</p>
+        </div>
+        <div class="col-md-4">
+          <label for="">Participación %</label>
+          <p>{{ selectValue?.participation }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="selectCoreSubCore === 2">
+        <div class="row mt-2">
+          <div class="col-md-4">
+            <label for="">Código de subnúcleo</label>
+            <p>{{ selectValue?.code }}</p>
+          </div>
+          <div class="col-md-4">
+            <label for="">Horas de interacción con el profesor</label>
+            <p>{{ selectValue?.creditNumber }}</p>
+          </div>
+          <div class="col-md-4">
+            <label for="">Horas de trabajo autónoma</label>
+            <p>{{ selectValue?.participation }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-md-12">
+          <label for="">Descripción</label>
+          <p>{{ selectValue?.description }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="selectCoreSubCore === 1">
+        <div class="row mt-2">
+          <div class="col-md-12">
+            <label for="">RAEG</label>
+            <p>{{ selectValue?.raeg }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="selectedModule?.type === ModuleTypes.CURRICULAR_OUTPUT">
+      <div class="row mt-2">
+        <div class="col-md-4">
+          <label for="">Nombre</label>
+          <p>{{ selectValue?.name }}</p>
+        </div>
+        <div class="col-md-4">
+          <label for="">N° Créditos</label>
+          <p>{{ selectValue?.creditNumber }}</p>
+        </div>
+        <div class="col-md-4">
+          <label for="">Semestre</label>
+          <p>{{ selectValue?.semester }}</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="row mt-2">
+          <div class="col-md-4">
+            <label for="">Código de subnúcleo</label>
+            <p>{{ selectValue?.code }}</p>
+          </div>
+          <div class="col-md-4">
+            <label for="">Horas de interacción con el profesor</label>
+            <p>{{ selectValue?.creditNumber }}</p>
+          </div>
+          <div class="col-md-4">
+            <label for="">Horas de trabajo autónomo</label>
+            <p>{{ selectValue?.participation }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-md-12">
+          <label for="">Descripción</label>
+          <p>{{ selectValue?.description }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-2" *ngIf="selectedModule?.type === ModuleTypes.SYLLABUS">
+      <ngx-doc-viewer
+        [viewerUrl]="selectValue.value"
+        [url]="documentUrl ?? ''"
+        viewer="url"
+        style="width: 100%; height: 70vh"
+      >
+      </ngx-doc-viewer>
+    </div>
+  </div>
+</p-dialog>
+
+<app-preview-document
+  *ngIf="previewDocument"
+  [visible]="visible"
+  (closeModal)="closeModal($event)"
+  [previewDocument]="previewDocument"
+></app-preview-document>

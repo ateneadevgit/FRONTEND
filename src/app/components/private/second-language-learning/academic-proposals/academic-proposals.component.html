@@ -1,0 +1,201 @@
+<!-- eslint-disable @angular-eslint/template/elements-content -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="row mt-2" *ngIf="optView === 0">
+  <div class="row mt-2">
+    <div class="col-md-12 text-end">
+      <button
+        pButton
+        pRipple
+        class="btn btn-warning"
+        *ngIf="roleType.VICERRECTOR === role"
+        (click)="openCreateEdit()"
+      >
+        Crear nivel
+      </button>
+    </div>
+  </div>
+
+  <div *ngFor="let group of groupSecondLenguage">
+    <div
+      class="row mt-4"
+      *ngIf="(getSecondLanguageByGroup(group.catalogItemId)?.secondLanguages || []).length > 0"
+    >
+      <div class="col-12">
+        <label class="card-program" [htmlFor]="group.catalogItemName">{{
+          group.catalogItemName
+        }}</label>
+      </div>
+
+      <p-card
+        *ngFor="let item of getSecondLanguageByGroup(group.catalogItemId)?.secondLanguages"
+        class="col-md-4 mt-4"
+        [style]="{ width: '100%' }"
+        styleClass="p-card-shadow"
+      >
+        <ng-template pTemplate="header">
+          <div class="contenedor">
+            <div class="top-btns-actions">
+              <div class="row mt-2" *ngIf="roleType.VICERRECTOR === role">
+                <div class="col-12 col-md-6 text-start">
+                  <i
+                    class="text-start pi pi-check-square icon-edit"
+                    (click)="openCreateEdit(item.secondLanguageId)"
+                  ></i>
+                </div>
+                <div class="col-12 col-md-6 text-end">
+                  <i
+                    class="text-end pi pi-trash icon-delete text-end"
+                    (click)="deleteSecondLanguage(item.secondLanguageId)"
+                  ></i>
+                </div>
+              </div>
+            </div>
+            <img alt="Card" class="imagen-fondo" [src]="item.cover" />
+          </div>
+        </ng-template>
+        <div class="row my-0">
+          <h4>{{ item.tittle }}</h4>
+          <div class="col-12 col-md-6">
+            <p>Objetivos propuestos según el marco común europeo</p>
+          </div>
+          <div class="col-12 col-md-6 text-center">
+            <span pButton class="round-btn-card justify-content-center">{{ item.startLevel }}</span>
+            <i
+              class="pi pi-pause equal-sign mx-2 justify-content-center"
+              style="font-size: 1.2rem"
+            ></i>
+            <span pButton class="round-btn-card justify-content-center">{{ item.endLevel }}</span>
+          </div>
+        </div>
+        <ng-template class="my-0" pTemplate="footer">
+          <button pButton pRipple class="btn btn-secondary" (click)="openSecondLanguageView(item)">
+            Ver más
+          </button>
+        </ng-template>
+      </p-card>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-2" *ngIf="optView === 1">
+  <div class="row d-flex justify-content-between">
+    <div class="col-md-4">
+      <h6 (click)="closeComponent()" [style]="{ cursor: 'pointer' }">
+        <span class="pi pi-arrow-left"></span>
+        Cancelar
+      </h6>
+    </div>
+  </div>
+
+  <app-create-update-second-language
+    [secondLanguageIdEdit]="secondLanguageIdEdit"
+    (closeComponent)="closeComponent()"
+  ></app-create-update-second-language>
+</div>
+
+<p-dialog
+  *ngIf="secondLanguageView"
+  [modal]="true"
+  [closable]="false"
+  [(visible)]="visibleViewSecLanguage"
+  [style]="{ width: '60%' }"
+>
+  <button class="status close-modal" (click)="closeSecondLanguageView()">
+    <span class="pi pi-times"></span>
+  </button>
+
+  <div class="row">
+    <div class="col-6">
+      <div class="row">
+        <div class="col-12 col-md-12">
+          <h1 for="">{{ secondLanguageView.tittle }}</h1>
+        </div>
+
+        <div class="col-12 col-md-12 mt-4 pb-0">
+          <p>{{ secondLanguageView.description }}</p>
+        </div>
+
+        <div class="col-12 col-md-12 pb-0">
+          <p>
+            <span class="negrita">Duración:</span> {{ secondLanguageView.duration }}
+            {{ secondLanguageView.duration <= 1 ? 'mes' : 'meses' }}
+          </p>
+        </div>
+
+        <div class="col-12 col-md-12 pb-0">
+          <p>
+            <span class="negrita">Horas de instrucción:</span> {{ secondLanguageView.hours }}
+            {{ secondLanguageView.hours <= 1 ? 'hora' : 'horas' }}
+          </p>
+        </div>
+
+        <div class="col-12 col-md-12 pb-0">
+          <p><span class="negrita">Modalidad:</span> {{ secondLanguageView.modalityName }}</p>
+        </div>
+
+        <div class="col-12 col-md-12 pb-0">
+          <p>Acompañamiento constante de profesores altamente preparados y profesionales.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 mt-4">
+      <div class="row mt-2">
+        <div class="col-md-12">
+          <div class="container">
+            <div class="image">
+              <img
+                [src]="secondLanguageView.icon"
+                alt="logo"
+                *ngIf="secondLanguageView.icon.length > 1"
+                class="image-cropper-portada image-cropper-portada-size"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-12 mt-4">
+          <p>
+            <strong class="negrita italic-text"
+              >OBJETIVOS PROPUESTOS SEGÚN MARCO COMÚN EUROPEO</strong
+            >
+          </p>
+        </div>
+
+        <div class="col-md-12 mt-2">
+          <div class="text-center">
+            <button pButton class="round-btn justify-content-center">
+              {{ secondLanguageView.startLevel }}
+            </button>
+            <i class="pi pi-pause equal-sign mx-2" style="font-size: 2rem"></i>
+            <button pButton class="round-btn justify-content-center">
+              {{ secondLanguageView.endLevel }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-10">
+      <p class="m-left-10">
+        <a [href]="secondLanguageView.inscriptionLink" target="_blank" class="btn btn-secondary"
+          >Inscríbete</a
+        >
+      </p>
+    </div>
+  </div>
+</p-dialog>
+
+<p-confirmDialog #confirmdialog key="confirm-dialog" [style]="{ width: '50vw' }">
+  <ng-template pTemplate="footer">
+    <button pButton class="btn-secondary" severity="secondary" (click)="confirmdialog.reject()">
+      Cancelar
+    </button>
+    <button pButton class="btn-danger" severity="secondary" (click)="confirmdialog.accept()">
+      Eliminar
+    </button>
+  </ng-template></p-confirmDialog
+>

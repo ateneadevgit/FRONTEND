@@ -1,0 +1,55 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="row">
+  <div class="p-d-flex p-ai-center">
+    <h2 class="title-page">
+      <span class="pi pi-sitemap" style="font-size: 1.7rem"></span>Núcleo integrador de formación
+      sanmartiniana
+    </h2>
+    <p>¡Ser parte de la San Martín es un honor! Conoce todo sobre la formación sanmartiniana.</p>
+    <hr class="w-25" />
+  </div>
+</div>
+
+<div class="row">
+  <p-tabView (onChange)="onChangeTabView($event)" [activeIndex]="activeIndex">
+    <p-tabPanel class="bg-primary" header="Home" *ngIf="role !== roleType.VICERRECTOR">
+      <app-view-nifs [typeNif]="nifTypeEnum.DEFINITION"></app-view-nifs>
+    </p-tabPanel>
+    <p-tabPanel class="bg-primary" header="Propósito" *ngIf="role !== roleType.VICERRECTOR">
+      <app-view-nifs [typeNif]="nifTypeEnum.PURPOSE"></app-view-nifs>
+    </p-tabPanel>
+    <p-tabPanel class="bg-primary" header="Justificación" *ngIf="role === roleType.VICERRECTOR">
+      <div class="row">
+        <p-tabView>
+          <p-tabPanel header="Definición">
+            <app-new-justification [typeNif]="nifTypeEnum.DEFINITION"></app-new-justification>
+          </p-tabPanel>
+          <p-tabPanel header="Propósitos">
+            <app-new-justification [typeNif]="nifTypeEnum.PURPOSE"></app-new-justification>
+          </p-tabPanel>
+        </p-tabView>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel class="bg-primary" header="Subnúcleos NIFS">
+      <app-new-subcore></app-new-subcore>
+    </p-tabPanel>
+    <p-tabPanel class="bg-primary" header="RAGI">
+      <app-new-ragi *ngIf="role === roleType.VICERRECTOR"></app-new-ragi>
+      <app-view-nifs
+        *ngIf="role !== roleType.VICERRECTOR"
+        [typeNif]="nifTypeEnum.RAGI"
+      ></app-view-nifs>
+    </p-tabPanel>
+    <p-tabPanel class="bg-primary" header="Banco de problemas">
+      <app-new-bank-problem></app-new-bank-problem>
+    </p-tabPanel>
+    <p-tabPanel class="bg-primary" header="Competencias">
+      <app-new-competencies></app-new-competencies>
+    </p-tabPanel>
+  </p-tabView>
+</div>
+
+<div class="row" *ngIf="activeIndex === -1">
+  <app-home-information-integrating></app-home-information-integrating>
+</div>

@@ -1,0 +1,45 @@
+<div class="row mt-2" *ngIf="typeNif === nifTypeEnum.RAGI && this.nif?.nifsId">
+  <div class="col-12 col-md-6 mt-2">
+    <div class="col-md-12">
+      <h6>Resultados de aprendizaje generales institucionales</h6>
+    </div>
+    <div class="card-html">
+      <div [innerHTML]="nif?.content" class="cleaner-css"></div>
+    </div>
+  </div>
+  <div class="col-12 col-md-6 mt-2">
+    <div class="image" class="mt-2 text-center">
+      <img alt="ragi" [src]="nif?.image?.toString()" class="img-header-news" />
+    </div>
+  </div>
+</div>
+
+<div class="row mt-2" *ngIf="typeNif !== nifTypeEnum.RAGI && this.nif?.nifsId">
+  <div class="col-md-12 mt-2">
+    <div class="image" class="mt-2 d-flex justify-content-center">
+      <img alt="ragi" [src]="nif?.image?.toString()" class="img-header-news" />
+    </div>
+  </div>
+  <div class="col-md-12 mt-4">
+    <div class="card-html">
+      <div [innerHTML]="nif?.content" class="cleaner-css"></div>
+    </div>
+  </div>
+
+  <div class="row mt-4" *ngFor="let item of nif?.sections">
+    <div class="col-12 col-md-6 mt-2">
+      <div class="card-html">
+        <div [innerHTML]="item?.content" class="cleaner-css"></div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 mt-2">
+      <div class="image" class="mt-2 text-center">
+        <img alt="ragi" [src]="item?.image?.toString()" class="img-header-news" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-12 text-center mt-4" *ngIf="!this.nif || (this.nif && !this.nif.nifsId)">
+  <p>No existe información</p>
+</div>

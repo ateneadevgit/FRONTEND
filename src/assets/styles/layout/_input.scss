@@ -1,0 +1,75 @@
+@import '../abstracts/variables';
+
+.p-inputtext {
+  color: $color-form-input-text !important;
+}
+
+.input-group > .form-control {
+  height: 42px;
+  color: $color-auro-metal-saurus !important;
+  &:focus {
+    box-shadow: none;
+    border: 1px solid $color-auro-metal-saurus !important;
+  }
+  &::placeholder {
+    color: $color-auro-metal-saurus !important;
+    font-weight: 300;
+  }
+}
+
+input {
+  font-size: 12px;
+  border: 1px solid $color-platinum !important;
+  box-shadow: none;
+  width: 100%;
+  border: 1px solid $color-auro-metal-saurus;
+  &:focus {
+    box-shadow: none;
+  }
+  input :hover {
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+label {
+  font-size: 14px;
+  margin: 0px 0px;
+  color: $color-jelly-bean-blue;
+  font-family: $font-medium;
+}
+
+.p-multiselect {
+  color: $color-form-input-text !important;
+}
+.p-multiselect .p-multiselect-chip .p-multiselect-token {
+  background-color: $color-water;
+  color: $color-form-input-text;
+  font-size: 11px;
+}
+
+.p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight {
+  background-color: $color-water;
+  color: $color-form-input-text;
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+.p-checkbox .p-checkbox-box.p-highlight {
+  background: $color-jelly-bean-blue;
+  border-color: $color-jelly-bean-blue;
+}
+
+.p-inputswitch.p-inputswitch-checked .p-inputswitch-slider {
+  background: #629a72;
+}
+.checkbox-red .p-checkbox-box.p-highlight {
+  background-color: $color-danger;
+  border-color: $color-danger;
+}
+
+textarea {
+  width: 100%;
+  font-size: 12px;
+}

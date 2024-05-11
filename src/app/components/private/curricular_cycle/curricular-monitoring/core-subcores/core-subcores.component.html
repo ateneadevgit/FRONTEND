@@ -1,0 +1,106 @@
+<div class="col-md-4">
+  <h6
+    [routerLink]="
+      '/' + routerApp.CURRICULAR_CYCLE + '/' + routerApp.CURRICULAR_MONITORING + '/' + idProgram
+    "
+  >
+    <span class="pi pi-arrow-left"></span>
+    {{ selectedProgram.name }}
+  </h6>
+</div>
+
+<div class="row mt-2">
+  <div class="col-4 mt-2">
+    <label for="nucleo">Seleccione</label>
+    <p-dropdown
+      id="coresubcore"
+      [options]="coreSubCoreLit"
+      [(ngModel)]="coreSubCoreSelect"
+      placeholder="Nivel"
+      [group]="false"
+      [filter]="true"
+      filterBy="name"
+      optionLabel="name"
+      (onChange)="loadOptCoreSubCore()"
+    >
+      <ng-template let-option pTemplate="option">
+        <div class="flex align-items-center">
+          <span>{{ option?.name }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+</div>
+
+<div class="row mt-2" *ngIf="coreSubCoreSelect?.id === 1">
+  <div class="col-4">
+    <label for="nucleo">Seleccione el núcleo</label>
+    <p-dropdown
+      id="nucleo"
+      [options]="nucleoList"
+      [(ngModel)]="selectNucleo"
+      placeholder="Seleccione el núcleo"
+      [group]="false"
+      [filter]="true"
+      filterBy="name"
+      optionLabel="name"
+      (onChange)="loadCoreHistorical()"
+    >
+      <ng-template let-catalog pTemplate="catalog">
+        <div class="flex align-items-center">
+          <span>{{ catalog?.name }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+</div>
+
+<div class="row" *ngIf="coreSubCoreSelect?.id === 2">
+  <div class="col-4">
+    <label for="nucleo">Seleccione el núcleo</label>
+    <p-dropdown
+      id="nucleo"
+      [options]="nucleoList"
+      [(ngModel)]="selectNucleo"
+      placeholder="Seleccione el núcleo"
+      [group]="false"
+      [filter]="true"
+      filterBy="name"
+      optionLabel="name"
+      (onChange)="loadSubNucleo()"
+    >
+      <ng-template let-catalog pTemplate="catalog">
+        <div class="flex align-items-center">
+          <span>{{ catalog?.name }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+  <div class="col-4">
+    <label for="Subnucleo">Seleccione subnúcleo o asignatura</label>
+    <p-dropdown
+      id="Subnucleo"
+      [options]="subnucleoList"
+      [(ngModel)]="selectSubnucleo"
+      placeholder="Seleccione subnúcleo o asignatura"
+      [group]="false"
+      [filter]="true"
+      filterBy="name"
+      optionLabel="name"
+      (onChange)="loadCoreSubCoreHistorical()"
+    >
+      <ng-template let-catalog pTemplate="catalog">
+        <div class="flex align-items-center">
+          <span>{{ catalog?.name }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+</div>
+
+<app-program-history
+  class="mt-4"
+  [programHistorical]="programHistorical"
+  [selectedModule]="selectedModule"
+  [selectCoreSubCore]="coreSubCoreSelect?.id"
+></app-program-history>

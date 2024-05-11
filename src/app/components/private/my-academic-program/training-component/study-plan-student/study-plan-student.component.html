@@ -1,0 +1,36 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<h6>Estructura curricular</h6>
+<p>Explora la organización de tu programa académico y sus requisitos.</p>
+<hr class="w-25" />
+<div *ngIf="selectedProgram">
+  <div class="row">
+    <div class="col-md-10">
+      <div class="card-program d-flex">
+        {{ selectedProgram.name }}
+        <div class="card-sede">Sede Bogota</div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <button pButton pRipple class="btn btn-primary" (click)="downloadDocument()">
+        Descargar estructura curricular
+      </button>
+    </div>
+  </div>
+</div>
+<p-tabView *ngIf="objPlan.length > 0">
+  <p-tabPanel header="Estructura Curricular">
+    <app-study-plan
+      [isEditable]="false"
+      [monitoringEdit]="true"
+      *ngIf="objPlan.length > 0"
+      [data]="objPlan"
+    ></app-study-plan>
+  </p-tabPanel>
+  <p-tabPanel header="Semestres">
+    <app-semestre-curriculum
+      [objSemesterList]="objSemesterList"
+      *ngIf="objSemesterList.length > 0"
+    ></app-semestre-curriculum>
+  </p-tabPanel>
+</p-tabView>

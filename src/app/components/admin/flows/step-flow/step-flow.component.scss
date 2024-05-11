@@ -1,0 +1,108 @@
+@import '../../../../../assets/styles/abstracts/variables';
+
+.border-left {
+  border-top-left-radius: 10px;
+}
+
+.border-right {
+  border-top-right-radius: 10px;
+}
+
+.active-label {
+  margin-left: 10px;
+}
+
+.colored-item {
+  color: $color-indigo;
+  font-weight: bold;
+}
+
+.pi-pencil {
+  color: $color-tangerine-yellow;
+}
+
+.pi-trash {
+  color: $color-delete;
+}
+
+.pi {
+  cursor: pointer;
+}
+
+.breadcrumb {
+  color: $color-quick-silver;
+  font-size: 12px;
+  a {
+    color: $color-quick-silver;
+    font-weight: bold;
+  }
+  span {
+    color: $color-quick-silver;
+    font-weight: bold;
+  }
+
+  .pi-angle-right {
+    margin-top: 2px;
+  }
+}
+
+.rounded-icon {
+  background-color: $color-indigo;
+  text-align: center;
+  height: 40px;
+  width: 40px;
+  border-radius: 100%;
+  .pi {
+    color: $color-anti-flash-white;
+    margin-top: 12px;
+  }
+}
+
+.content-accordion {
+  margin: 20px 0px;
+  padding: 1.25rem;
+  border: 1px solid #dee2e6;
+  background: #ffffff;
+  color: #495057;
+  border-top: 0;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.card-accordion {
+  margin-top: 0px;
+  box-shadow: 0px 3px 5px #e3e3e3;
+  border: 0;
+  padding: 1.25rem;
+  border-radius: 10px;
+}
+
+.p-button-accordion {
+  padding-bottom: 0;
+}
+
+.prerre-label {
+  font-size: 10px;
+  color: $color-davis-gray;
+  line-height: 0.5;
+}
+
+.flow-name {
+  color: $color-indigo;
+  font-weight: bold;
+}
+
+.flow-description {
+  font-size: 12px;
+  color: $color-quick-silver;
+}
+
+.button-center {
+  margin-left: 20px;
+}
+
+.apply_template {
+  margin-right: 10px;
+}

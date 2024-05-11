@@ -1,0 +1,136 @@
+<p-card>
+  <div class="container">
+    <div class="row">
+      <div class="col-12 subtitle-card-dashboard">Nuestros programas académicos</div>
+    </div>
+    <div class="row">
+      <div class="col-xl-3 col-6">
+        <label for="Sede">Sede / CAT</label>
+        <p-dropdown
+          id="Sede"
+          [options]="campusList"
+          [(ngModel)]="campusSelect"
+          [showClear]="true"
+          placeholder="Seleccione subnúcleo o asignatura"
+          [group]="false"
+          [filter]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+          (onChange)="loadPrograms()"
+        >
+          <ng-template let-catalog pTemplate="catalog">
+            <div class="flex align-items-center">
+              <span>{{ catalog?.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="col-xl-3 col-6">
+        <label for="Facultad">Facultad</label>
+        <p-dropdown
+          id="Facultad"
+          [options]="facultyList"
+          [(ngModel)]="facultySelect"
+          [showClear]="true"
+          placeholder="Seleccione una facultad"
+          [group]="false"
+          [filter]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+          (onChange)="loadPrograms()"
+        >
+          <ng-template let-catalog pTemplate="catalog">
+            <div class="flex align-items-center">
+              <span>{{ catalog?.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="col-xl-3 col-6">
+        <label for="Nivel">Nivel de formación</label>
+        <p-dropdown
+          id="Nivel"
+          [options]="levelList"
+          [(ngModel)]="levelSelect"
+          [showClear]="true"
+          placeholder="Seleccione nivel"
+          [group]="false"
+          [filter]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+          (onChange)="loadPrograms()"
+        >
+          <ng-template let-catalog pTemplate="catalog">
+            <div class="flex align-items-center">
+              <span>{{ catalog?.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="col-xl-3 col-6">
+        <label for="Modalidad">Modalidad</label>
+        <p-dropdown
+          id="Modalidad"
+          [options]="modalityList"
+          [(ngModel)]="modalitySelect"
+          [showClear]="true"
+          placeholder="Seleccione modalidad"
+          [group]="false"
+          [filter]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+          (onChange)="loadPrograms()"
+        >
+          <ng-template let-catalog pTemplate="catalog">
+            <div class="flex align-items-center">
+              <span>{{ catalog?.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="mt-2 container-programs">
+      <div class="col-xl-6 col-12 mb-4 me-2" *ngFor="let program of listPrograms">
+        <p-card>
+          <div class="subtitle_card">Medicina</div>
+          <div class="row">
+            <div class="col-4 label-prop">TÍTULO QUE EXPIDE</div>
+            <div class="col-8 text-info-program">
+              {{ program.name }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4 label-prop">CRÉDITOS</div>
+            <div class="col-8 text-info-program">
+              {{ program.credits }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4 label-prop">DURACIÓN</div>
+            <div class="col-8 text-info-program">
+              {{ program.duration }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4 label-prop">JORNADA</div>
+            <div class="col-8 text-info-program">
+              {{ program.schedule }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4 label-prop">MODALIDAD</div>
+            <div class="col-8 text-info-program">
+              {{ program.modalityList }}
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-6 label-snies">SNIES {{ program.sinies }}</div>
+            <div class="col-6">
+              <button pButton class="p-button-primary">Conoce más</button>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</p-card>

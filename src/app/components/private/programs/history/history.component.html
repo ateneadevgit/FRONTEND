@@ -1,0 +1,45 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/elements-content -->
+<p-timeline [value]="events" align="alternate" styleClass="customized-timeline">
+  <ng-template pTemplate="marker" let-event>
+    <span class="custom-marker shadow-2 rounded-timeline" [style.backgroundColor]="event.color">
+      <!--  <i [ngClass]="event.icon"></i> -->
+    </span>
+  </ng-template>
+  <ng-template pTemplate="content" let-event>
+    <p-card>
+      <h6 class="timeline-title">{{ event?.setRole?.nameRole }}</h6>
+      <p>{{ event?.feedbackDate | date: 'dd/MM/yyyy HH:mm:ss' : 'UTC+5' }}</p>
+      <button
+        class="status"
+        [ngClass]="{
+          send: event?.status === 3,
+          review: event?.status === 4,
+          rejected: event?.status === 5,
+          requested: event?.status === 6,
+          approved: event?.status === 7
+        }"
+      >
+        {{ event?.setStatus?.catalogItemName }}
+      </button>
+
+      <div class="row mt-4">
+        <div class="col-md-9">
+          {{ event?.fileRoute | slice: -20 }}
+        </div>
+        <div class="col-md-3 text-end">
+          <i class="pi pi-eye" (click)="viewDocument(event?.fileRoute)"></i>
+          <i class="pi pi-cloud-download" (click)="downloadDocument(event?.fileRoute)"></i>
+        </div>
+      </div>
+    </p-card>
+
+    <app-preview-document
+      *ngIf="previewDocument"
+      [visible]="visible"
+      (closeModal)="closeModal($event)"
+      [previewDocument]="previewDocument"
+    ></app-preview-document>
+  </ng-template>
+</p-timeline>

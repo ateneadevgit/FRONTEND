@@ -1,0 +1,25 @@
+@import '../../../../../assets/styles/abstracts/variables';
+
+.breadcrumb {
+  color: $color-quick-silver;
+  font-size: 12px;
+  a {
+    color: $color-quick-silver;
+    font-weight: bold;
+  }
+  span {
+    color: $color-quick-silver;
+    font-weight: bold;
+  }
+
+  .pi-angle-right {
+    margin-top: 2px;
+  }
+}
+
+.info-alert {
+  font-size: 12px;
+  color: $color-jelly-bean-blue;
+  line-height: 0.2px;
+  text-align: justify;
+}

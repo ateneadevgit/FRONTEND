@@ -1,0 +1,9 @@
+<app-study-plan
+  *ngIf="objStudyPlan.length > 0"
+  [editModule]="true"
+  [isEditable]="true"
+  [monitoringEdit]="true"
+  [data]="objStudyPlan"
+  (updateObject)="setUpdateObject($event)"
+>
+</app-study-plan>

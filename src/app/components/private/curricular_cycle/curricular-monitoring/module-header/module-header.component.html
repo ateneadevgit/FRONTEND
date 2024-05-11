@@ -1,0 +1,17 @@
+<div class="row d-flex justify-content-between">
+  <div class="col-md-6">
+    <h6
+      [routerLink]="
+        '/' + routerApp.CURRICULAR_CYCLE + '/' + routerApp.CURRICULAR_MONITORING + '/' + programId
+      "
+    >
+      <span class="pi pi-arrow-left"></span>
+      <div *ngIf="module">{{ module.name }} {{ module.moduleId }}</div>
+    </h6>
+  </div>
+  <div class="col-md-4 align-button">
+    <button pButton pRipple class="btn btn-primary" (click)="downloadDocument()">
+      Descargar instrumento
+    </button>
+  </div>
+</div>

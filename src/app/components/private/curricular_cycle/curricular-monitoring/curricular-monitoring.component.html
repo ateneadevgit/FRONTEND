@@ -1,0 +1,84 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+
+<h6>Monitoreo curricular</h6>
+
+<form [formGroup]="formCurricularMonitoring">
+  <div class="row d-flex justify-content-between">
+    <div class="col-md-4 mt-2">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Programa</label>
+        <p-dropdown
+          [options]="programs"
+          formControlName="programOpt"
+          placeholder="Seleccione programa"
+          [group]="false"
+          [filter]="true"
+          [showClear]="true"
+          filterBy="name"
+          optionLabel="name"
+          (onChange)="selectProgram()"
+        >
+          <ng-template let-program pTemplate="program">
+            <div class="flex align-items-center">
+              <span>{{ program.name }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <small
+          class="error"
+          *ngIf="formControls['programOpt'].errors && formControls['programOpt'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+    <div
+      class="col-md-4 mt-4 d-flex justify-content-end"
+      *ngIf="programSelect && formControls['programOpt'].value && programModules.length > 0"
+    >
+      <button
+        pButton
+        pRipple
+        class="btn btn-warning margin-zero"
+        *ngIf="
+          (role === RoleEnum.VICERRECTOR || role === RoleEnum.DECANO) &&
+          _EnumTypeProgram.FORMAL === programSelect.idTypeFormation
+        "
+        (click)="openDialogEditActive()"
+      >
+        Solicitar actualización
+      </button>
+    </div>
+  </div>
+</form>
+
+<div class="row mt-2" *ngIf="formControls['programOpt'].value && programModules.length > 0">
+  <div class="col-14 col-md-3" *ngFor="let item of programModules">
+    <div class="mt-2 button-padding">
+      <button
+        pButton
+        pRipple
+        class="btn btn-primary p-4 w-100 h-100"
+        (click)="navigateProgramModule(item)"
+      >
+        {{ item.name }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  [header]=""
+  [(visible)]="activeEditProgram"
+  [resizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  [style]="{ width: '60vw' }"
+>
+  <app-dialog-active-edit
+    [idProgram]="idProgram"
+    *ngIf="activeEditProgram"
+  ></app-dialog-active-edit>
+</p-dialog>

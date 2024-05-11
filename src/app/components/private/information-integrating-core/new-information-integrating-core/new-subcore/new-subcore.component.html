@@ -1,0 +1,82 @@
+<!-- eslint-disable @angular-eslint/template/alt-text -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div *ngIf="optView === 1" class="row mt-2">
+  <div class="row mt-2">
+    <div class="col-md-8">
+      <button pButton pRipple class="btn btn-primary mx-2">
+        Total créditos: {{ curriculumNif?.totalCredits }}
+      </button>
+      <button pButton pRipple class="btn btn-primary mx-2">
+        Total asignaturas: {{ curriculumNif?.totalSubject }}
+      </button>
+    </div>
+    <div class="col-md-4 text-end" *ngIf="roleType.VICERRECTOR === role">
+      <button pButton pRipple class="btn btn-warning" (click)="openCreateEditSubCore()">
+        Crear subnúcleo
+      </button>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <p-card
+      *ngFor="let item of curriculumNif?.subjects; let i = index"
+      class="col-md-4 mt-4"
+      [style]="{ width: '100%' }"
+      styleClass="p-card-shadow"
+    >
+      <ng-template pTemplate="header">
+        <div class="contenedor">
+          <div class="top-btns-actions">
+            <div
+              class="row d-flex justify-content-around mt-2"
+              *ngIf="roleType.VICERRECTOR === role"
+            >
+              <div class="col-12 col-md-12 text-end">
+                <i
+                  class="pi pi-check-square icon-edit"
+                  (click)="openCreateEditSubCore(item?.curriculumId)"
+                ></i>
+              </div>
+            </div>
+          </div>
+          <img alt="Card" class="imagen-fondo" [src]="imagenes[i % imagenes.length]" />
+        </div>
+      </ng-template>
+      <div class="row my-0">
+        <h4 class="card-size-title">{{ item.name }}</h4>
+        <p class="">NIFS</p>
+        <p>
+          Créditos: {{ item.numberCredits }}
+          <br />
+          Semestre: {{ item.subjectRequest.semester }}
+        </p>
+      </div>
+      <ng-template class="my-0" pTemplate="footer">
+        <button
+          pButton
+          pRipple
+          class="btn btn-secondary"
+          (click)="openSubCoreView(item.curriculumId, i)"
+        >
+          Ir al subnúcleo
+        </button>
+      </ng-template>
+    </p-card>
+  </div>
+</div>
+
+<div class="row" *ngIf="optView === 2">
+  <app-create-subcore
+    [subCoreIdEdit]="subCoreIdEdit"
+    (closeComponent)="closeComponent()"
+  ></app-create-subcore>
+</div>
+
+<div class="row mt-2" *ngIf="optView === 3">
+  <app-view-subcore
+    [subCoreId]="subCoreIdView"
+    [imageSubCore]="imageSubCore"
+    (closeComponent)="closeComponent()"
+  ></app-view-subcore>
+</div>

@@ -1,0 +1,398 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<br />
+<ol class="breadcrumb">
+  <ng-container *ngFor="let item of breadcrumbItems; let last = last; let index = index">
+    <li class="breadcrumb-item" [ngClass]="{ active: last }">
+      <a *ngIf="!last" [routerLink]="item.routerLink">{{ item.label }}</a>
+      <span *ngIf="last">{{ item.label }}</span>
+    </li>
+    <span *ngIf="!last"> <i class="pi pi-angle-right"></i> </span>
+  </ng-container>
+</ol>
+
+<h6>Flujos de creación</h6>
+
+<div class="row">
+  <div class="col-12">
+    <label class="flow-name" htmlFor="">{{ currentFlow?.name }}</label>
+    <br />
+    <span class="flow-description">{{ currentFlow?.description }}</span>
+  </div>
+</div>
+
+<div class="row d-flex justify-content-end">
+  <div class="col-md-2 d-flex justify-content-end py-2">
+    <button class="btn btn-primary" (click)="openCreateStep()">Crear paso</button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div>
+      <div class="mt-2 shadow-table">
+        <p-table
+          [value]="workflowStepList || []"
+          [paginator]="workflowStepList.length > 6"
+          [rows]="6"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="border-left text-center" style="width: 10%">Orden del paso</th>
+              <th>Nombre</th>
+              <th class="text-center">Paso imprescindible</th>
+              <th class="text-center">Resumen</th>
+              <th style="width: 5%"></th>
+              <th style="width: 5%"></th>
+              <th style="width: 5%"></th>
+              <th style="width: 10%" class="border-right"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td class="text-center">{{ item.orderStep }}</td>
+              <td class="colored-item">{{ item.name }}</td>
+              <td class="text-center">
+                <p-checkbox
+                  [(ngModel)]="item.isRequired"
+                  [binary]="item.isRequired"
+                  inputId="binary"
+                  [disabled]="true"
+                ></p-checkbox>
+              </td>
+              <td class="text-center">
+                <p-checkbox
+                  [(ngModel)]="item.hasSummary"
+                  [binary]="item.hasSummary"
+                  inputId="binary"
+                  [disabled]="true"
+                ></p-checkbox>
+              </td>
+              <td class="text-center">
+                <div
+                  *ngIf="item.minimumRequired !== null"
+                  class="rounded-icon"
+                  (click)="openStepTemplate(item)"
+                >
+                  <i class="pi pi-paperclip"></i>
+                </div>
+                <div *ngIf="item.minimumRequired === null" (click)="openStepTemplate(item)">
+                  <i class="pi pi-link"></i>
+                </div>
+              </td>
+              <td>
+                <i class="pi pi-eye" (click)="openViewStep(item)"></i>
+              </td>
+              <td>
+                <i class="pi pi-pencil" (click)="openUpdateStep(item)"></i>
+              </td>
+              <td class="d-flex">
+                <p-inputSwitch
+                  [(ngModel)]="item.enabled"
+                  (click)="disableEnableStep(item)"
+                ></p-inputSwitch>
+                <span class="py-1 active-label">{{ item.enabled ? 'Activo' : 'Inactivo' }}</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <div class="text-center mt-2" *ngIf="(workflowStepList || []).length === 0">
+        <p>No se encontraron resultados...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  [header]="popupTemplate"
+  [(visible)]="stepTemplateKey"
+  [style]="{ width: '40%' }"
+  [resizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  (onHide)="cleanTemplateForm()"
+>
+  <div class="row pop-up-margin" *ngIf="currentStep">
+    <div class="row">
+      <div class="col-6">
+        <label htmlFor="">Nombre</label>
+        <br />
+        <span>{{ currentStep.name }}</span>
+      </div>
+      <div class="col-2">
+        <label htmlFor="">Orden</label>
+        <br />
+        <span>{{ currentStep.orderStep }}</span>
+      </div>
+      <div class="col-4">
+        <label htmlFor="" class="apply_template">Aplica</label>
+        <p-checkbox
+          [binary]="true"
+          [(ngModel)]="checkIsPriority"
+          inputId="binary"
+          [ngModelOptions]="{ standalone: true }"
+        ></p-checkbox>
+      </div>
+    </div>
+    <div class="row">
+      <div class="row" *ngIf="checkIsPriority">
+        <div class="col-12 py-4">
+          <div class="flex flex-column gap-2">
+            <div class="card-html">
+              <app-editor
+                (createHtml)="createHtml($event)"
+                [htmlText]="currentStep.minimumRequired || ''"
+              ></app-editor>
+            </div>
+            <p class="error-message">Límite máximo de 10000 caracteres</p>
+            <small class="error" *ngIf="contentSize > 10000">
+              * Campo no debe sobrepasar los 10000 caracteres.
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 text-center py-2">
+          <button class="btn btn-primary" (click)="createTemplate()">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog
+  header="Creación de paso"
+  [(visible)]="createStepKey"
+  [style]="{ width: '60%' }"
+  [resizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  (onHide)="cleanStepForm()"
+>
+  <div class="row pop-up-margin">
+    <form [formGroup]="formStep">
+      <div class="col-12">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Nombre</label>
+          <input pInputText formControlName="name" class="ng-invalid" />
+          <small
+            class="error"
+            *ngIf="formStepControls['name'].errors && formStepControls['name'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+        <div class="row py-4">
+          <div class="col-4">
+            <label htmlFor="">Orden</label>
+            <br />
+            <p-inputNumber formControlName="order" class="ng-invalid"></p-inputNumber>
+            <small
+              class="error"
+              *ngIf="formStepControls['order'].errors && formStepControls['order'].invalid"
+            >
+              * Campo debe ser un número positivo
+            </small>
+          </div>
+          <div class="col-4">
+            <label htmlFor="">Paso prerrequisito</label>
+            <br />
+            <p-checkbox
+              inputId="binary"
+              [binary]="true"
+              [(ngModel)]="isPrerrequirement"
+              [ngModelOptions]="{ standalone: true }"
+            ></p-checkbox>
+            <br />
+            <span class="prerre-label"
+              >Los prerrequisitos son condiciones previas que deben cumplirse antes de iniciar o
+              llevar a cabo el desarrollo del flujo.</span
+            >
+          </div>
+          <div class="col-4">
+            <label htmlFor="">Resumen</label>
+            <br />
+            <p-checkbox
+              inputId="binary"
+              [binary]="true"
+              [(ngModel)]="hasSummary"
+              [ngModelOptions]="{ standalone: true }"
+            ></p-checkbox>
+          </div>
+        </div>
+        <hr />
+        <div class="row">
+          <div class="col-6">
+            <label htmlFor="">Rol y acciones asociadas al paso</label>
+            <p-dropdown
+              [options]="roleList"
+              formControlName="role"
+              placeholder="Seleccione el rol"
+              [filter]="true"
+              [showClear]="true"
+              [group]="false"
+              filterBy="nameRole"
+              optionLabel="nameRole"
+              appendTo="body"
+              (onChange)="changeRole($event)"
+            >
+              <ng-template let-item pTemplate="item">
+                <div class="flex align-items-center">
+                  <span>{{ item.nameRole }}</span>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </div>
+        </div>
+        <div class="row py-2" *ngIf="actionList.length > 0">
+          <div class="col-12">
+            <div class="row mt-4">
+              <label htmlFor="">Acciones</label>
+              <div class="col-md-3 mt-3" *ngFor="let item of actionList">
+                <div class="row d-flex">
+                  <div class="col-1">
+                    <p-checkbox
+                      [binary]="true"
+                      [(ngModel)]="item.isSelected"
+                      inputId="binary"
+                      (onChange)="addActionToRole(item)"
+                      [ngModelOptions]="{ standalone: true }"
+                    ></p-checkbox>
+                  </div>
+                  <div class="col-10">
+                    <label htmlFor="">{{ item?.actionName }}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 py-4 text-center">
+              <button class="btn btn-primary button-center" (click)="asociateRoleAndAction()">
+                Asociar
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="roleAction.length > 0">
+          <div *ngFor="let item of roleAction">
+            <div class="row mt-2">
+              <div class="col-12 p-button-accordion">
+                <div class="card card-accordion">
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="row">
+                        <div class="col-12">
+                          <i
+                            class="pi"
+                            [ngClass]="!item?.expanded ? 'pi-chevron-right' : 'pi-chevron-down'"
+                            style="font-size: 1rem"
+                            (click)="openCloseExpandedReqUpdate(item)"
+                          ></i>
+                          {{ item.role?.nameRole }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6 text-end">
+                      <i
+                        class="pi pi-pencil icon-edit mx-1"
+                        style="font-size: 1rem"
+                        (click)="openUpdateRoleActionRelation(item)"
+                      ></i>
+                      <i
+                        class="pi pi-trash"
+                        style="font-size: 1rem"
+                        (click)="deleteRoleActionRelation(item)"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row collapse" [ngClass]="{ show: item?.expanded }">
+              <div class="col-12">
+                <div class="content-accordion" style="margin-top: -50px">
+                  <div class="row mt-4">
+                    <div class="col-md-3 mt-3" *ngFor="let action of item.actionIds">
+                      <div class="row d-flex">
+                        <div class="col-1">
+                          <p-checkbox
+                            [binary]="true"
+                            [(ngModel)]="action.isSelected"
+                            inputId="binary"
+                            [ngModelOptions]="{ standalone: true }"
+                            [disabled]="!updateRoleActionRelationKey"
+                          ></p-checkbox>
+                        </div>
+                        <div class="col-10">
+                          <label htmlFor="">{{ action?.actionName }}</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row d-flex justify-content-end">
+                    <div class="col-md-2 d-flex justify-content-end py-2">
+                      <button
+                        class="btn btn-primary"
+                        *ngIf="updateRoleActionRelationKey"
+                        (click)="updateRoleActionRelation(item)"
+                      >
+                        Guardar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="row">
+    <div class="col-12 py-4 text-center">
+      <button class="btn btn-primary" (click)="createStep()">Crear</button>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog
+  header="Paso"
+  [(visible)]="viewStepKey"
+  [style]="{ width: '60%' }"
+  [resizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  *ngIf="viewStepKey === true"
+  (onHide)="cleanTemplateForm()"
+>
+  <div class="row pop-up-margin">
+    <app-view-step [stepId]="currentStep?.stepId || 0" [workflowId]="currentFlow?.workflowId || 0">
+    </app-view-step>
+  </div>
+</p-dialog>
+
+<p-dialog
+  header="Actualización de paso"
+  [(visible)]="updateStepKey"
+  [style]="{ width: '60%' }"
+  [resizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  *ngIf="updateStepKey === true"
+  (onHide)="cleanTemplateForm()"
+>
+  <div class="row pop-up-margin">
+    <app-update-step
+      [stepId]="currentStep?.stepId || 0"
+      [workflowId]="currentFlow?.workflowId || 0"
+      (succesCreate)="closeModalUpdateStep()"
+    >
+    </app-update-step>
+  </div>
+</p-dialog>

@@ -1,0 +1,283 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="row">
+  <form [formGroup]="formCreateEvent">
+    <div class="row container" *ngIf="isRequiredField('eventType')">
+      <div class="col-md-5">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="username">Tipo de evento</label>
+          <p-dropdown
+            [options]="eventTypes"
+            formControlName="eventType"
+            placeholder="Seleccione tipo de evento"
+            [group]="false"
+            [filter]="false"
+            [showClear]="false"
+            filterBy="catalogItemName"
+            optionLabel="catalogItemName"
+            (onChange)="changeEventType()"
+          >
+            <ng-template let-eventType pTemplate="eventType">
+              <div class="flex align-items-center">
+                <span>{{ eventType.catalogItemName }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small
+            class="error"
+            *ngIf="formControls['eventType'].errors && formControls['eventType'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+    </div>
+    <div class="row container" *ngIf="isRequiredField('docentOpt')">
+      <div *ngFor="let item of docentEvents" class="col-md-4 field-checkbox">
+        <p-radioButton
+          [inputId]="item.catalogItemName"
+          [value]="item"
+          formControlName="docentOpt"
+          (onClick)="changeDocentOpt()"
+        ></p-radioButton>
+        <label [for]="item.catalogItemName" class="ml-2">{{ item.catalogItemName }}</label>
+      </div>
+    </div>
+
+    <div class="row container">
+      <div class="col-md-5" *ngIf="isRequiredField('facultyId')">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="username">Facultad</label>
+          <p-dropdown
+            formControlName="facultyId"
+            [options]="faculties"
+            placeholder="Seleccione facultad"
+            [group]="false"
+            [filter]="true"
+            [showClear]="true"
+            filterBy="catalogItemName"
+            optionLabel="catalogItemName"
+            (onChange)="loadProgramByFaculty()"
+          >
+            <ng-template let-factulty pTemplate="factulty">
+              <div class="flex align-items-center">
+                <span>{{ factulty.catalogItemName }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small
+            class="error"
+            *ngIf="formControls['facultyId'].errors && formControls['facultyId'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+
+      <div class="col-md-4" *ngIf="isRequiredField('program')">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="username">Programa</label>
+          <p-dropdown
+            [options]="programs"
+            formControlName="program"
+            placeholder="Seleccione programa"
+            [group]="false"
+            [filter]="true"
+            [showClear]="true"
+            filterBy="name"
+            optionLabel="name"
+          >
+            <ng-template let-program pTemplate="program">
+              <div class="flex align-items-center">
+                <span>{{ program.name }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small
+            class="error"
+            *ngIf="formControls['program'].errors && formControls['program'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="row container">
+      <div class="col-md-10">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Título de evento</label>
+          <input
+            pInputText
+            placeholder="Título"
+            formControlName="tittle"
+            [maxlength]="100"
+            class="ng-invalid"
+          />
+          <small
+            class="error"
+            *ngIf="formControls['tittle'].errors && formControls['tittle'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="row container">
+      <div class="col-md-3">
+        <label for="startDate" class="w-100">Fecha de inicio</label>
+        <p-calendar
+          formControlName="startDate"
+          placeholder="Fecha inicio"
+          dateFormat="dd/mm/yy"
+          [maxDate]="formControls['endDate'].value"
+          appendTo="body"
+        ></p-calendar>
+        <small
+          class="error"
+          *ngIf="
+            formControls['startDate'].touched && formControls['startDate']?.hasError('required')
+          "
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+
+      <div class="col-md-3">
+        <label htmlFor="username">Fecha de cierre</label>
+        <p-calendar
+          formControlName="endDate"
+          placeholder="Fecha cierre"
+          dateFormat="dd/mm/yy"
+          [minDate]="formControls['startDate'].value"
+          appendTo="body"
+        ></p-calendar>
+        <small
+          class="error"
+          *ngIf="formControls['endDate'].touched && formControls['endDate']?.hasError('required')"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+
+      <div class="col-md-4 mt-4">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="username"></label>
+          <p-dropdown
+            [options]="repetTypes"
+            formControlName="repetition"
+            placeholder="Recurrencia del evento"
+            [group]="false"
+            [filter]="false"
+            [showClear]="false"
+            filterBy="catalogItemName"
+            optionLabel="catalogItemName"
+          >
+            <ng-template let-repetition pTemplate="repetition">
+              <div class="flex align-items-center">
+                <span>{{ repetition.catalogItemName }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small
+            class="error"
+            *ngIf="formControls['repetition'].errors && formControls['repetition'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="row container">
+      <div class="col-md-4">
+        <label for="label">Hora inicial</label>
+        <br />
+        <p-calendar
+          [placeholder]="'Hora inicial'"
+          formControlName="startHour"
+          [showTime]="true"
+          hourFormat="12"
+          [timeOnly]="true"
+          appendTo="body"
+        >
+        </p-calendar>
+        <small
+          class="error"
+          *ngIf="formControls['startHour'].errors && formControls['startHour'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+
+      <div class="col-md-4">
+        <label for="label">Hora final</label>
+        <br />
+        <p-calendar
+          [placeholder]="'Hora final'"
+          formControlName="endHour"
+          [showTime]="true"
+          hourFormat="12"
+          [timeOnly]="true"
+          inicial
+        >
+        </p-calendar>
+        <small
+          class="error"
+          *ngIf="formControls['endHour'].errors && formControls['endHour'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+
+    <div class="row container">
+      <div class="col-md-10">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Nota</label>
+          <input
+            pInputText
+            placeholder="Nota"
+            formControlName="feedback"
+            [maxlength]="255"
+            class="ng-invalid"
+          />
+          <small
+            class="error"
+            *ngIf="formControls['feedback'].errors && formControls['feedback'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+
+      <div class="col-md-10">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Link evento</label>
+          <input
+            pInputText
+            placeholder="Link"
+            formControlName="eventUrl"
+            [maxlength]="200"
+            class="ng-invalid"
+          />
+          <small
+            class="error"
+            *ngIf="formControls['eventUrl'].errors && formControls['eventUrl'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-12 text-center">
+        <button class="btn btn-primary" *ngIf="!editEvent" (click)="sendEvent()">Crear</button>
+
+        <button class="btn btn-primary" *ngIf="editEvent" (click)="updateEvent()">Guardar</button>
+      </div>
+    </div>
+  </form>
+</div>

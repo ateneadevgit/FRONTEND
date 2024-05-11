@@ -1,0 +1,14 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<p-card class="container-card">
+  <div class="subtitle-card-dashboard">Mi progreso en el programa académico</div>
+  <canvas #pieChartCanvas width="200" height="200"></canvas>
+  <div class="blue-section" (click)="redirect()">
+    <div class="d-flex justify-content-center credit-label">
+      Créditos académicos:
+      <span class="credit-content">
+        {{ ' ' + dataStudent?.doneCredits }} acumulados / {{ dataStudent?.totalCredits }}</span
+      >
+    </div>
+  </div>
+</p-card>

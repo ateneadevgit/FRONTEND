@@ -1,0 +1,179 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="row">
+  <form [formGroup]="formCreateEvent">
+    <div class="row container">
+      <div class="col-md-10">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Título de evento</label>
+          <input pInputText formControlName="tittle" [maxlength]="100" class="ng-invalid" />
+          <small
+            class="error"
+            *ngIf="formControls['tittle'].errors && formControls['tittle'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="row container">
+      <div class="col-md-3">
+        <label for="startDate" class="w-100">Fecha de inicio</label>
+        <p-calendar
+          formControlName="startDate"
+          placeholder="Fecha inicio"
+          [maxDate]="formControls['endDate'].value"
+          dateFormat="dd/mm/yy"
+          appendTo="body"
+        ></p-calendar>
+        <small
+          class="error"
+          *ngIf="
+            formControls['startDate'].touched && formControls['startDate']?.hasError('required')
+          "
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+
+      <div class="col-md-3">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="username">Fecha de cierre</label>
+          <p-calendar
+            formControlName="endDate"
+            placeholder="Fecha inicio"
+            dateFormat="dd/mm/yy"
+            [minDate]="formControls['startDate'].value"
+            appendTo="body"
+          ></p-calendar>
+          <small
+            class="error"
+            *ngIf="formControls['endDate'].touched && formControls['endDate']?.hasError('required')"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+
+      <div class="col-md-4 mt-4">
+        <div class="flex flex-column gap-2">
+          <p-dropdown
+            [options]="repetTypes"
+            formControlName="repetition"
+            placeholder="Recurrencia del evento "
+            [group]="false"
+            [filter]="false"
+            [showClear]="false"
+            filterBy="catalogItemName"
+            optionLabel="catalogItemName"
+          >
+            <ng-template let-repetition pTemplate="repetition">
+              <div class="flex align-items-center">
+                <span>{{ repetition.catalogItemName }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small
+            class="error"
+            *ngIf="formControls['repetition'].errors && formControls['repetition'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="row container">
+      <div class="col-md-4">
+        <div class="flex flex-column gap-2">
+          <label for="label">Hora inicial</label>
+          <br />
+          <p-calendar
+            placeholder="Hora inicial"
+            formControlName="startHour"
+            [showTime]="true"
+            hourFormat="12"
+            [timeOnly]="true"
+            appendTo="body"
+          >
+          </p-calendar>
+          <small
+            class="error"
+            *ngIf="formControls['startHour'].errors && formControls['startHour'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="flex flex-column gap-2">
+          <label for="label">Hora final</label>
+          <br />
+          <p-calendar
+            placeholder="Hora final"
+            formControlName="endHour"
+            [showTime]="true"
+            hourFormat="12"
+            [timeOnly]="true"
+            appendTo="body"
+          >
+          </p-calendar>
+          <small
+            class="error"
+            *ngIf="formControls['endHour']?.hasError('required') && formControls['endHour'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="row container">
+      <div class="col-md-10">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Nota</label>
+          <input
+            pInputText
+            placeholder="Nota"
+            formControlName="feedback"
+            [maxlength]="255"
+            class="ng-invalid"
+          />
+          <small
+            class="error"
+            *ngIf="formControls['feedback'].errors && formControls['feedback'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+
+      <div class="col-md-10">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Link evento</label>
+          <input
+            pInputText
+            placeholder="Link"
+            formControlName="eventUrl"
+            [maxlength]="200"
+            class="ng-invalid"
+          />
+          <small
+            class="error"
+            *ngIf="formControls['eventUrl'].errors && formControls['eventUrl'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-12 text-center">
+        <button class="btn btn-primary" (click)="sendEvent()">Crear</button>
+      </div>
+    </div>
+  </form>
+</div>

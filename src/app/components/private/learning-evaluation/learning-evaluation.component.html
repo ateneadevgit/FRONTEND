@@ -1,0 +1,675 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/elements-content -->
+<div class="row">
+  <div class="p-d-flex p-ai-center">
+    <h2 class="title-page">Evaluación de aprendizaje</h2>
+    <p>
+      Analice, cree y actualice las evaluaciones idóneas para los componentes del plan de estudios
+      de programa académico asignado
+    </p>
+    <hr class="w-25" />
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12 col-md-3">
+    <label for="">Programa académico</label>
+    <p-dropdown
+      [options]="programs"
+      [(ngModel)]="selectProgram"
+      placeholder="Seleccione programa"
+      [group]="false"
+      [filter]="true"
+      [showClear]="false"
+      filterBy="name"
+      optionLabel="name"
+      (onChange)="loadChangeProgram()"
+    >
+      <ng-template let-factulty pTemplate="factulty">
+        <div class="flex align-items-center">
+          <span>{{ factulty.name }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+
+  <div class="col-12 col-md-3">
+    <label for="">Nivel</label>
+    <p-dropdown
+      [options]="levelList"
+      [(ngModel)]="selectLevel"
+      placeholder="Seleccione nivel"
+      [group]="false"
+      [filter]="true"
+      [showClear]="false"
+      filterBy="name"
+      optionLabel="name"
+      (onChange)="loadLearningEvaluation(); resetViewEstudent()"
+    >
+      <ng-template let-level pTemplate="level">
+        <div class="flex align-items-center">
+          <span>{{ level.name }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+</div>
+
+<div class="row mt-2" *ngIf="typeView === 0">
+  <!-- <p-table
+    [value]="learningEvaluationList"
+    dataKey="nametable"
+    [scrollable]="true"
+    *ngIf="resetExpanded === false"
+  >
+    <ng-template pTemplate="header">
+      <tr [style.width]="'100%'">
+        <th class="col-12 col-md-2">Nivel</th>
+        <th class="col-12 col-md-2 action-center">Título</th>
+        <th class="col-12 col-md-3 action-center">Módulo de evaluación</th>
+        <th class="col-12 col-md-3 action-center">Link Moodle</th>
+        <th class="col-12 col-md-2 action-center"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item let-expanded="expanded">
+      <tr>
+        <td>
+          <div
+            *ngIf="item.description !== null"
+            type="button"
+            (click)="onNodeExpand(item, expanded)"
+            [pRowToggler]="item"
+            style="cursor: pointer"
+          >
+            <i
+              [ngClass]="item?.expanded === true ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+              style="font-size: 1rem"
+            ></i>
+            {{ item.tittle }}
+          </div>
+          <div *ngIf="item.description === null">
+            {{ item.tittle }}
+          </div>
+        </td>
+        <td class="action-center"></td>
+        <td class="action-center"></td>
+        <td class="action-center">
+          <button
+            *ngIf="item.description === null && createUpdatePermissions.includes(role)"
+            pButton
+            pRipple
+            class="btn btn-secondary pt-1 pb-1 pl-2 pr-2"
+            (click)="openCurriculum(item, false)"
+          >
+            Crear
+          </button>
+        </td>
+        <td class="action-center"></td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="rowexpansion" let-item>
+      <tr *ngIf="item.expanded === true && item?.dataList" class="p-0 td-style">
+        <td class="td-style" colspan="5" *ngIf="item.dataList.description !== null">
+          <div class="row description-style">
+            <i
+              (click)="openCurriculum(item, true)"
+              class="pi pi-check-square icon-edit mx-1 text-end"
+            ></i>
+            <p>{{ item.dataList.description }}</p>
+          </div>
+          <div class="row p-0 m0">
+            <p-table [value]="item.dataList?.learningAssessmentList" class="pl-4">
+              <ng-template pTemplate="body" let-order>
+                <tr>
+                  <td class="col-14 col-md-2"></td>
+                  <td class="col-14 col-md-2">
+                    <h6 class="mt-0 mb-0 pt-0 pb-0" style="font-size: 1rem">{{ order?.tittle }}</h6>
+                  </td>
+                  <td class="col-14 col-md-3">{{ order?.evaluationMode }}</td>
+                  <td class="col-14 col-md-3 action-center" colspan="2">
+                    <a class="color-url-link m-0" [href]="order?.urlMoodle" target="_blank">{{
+                      order?.urlMoodle
+                    }}</a>
+                  </td>
+                  <td class="col-14 col-md-2 text-center">
+                    <i
+                      (click)="openViewLearnAssess(item, order)"
+                      class="pi pi-eye mx-1"
+                      style="cursor: pointer"
+                    ></i>
+                    <i
+                      (click)="openUpdateLevel(item, order)"
+                      class="pi pi-check-square icon-edit mx-1"
+                      *ngIf="createUpdatePermissions.includes(role)"
+                    ></i>
+                    <i
+                      class="text-end pi pi-trash icon-delete mx-1"
+                      *ngIf="createUpdatePermissions.includes(role)"
+                      (click)="deleteLearningAssessment(item, order)"
+                    ></i>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+            <div class="row mt-2">
+              <div class="col-12 col-md-12 text-end" *ngIf="createUpdatePermissions.includes(role)">
+                <button
+                  pButton
+                  pRipple
+                  class="btn btn-secondary pt-1 pb-1 pl-2 pr-2"
+                  (click)="openCreateLevel(item)"
+                >
+                  Crear evaluación
+                </button>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table> -->
+
+  <p-treeTable
+    [value]="treeNodeLearningEvaluationList"
+    [scrollable]="true"
+    dataKey="learning"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    (onNodeExpand)="onNodeExpand($event)"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Nivel</th>
+        <th class="action-center">Título</th>
+        <th class="action-center">Módulo de evaluación</th>
+        <th class="action-center">Link Moodle</th>
+        <th class="p-col-2 action-center"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+      <tr *ngIf="rowData.typeRow === 0">
+        <td>
+          <div *ngIf="rowData.description !== null" style="cursor: pointer">
+            <p-treeTableToggler
+              [rowNode]="rowNode"
+              *ngIf="rowData.typeRow === 0"
+            ></p-treeTableToggler>
+            {{ rowData.tittle }}
+          </div>
+
+          <div *ngIf="rowData.description === null">
+            {{ rowData.tittle }}
+          </div>
+        </td>
+        <td class="action-center"></td>
+        <td class="action-center"></td>
+        <td class="action-center">
+          <button
+            *ngIf="rowData.description === null && createUpdatePermissions.includes(role)"
+            pButton
+            pRipple
+            class="btn btn-secondary pt-1 pb-1 pl-2 pr-2"
+            (click)="openCurriculum(rowData, false)"
+          >
+            Crear
+          </button>
+        </td>
+        <td class="action-center"></td>
+      </tr>
+
+      <tr *ngIf="rowData.typeRow === 1">
+        <td colspan="5" *ngIf="rowData.dataList.description !== null">
+          <div class="row description-style">
+            <i
+              (click)="openCurriculum(rowData, true)"
+              class="pi pi-check-square icon-edit mx-1 text-end"
+            ></i>
+            <p>{{ rowData.dataList.description }}</p>
+          </div>
+        </td>
+      </tr>
+
+      <ng-container
+        *ngIf="rowData.typeRow === 1 && rowData?.dataList?.learningAssessmentList?.length > 0"
+      >
+        <tr *ngFor="let order of rowData?.dataList?.learningAssessmentList" class="td-style-border">
+          <td></td>
+          <td>
+            <h6 class="mt-0 mb-0 pt-0 pb-0" style="font-size: 1rem">{{ order?.tittle }}</h6>
+          </td>
+          <td>{{ order?.evaluationMode }}</td>
+          <td>
+            <a class="color-url-link" [href]="order?.urlMoodle" target="_blank">{{
+              order?.urlMoodle
+            }}</a>
+          </td>
+          <td class="text-center">
+            <i
+              (click)="openViewLearnAssess(rowData, order)"
+              class="pi pi-eye mx-1"
+              style="cursor: pointer"
+            ></i>
+            <i
+              (click)="openUpdateLevel(rowData, order)"
+              class="pi pi-check-square icon-edit mx-1"
+              *ngIf="createUpdatePermissions.includes(role)"
+            ></i>
+            <i
+              class="text-end pi pi-trash icon-delete mx-1"
+              *ngIf="createUpdatePermissions.includes(role)"
+              (click)="deleteLearningAssessment(rowData, order)"
+            ></i>
+          </td>
+        </tr>
+      </ng-container>
+
+      <tr
+        *ngIf="rowData.typeRow === 1 && rowData?.dataList?.learningAssessmentList?.length > 0"
+        class="td-style-border"
+      >
+        <td colspan="5" *ngIf="rowData.dataList.description !== null">
+          <div class="row mt-2">
+            <div class="col-12 col-md-12 text-end" *ngIf="createUpdatePermissions.includes(role)">
+              <button
+                pButton
+                pRipple
+                class="btn btn-secondary pt-1 pb-1 pl-2 pr-2"
+                (click)="openCreateLevel(rowData)"
+              >
+                Crear evaluación
+              </button>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-treeTable>
+</div>
+
+<div class="row" *ngIf="typeView === 1">
+  <div class="col-12 col-md-4 mt-2" *ngFor="let item of learningEvaluationList; let i = index">
+    <div class="card" [style.background-color]="getBackgroundColor(i)">
+      <div class="row">
+        <div class="col-12 mt-1">
+          <h4>{{ item.tittle }}</h4>
+        </div>
+        <div class="col-12 mt-2">
+          <p [style.color]="'#73767a'">{{ item.description }}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 mr-0 ml-0">
+          <button
+            pButton
+            pRipple
+            class="btn btn-secondary mt-2 mr-0 ml-0"
+            [style.margin-left]="'0px'"
+            (click)="redirectViewEstudent(item)"
+          >
+            Evaluaciónes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-2" *ngIf="typeView === 2">
+  <div class="col-12">
+    <h6>{{ this.viewlearningEvaluationSelect?.tittle }}</h6>
+  </div>
+  <div class="col-12 mt-2">
+    <p-table
+      [value]="this.viewlearningEvaluationSelect.dataList?.learningAssessmentList ?? []"
+      dataKey="id2"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="action-center">Título</th>
+          <th class="action-center">Modulo de evaluación</th>
+          <th class="action-center">Link Moodle</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-order>
+        <tr>
+          <td>{{ order?.tittle }}</td>
+          <td>{{ order?.evaluationMode }}</td>
+          <td class="action-center">
+            <a class="color-url-link" [href]="order?.urlMoodle" target="_blank">{{
+              order?.urlMoodle
+            }}</a>
+          </td>
+          <td>
+            <i
+              (click)="openViewLearnAssess(viewlearningEvaluationSelect, order)"
+              class="pi pi-eye mx-1"
+              style="cursor: pointer"
+            ></i>
+            <i
+              class="pi pi-download mx-1"
+              [style]="{ cursor: 'pointer' }"
+              (click)="downloadDocument(order)"
+            ></i>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="12" class="text-center">No se encontraron resultados...</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<p-dialog
+  [modal]="true"
+  [closable]="true"
+  header="Crear evaluación"
+  (close)="closeCreateLevel()"
+  [(visible)]="visibleCreateLevel"
+  [style]="{ width: '60%' }"
+>
+  <form [formGroup]="formLearningAssessment">
+    <div class="row mt-2">
+      <div class="col-12 col-md-6">
+        <label for="session">Título</label>
+        <input type="text" pInputText placeholder="" formControlName="tittle" [maxlength]="200" />
+        <small
+          class="error"
+          *ngIf="formControls.tittle.touched && formControls.tittle?.hasError('required')"
+          >Campo requerido.</small
+        >
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label for="urlMoodle" class="w-100">Link Moodle</label>
+        <input
+          type="text"
+          pInputText
+          placeholder=""
+          formControlName="urlMoodle"
+          [maxlength]="300"
+        />
+        <small
+          class="error"
+          *ngIf="formControls.urlMoodle.touched && formControls.urlMoodle?.hasError('required')"
+          >Campo requerido.</small
+        >
+      </div>
+
+      <div class="col-12 col-md-12">
+        <span class="p-insite-label">
+          <label for="evaluationMode">Modo de evaluación</label>
+          <textarea
+            id="evaluationMode"
+            rows="2"
+            style="resize: auto"
+            class="w-100"
+            pInputTextarea
+            placeholder=""
+            [readOnly]="false"
+            formControlName="evaluationMode"
+            [maxlength]="1000"
+          ></textarea>
+          <small
+            class="error"
+            *ngIf="
+              formControls.evaluationMode?.touched &&
+              formControls.evaluationMode?.hasError('required')
+            "
+            >Campo requerido.</small
+          >
+        </span>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          <div class="flex flex-column gap-2">
+            <label htmlFor="username">Rúbricas</label>
+            <br />
+            <input
+              type="file"
+              id="archivo"
+              name="archivo"
+              class="input-file"
+              [accept]="allowedExtension"
+              (change)="loadFile($event)"
+            />
+            <label for="archivo" class="btn">Adjuntar</label>
+            <small
+              class="error"
+              *ngIf="formControls.file?.touched && formControls.file?.hasError('required')"
+              >Campo requerido.</small
+            >
+          </div>
+        </div>
+        <div class="col-md-4 align-items-end">
+          <p>{{ fileName }}</p>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-12 text-end">
+        <button
+          pButton
+          pRipple
+          class="btn btn-secondary pt-1 pb-1 pl-2 pr-2"
+          (click)="sendToCreateLevel()"
+        >
+          Crear
+        </button>
+      </div>
+    </div>
+  </form>
+</p-dialog>
+
+<p-dialog
+  [modal]="true"
+  [closable]="true"
+  header="Editar evaluación"
+  (close)="closeUpdateLevel()"
+  [(visible)]="visibleUpdateLevel"
+  [style]="{ width: '60%' }"
+>
+  <form [formGroup]="formLearningAssessment">
+    <div class="row mt-2">
+      <div class="col-12 col-md-6">
+        <label for="session">Título</label>
+        <input type="text" pInputText placeholder="" formControlName="tittle" [maxlength]="200" />
+        <small
+          class="error"
+          *ngIf="formControls.tittle.touched && formControls.tittle?.hasError('required')"
+          >Campo requerido.</small
+        >
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label for="urlMoodle" class="w-100">Link Moodle</label>
+        <input
+          type="text"
+          pInputText
+          placeholder=""
+          formControlName="urlMoodle"
+          [maxlength]="300"
+        />
+        <small
+          class="error"
+          *ngIf="formControls.urlMoodle.touched && formControls.urlMoodle?.hasError('required')"
+          >Campo requerido.</small
+        >
+      </div>
+
+      <div class="col-12 col-md-12">
+        <span class="p-insite-label">
+          <label for="evaluationMode">Modo de evaluación</label>
+          <textarea
+            id="evaluationMode"
+            rows="2"
+            style="resize: auto"
+            class="w-100"
+            pInputTextarea
+            placeholder=""
+            [readOnly]="false"
+            formControlName="evaluationMode"
+            [maxlength]="1000"
+          ></textarea>
+          <small
+            class="error"
+            *ngIf="
+              formControls.evaluationMode?.touched &&
+              formControls.evaluationMode?.hasError('required')
+            "
+            >Campo requerido.</small
+          >
+        </span>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          <div class="flex flex-column gap-2">
+            <label htmlFor="username">Rúbricas</label>
+            <br />
+            <input
+              type="file"
+              id="archivo"
+              name="archivo"
+              class="input-file"
+              [accept]="allowedExtension"
+              (change)="loadFile($event)"
+            />
+            <label for="archivo" class="btn">Adjuntar</label>
+            <small
+              class="error"
+              *ngIf="formControls.file?.touched && formControls.file?.hasError('required')"
+              >Campo requerido.</small
+            >
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <p>{{ fileName }}</p>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-12 text-end">
+        <button
+          pButton
+          pRipple
+          class="btn btn-secondary pt-1 pb-1 pl-2 pr-2"
+          (click)="sendToEditLevel()"
+        >
+          Guardar
+        </button>
+      </div>
+    </div>
+  </form>
+</p-dialog>
+
+<p-dialog
+  [modal]="true"
+  [closable]="true"
+  [header]="this.selectCurriculum?.tittle"
+  (close)="closeCurriculum()"
+  [(visible)]="visibleCurriculum"
+  [style]="{ width: '60%' }"
+>
+  <form [formGroup]="formCurriculum">
+    <div class="row mt-2">
+      <div class="col-12 col-md-12">
+        <span class="p-insite-label">
+          <label for="description">Descripción</label>
+          <textarea
+            id="description"
+            rows="2"
+            style="resize: auto"
+            class="w-100"
+            pInputTextarea
+            placeholder=""
+            [readOnly]="false"
+            formControlName="description"
+            [maxlength]="300"
+          ></textarea>
+          <small
+            class="error"
+            *ngIf="
+              formCurriculum.controls.description?.touched &&
+              formCurriculum.controls.description?.hasError('required')
+            "
+            >Campo requerido.</small
+          >
+        </span>
+      </div>
+
+      <div class="col-12 col-md-12 text-end mt-2">
+        <button
+          pButton
+          pRipple
+          class="btn btn-secondary pt-1 pb-1 pl-2 pr-2"
+          (click)="sendToCurriculum()"
+        >
+          {{ this.selectCurriculum?.description === null ? 'Siguiente' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+  </form>
+</p-dialog>
+
+<p-dialog
+  *ngIf="selectViewLearningAssess"
+  [modal]="true"
+  [closable]="true"
+  [header]="selectProgram?.name || ''"
+  (close)="closeViewLearnAssess()"
+  [(visible)]="visibleViewLearnAssess"
+  [style]="{ width: '60%' }"
+>
+  <div class="row">
+    <div class="col-12 col-md-12 p-d-flex p-ai-center">
+      <h3 class="title-page">{{ selectViewLearningAssess?.curriculumName }}</h3>
+    </div>
+
+    <div class="col-12 col-md-12">
+      <label for="link"
+        >Link:
+        <a class="color-url-link" [href]="selectViewLearningAssess?.urlMoodle" target="_blank">{{
+          selectViewLearningAssess?.urlMoodle
+        }}</a></label
+      >
+    </div>
+
+    <div class="col-12 col-md-12">
+      <h4 class="title-page">{{ selectViewLearningAssess?.tittle }}</h4>
+    </div>
+
+    <div class="col-12 col-md-12">
+      <label for="evaluationMode">Modo de evaluación</label>
+      <p class="mt-2">{{ selectViewLearningAssess?.evaluationMode }}</p>
+    </div>
+
+    <div class="col-12 col-md-12">
+      <label for="file">Rubricas</label>
+      <iframe
+        class="mt-2"
+        *ngIf="selectViewLearningAssess.safePdfUrl"
+        [src]="selectViewLearningAssess?.safePdfUrl"
+        width="100%"
+        height="600px"
+        frameborder="0"
+      ></iframe>
+    </div>
+  </div>
+</p-dialog>
+
+<p-confirmDialog #confirmdialog key="confirm-delete-dialog" [style]="{ width: '50vw' }">
+  <ng-template pTemplate="footer">
+    <button pButton class="btn-secondary" severity="secondary" (click)="confirmdialog.reject()">
+      Cancelar
+    </button>
+    <button pButton class="btn-danger" severity="secondary" (click)="confirmdialog.accept()">
+      Eliminar
+    </button>
+  </ng-template></p-confirmDialog
+>

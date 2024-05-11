@@ -1,0 +1,14 @@
+@import '../../../../../assets/styles/abstracts/variables';
+
+.multi-select {
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+}
+
+.icon-delete {
+  cursor: pointer;
+  color: $color-icon-delete;
+}
+.border-new {
+  border-right: 1px solid #afafaf;
+}

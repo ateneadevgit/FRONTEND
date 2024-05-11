@@ -1,0 +1,77 @@
+@import '../../../../../assets/styles/abstracts/variables';
+
+label {
+  span {
+    color: $color-quick-silver;
+  }
+}
+
+.pi-pencil {
+  color: $color-tangerine-yellow;
+}
+
+.error-message {
+  color: $color-quick-silver;
+  font-size: 12px;
+  &::before {
+    content: '*';
+    color: red;
+    margin-right: 5px;
+  }
+}
+
+.colored-item {
+  color: $color-indigo;
+  font-weight: bold;
+}
+
+.pop-up-margin {
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pi {
+  cursor: pointer;
+}
+
+.border-left {
+  border-top-left-radius: 10px;
+}
+
+.border-right {
+  border-top-right-radius: 10px;
+}
+
+td {
+  border-bottom: 1.5px solid rgba(128, 128, 128, 0.082);
+}
+
+.bread {
+  nav {
+    border: none;
+    color: $color-quick-silver;
+    background-color: red;
+  }
+}
+
+.breadcrumb {
+  color: $color-quick-silver;
+  font-size: 12px;
+  a {
+    color: $color-quick-silver;
+    font-weight: bold;
+  }
+  span {
+    color: $color-quick-silver;
+    font-weight: bold;
+  }
+
+  .pi-angle-right {
+    margin-top: 2px;
+  }
+}
+
+.active-label {
+  margin-left: 10px;
+}

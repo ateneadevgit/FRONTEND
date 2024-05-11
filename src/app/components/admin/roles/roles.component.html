@@ -1,0 +1,121 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<h6>Roles</h6>
+
+<div class="row py-2 align-right">
+  <div class="col-2">
+    <button class="btn btn-primary" (click)="openCreateRole()">Crear rol</button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div>
+      <div class="mt-2 shadow-table">
+        <p-table [value]="roleList || []" [paginator]="roleList.length > 6" [rows]="6">
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="border-left" style="width: 30%">Nombre de item</th>
+              <th style="width: 30%" class="text-center">Descripción</th>
+              <th style="width: 20%" class="text-center">Sinu</th>
+              <th style="width: 10%"></th>
+              <th class="border-right" style="width: 10%"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td class="colored-item">{{ item.nameRole }}</td>
+              <td class="text-center">{{ item.description || '-' }}</td>
+              <td class="text-center">{{ item.sinuId }}</td>
+              <td><i class="pi pi-pencil" (click)="openUpdateRole(item)"></i></td>
+              <td class="d-flex">
+                <p-inputSwitch
+                  [(ngModel)]="item.enabled"
+                  (click)="disableEnableRole(item)"
+                ></p-inputSwitch>
+                <span class="py-1 active-label">{{ item.enabled ? 'Activo' : 'Inactivo' }}</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <div class="text-center mt-2" *ngIf="(roleList || []).length === 0">
+        <p>No se encontraron resultados...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  [header]="popUpItem"
+  [(visible)]="roleVisible"
+  [style]="{ width: '30%' }"
+  [resizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  (onHide)="cleanForm()"
+>
+  <div class="row pop-up-margin">
+    <form [formGroup]="formRole">
+      <div class="col-12">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Nombre asignado para el rol</label>
+          <input pInputText formControlName="roleName" class="ng-invalid" />
+          <small
+            class="error"
+            *ngIf="formControls['roleName'].errors && formControls['roleName'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+          <small
+            class="error"
+            *ngIf="formControls['roleName'].errors && formControls['roleName'].invalid"
+          >
+            * Campo no debe sobrepasar los 50 caracteres.
+          </small>
+        </div>
+      </div>
+      <div class="col-12 py-4">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Identificador Sinu</label>
+          <input pInputText formControlName="sinuId" class="ng-invalid" />
+          <small
+            class="error"
+            *ngIf="formControls['sinuId'].errors && formControls['sinuId'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+          <small
+            class="error"
+            *ngIf="formControls['sinuId'].errors && formControls['sinuId'].invalid"
+          >
+            * Campo no debe sobrepasar los 50 caracteres.
+          </small>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="flex flex-column gap-2">
+          <div class="flex flex-column gap-2">
+            <label htmlFor="">Descripción</label>
+            <textarea rows="3" cols="30" pInputTextarea formControlName="description"></textarea>
+            <small
+              class="error"
+              *ngIf="
+                formControls['description'].errors &&
+                formControls['description'].invalid &&
+                !formControls['description'].touched
+              "
+            >
+              * Campo no debe sobrepasar los 250 caracteres.
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 py-2 text-center">
+        <button class="btn btn-primary" (click)="createRole()" *ngIf="!isEdit">Crear</button>
+        <button class="btn btn-primary" (click)="updateRole()" *ngIf="isEdit">Actualizar</button>
+      </div>
+    </form>
+  </div>
+</p-dialog>

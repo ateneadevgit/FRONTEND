@@ -1,0 +1,35 @@
+.margin-general {
+  margin: 0px 10px;
+}
+.header {
+  font-size: 12px;
+}
+.header-name {
+  color: #6d839b;
+}
+.title-sm {
+  border-radius: 0.5em 0.5em 0em 0em;
+  background: #a6cef9;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 5px 5px 5px 20px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+.content-sm {
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+.header-num {
+  border-radius: 0px 8px 0px 0px;
+}
+.credit {
+  text-align: center;
+  background: #c8c9c9;
+}
+.number-credit {
+  font-weight: 500;
+}
+.border-top {
+  border-top: 1px solid #eaeaea;
+}

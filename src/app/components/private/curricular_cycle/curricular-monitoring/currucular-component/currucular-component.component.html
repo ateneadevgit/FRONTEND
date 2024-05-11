@@ -1,0 +1,16 @@
+<app-module-header [module]="selectedModule" [programId]="idProgram"></app-module-header>
+
+<div class="row mt-2">
+  <p-tabView (onChange)="onTabChange($event)">
+    <p-tabPanel header="Epistemológico"> </p-tabPanel>
+    <p-tabPanel header="Pedagógico"> </p-tabPanel>
+    <p-tabPanel header="Formativo"> </p-tabPanel>
+    <p-tabPanel header="Interacción"> </p-tabPanel>
+    <p-tabPanel header="Evaluativo"> </p-tabPanel>
+  </p-tabView>
+
+  <app-program-history
+    [programHistorical]="programHistorical"
+    [selectedModule]="selectedModule"
+  ></app-program-history>
+</div>

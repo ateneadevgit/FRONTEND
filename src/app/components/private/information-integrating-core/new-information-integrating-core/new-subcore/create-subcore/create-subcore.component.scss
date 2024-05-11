@@ -1,0 +1,27 @@
+@import '../../../../../../../assets/styles/abstracts/variables';
+@import '../../../../../../../assets/styles/main.scss';
+
+.select-item {
+  background-color: $color-jelly-bean-blue-alpha;
+  color: $color-white;
+}
+
+.round-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: $color-indigo;
+  color: #fff;
+  font-size: 18px;
+  border: none;
+  cursor: pointer;
+}
+
+.h5-subtittle {
+  font-size: 1rem;
+}
+
+.p-steps .p-steps-item .p-menuitem-link .p-steps-title {
+  font-family: $font-medium !important;
+  font-size: 12px !important;
+}

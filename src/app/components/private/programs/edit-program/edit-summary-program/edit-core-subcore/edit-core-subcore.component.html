@@ -1,0 +1,191 @@
+<div class="row mt-2">
+  <div class="col-4 mt-2">
+    <label for="nucleo">Seleccione</label>
+    <p-dropdown
+      id="coresubcore"
+      [options]="coreSubCoreLit"
+      [(ngModel)]="coreSubCoreSelect"
+      placeholder="Nivel"
+      [group]="false"
+      [filter]="true"
+      filterBy="name"
+      optionLabel="name"
+      (onChange)="loadOptCoreSubCore()"
+    >
+      <ng-template let-option pTemplate="option">
+        <div class="flex align-items-center">
+          <span>{{ option?.name }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+</div>
+
+<div class="row mt-2" *ngIf="coreSubCoreSelect?.id === 1">
+  <div class="col-4">
+    <label for="nucleo">Seleccione el núcleo</label>
+    <p-dropdown
+      id="nucleo"
+      [options]="nucleoList"
+      [(ngModel)]="selectNucleo"
+      placeholder="Seleccione el núcleo"
+      [group]="false"
+      [filter]="true"
+      filterBy="name"
+      optionLabel="name"
+      (onChange)="loadCoreHistorical()"
+    >
+      <ng-template let-catalog pTemplate="catalog">
+        <div class="flex align-items-center">
+          <span>{{ catalog?.name }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+</div>
+
+<div class="row" *ngIf="coreSubCoreSelect?.id === 2">
+  <div class="col-4">
+    <label for="nucleo">Seleccione el núcleo</label>
+    <p-dropdown
+      id="nucleo"
+      [options]="nucleoList"
+      [(ngModel)]="selectNucleo"
+      placeholder="Seleccione el núcleo"
+      [group]="false"
+      [filter]="true"
+      filterBy="name"
+      optionLabel="name"
+      (onChange)="loadSubNucleo()"
+    >
+      <ng-template let-catalog pTemplate="catalog">
+        <div class="flex align-items-center">
+          <span>{{ catalog?.name }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+  <div class="col-4">
+    <label for="Subnucleo">Seleccione subnúcleo o asignatura</label>
+    <p-dropdown
+      id="Subnucleo"
+      [options]="subnucleoList"
+      [(ngModel)]="selectSubnucleo"
+      placeholder="Seleccione subnúcleo o asignatura"
+      [group]="false"
+      [filter]="true"
+      filterBy="name"
+      optionLabel="name"
+      (onChange)="loadCoreSubCoreHistorical()"
+    >
+      <ng-template let-catalog pTemplate="catalog">
+        <div class="flex align-items-center">
+          <span>{{ catalog?.name }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+</div>
+
+<div *ngIf="coreSubCoreSelect?.id === 1 && objNucleoActivo">
+  <form [formGroup]="formCore">
+    <div class="row">
+      <div class="col-md-6">
+        <label for="name">Nombre</label>
+        <input pInputText class="ng-invalid" formControlName="name" />
+        <small class="error" *ngIf="formCore?.touched && formCore.value.name === ''">
+          * Campo obligatorio.
+        </small>
+      </div>
+      <div class="col-md-3">
+        <label for="cretis">N° créditos</label>
+        <input pInputText class="ng-invalid" type="number" formControlName="creditNumber" />
+        <small class="error" *ngIf="formCore?.touched && formCore.value.numberCredits === ''">
+          * Campo obligatorio.
+        </small>
+      </div>
+      <div class="col-md-3">
+        <label for="cretis">Participación %</label>
+        <input pInputText class="ng-invalid" type="number" formControlName="participation" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <label for="description">Descripción</label>
+        <textarea rows="5" cols="30" pInputTextarea formControlName="description"></textarea>
+        <small class="error" *ngIf="formCore?.touched && formCore.value.description === ''">
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <label for="raeg">RAEG</label>
+        <textarea rows="5" cols="30" pInputTextarea formControlName="raeg"></textarea>
+        <small class="error" *ngIf="formCore?.touched && formCore.value.raeg === ''">
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+    <div class="row container">
+      <button class="btn btn-primary" (click)="dataSave()">Guardar</button>
+    </div>
+  </form>
+</div>
+
+<form [formGroup]="formCreateComponent" *ngIf="coreSubCoreSelect?.id === 2 && objSubnucleoActivo">
+  <div class="row container">
+    <div class="col-md-6">
+      <label for="name">Nombre del componente</label>
+      <input pInputText class="ng-invalid" formControlName="name" />
+      <small class="error" *ngIf="f['name'].errors"> * Campo obligatorio. </small>
+    </div>
+    <div class="col-md-3">
+      <label for="cretis">N° créditos</label>
+      <input pInputText class="ng-invalid" type="number" formControlName="creditNumber" />
+      <small class="error" *ngIf="f['creditNumber'].errors"> * Campo obligatorio. </small>
+    </div>
+    <div class="col-md-3">
+      <label for="cretis">Participación %</label>
+      <input pInputText class="ng-invalid" type="number" formControlName="participation" />
+    </div>
+  </div>
+
+  <div class="row container">
+    <div class="col-md-6">
+      <label for="name">Código</label>
+      <input pInputText class="ng-invalid" formControlName="code" />
+      <small class="error" *ngIf="f['code'].errors"> * Campo obligatorio. </small>
+    </div>
+    <div class="col-md-6">
+      <label for="name">Horas de trabajo autónomo</label>
+      <input type="number" pInputText class="ng-invalid" formControlName="hourSelfWork" />
+      <small class="error" *ngIf="f['hourSelfWork'].errors"> * Campo obligatorio. </small>
+    </div>
+  </div>
+  <div class="row container">
+    <div class="col-md-8">
+      <label for="name">Horas de interacción con el docente</label>
+      <input
+        type="number"
+        pInputText
+        class="ng-invalid"
+        formControlName="hoursInteractionTeacher"
+      />
+      <small class="error" *ngIf="f['hoursInteractionTeacher'].errors">
+        * Campo obligatorio.
+      </small>
+    </div>
+  </div>
+
+  <div class="row container">
+    <div class="col-md-12">
+      <label for="description">Descripción</label>
+      <textarea rows="5" cols="30" pInputTextarea formControlName="description"></textarea>
+      <small class="error" *ngIf="f['description'].errors"> * Campo obligatorio. </small>
+    </div>
+  </div>
+  <div class="row container">
+    <button class="btn btn-primary" (click)="dataSave()">Guardar</button>
+  </div>
+</form>

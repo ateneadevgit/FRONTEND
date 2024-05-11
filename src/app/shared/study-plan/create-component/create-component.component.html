@@ -1,0 +1,111 @@
+<form [formGroup]="formCreateComponent">
+  <div class="row container">
+    <div class="col-md-8">
+      <label for="name">Nombre del componente</label>
+      <input pInputText class="ng-invalid" formControlName="name" [maxlength]="150" />
+      <small class="error" *ngIf="f['name']?.touched && f['name']?.hasError('required')">
+        * Campo obligatorio.
+      </small>
+    </div>
+    <div class="col-md-4">
+      <label for="cretis">N° créditos</label>
+      <input pInputText class="ng-invalid" type="number" formControlName="numberCredits" />
+      <small
+        class="error"
+        *ngIf="f['numberCredits']?.touched && f['numberCredits']?.hasError('min')"
+        >* El campo debe contener solo números enteros positivos.</small
+      >
+      <small
+        class="error"
+        *ngIf="f['numberCredits']?.touched && f['numberCredits']?.hasError('required')"
+      >
+        * Campo obligatorio.
+      </small>
+    </div>
+    <!-- <div class="col-md-3">
+      <label for="cretis">Participación %</label>
+      <input pInputText class="ng-invalid" type="number" formControlName="participation" />
+    </div> -->
+  </div>
+
+  <div class="row container" *ngIf="hasSubject">
+    <div class="col-md-6">
+      <label for="name">Código</label>
+      <input pInputText class="ng-invalid" formControlName="code" />
+      <small class="error" *ngIf="f['code']?.touched && f['code']?.hasError('required')">
+        * Campo obligatorio.
+      </small>
+    </div>
+    <div class="col-md-6">
+      <label for="name">Horas de trabajo autónomo</label>
+      <input type="number" pInputText class="ng-invalid" formControlName="hourSelfWork" />
+      <small
+        class="error"
+        *ngIf="f['hourSelfWork']?.touched && f['hourSelfWork']?.hasError('required')"
+      >
+        * Campo obligatorio.
+      </small>
+      <small class="error" *ngIf="f['hourSelfWork']?.touched && f['hourSelfWork']?.hasError('min')"
+        >* El campo debe contener solo números enteros positivos.</small
+      >
+    </div>
+  </div>
+  <div class="row container" *ngIf="hasSubject">
+    <div class="col-md-8">
+      <label for="name">Horas de interacción con el docente</label>
+      <input
+        type="number"
+        pInputText
+        class="ng-invalid"
+        formControlName="hoursInteractionTeacher"
+      />
+      <small
+        class="error"
+        *ngIf="
+          f['hoursInteractionTeacher']?.touched &&
+          f['hoursInteractionTeacher']?.hasError('required')
+        "
+      >
+        * Campo obligatorio.
+      </small>
+      <small
+        class="error"
+        *ngIf="
+          f['hoursInteractionTeacher']?.touched && f['hoursInteractionTeacher']?.hasError('min')
+        "
+        >* El campo debe contener solo números enteros positivos.</small
+      >
+    </div>
+    <div class="col-md-4">
+      <label for="name">Semestre</label>
+      <input type="number" pInputText class="ng-invalid" formControlName="semester" />
+      <small class="error" *ngIf="f['semester']?.touched && f['semester']?.hasError('required')">
+        * Campo obligatorio.
+      </small>
+    </div>
+  </div>
+
+  <div class="row container">
+    <div class="col-md-12">
+      <label for="description">Descripción</label>
+      <textarea
+        rows="5"
+        cols="30"
+        pInputTextarea
+        formControlName="description"
+        [maxlength]="1000"
+      ></textarea>
+      <small
+        class="error"
+        *ngIf="f['description']?.touched && f['description']?.hasError('required')"
+      >
+        * Campo obligatorio.
+      </small>
+    </div>
+  </div>
+  <div class="row container">
+    <button class="btn btn-primary" (click)="createComponent()">
+      {{ editComponent ? 'Guardar' : 'Crear' }}
+    </button>
+  </div>
+</form>

@@ -1,0 +1,26 @@
+@import '../../../../assets/styles/abstracts/variables';
+
+.border-left {
+  border-top-left-radius: 10px;
+}
+
+.border-right {
+  border-top-right-radius: 10px;
+}
+
+.pi-pencil {
+  color: $color-tangerine-yellow;
+}
+
+.pi {
+  cursor: pointer;
+}
+
+.colored-item {
+  color: $color-indigo;
+  font-weight: bold;
+}
+
+label {
+  color: $color-indigo;
+}

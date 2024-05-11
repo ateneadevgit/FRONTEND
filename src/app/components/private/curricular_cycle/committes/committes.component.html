@@ -1,0 +1,160 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="row">
+  <div class="col-12 col-md-8 text-center">
+    <div class="col-3">
+      <div class="header_guidelines">Comités</div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-2">
+  <div class="col-12 col-md-4">
+    <button pButton pRipple class="btn approve" (click)="openLoadCommite(attachmentTypes.MINUTES)">
+      Carga Acta
+    </button>
+  </div>
+</div>
+
+<div class="row mt-2">
+  <div class="col-md-12">
+    <div class="card">
+      <p-treeTable
+        [value]="files"
+        [columns]="cols"
+        [scrollable]="true"
+        [tableStyle]="{ 'min-width': '50rem' }"
+      >
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th>Acta</th>
+            <th>Fecha</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="caption">
+          <div class="row">
+            <div class="col-12 col-md-4">
+              <input pInputText type="text" [(ngModel)]="fileNameFilter" placeholder="Acta" />
+            </div>
+            <div class="col-12 col-md-4">
+              <input pInputText type="text" [(ngModel)]="fileDateFilter" placeholder="Fecha" />
+            </div>
+            <div class="col-12 col-md-4">
+              <button pButton pRipple class="btn approve" (click)="filterTable()">Buscar</button>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
+          <tr>
+            <td>
+              <p-treeTableToggler
+                [rowNode]="rowNode"
+                *ngIf="rowData.fileType === attachmentTypes.MINUTES || rowData.fileType === 0"
+              ></p-treeTableToggler>
+              {{ rowData.name }}
+            </td>
+            <td>
+              <div>
+                <div>
+                  {{ rowData.createdAt }}
+                </div>
+              </div>
+            </td>
+            <td>
+              <div *ngIf="rowData.fileType !== 0">
+                <span class="pi pi-eye" (click)="viewDocument(rowData)"></span>
+                <span class="pi pi-download" (click)="downloadDocument(rowData)"></span>
+              </div>
+            </td>
+            <td>
+              <div *ngIf="rowData.fileType === attachmentTypes.MINUTES">
+                <button
+                  class="status approve"
+                  (click)="openLoadCommite(this.attachmentTypes.PRESENTATION, rowData)"
+                >
+                  Cargar
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-treeTable>
+    </div>
+  </div>
+  <div class="text-center mt-2" *ngIf="committeList.length === 0">
+    <p>No se encontraron resultados...</p>
+  </div>
+</div>
+
+<p-dialog
+  *ngIf="visibleLoadCommite === true"
+  [modal]="true"
+  [closable]="false"
+  [closeIcon]="'pi pi-times'"
+  [header]="typeCommitte === attachmentTypes.MINUTES ? 'Cargar Acta' : 'Cargar'"
+  [(visible)]="visibleLoadCommite"
+  [style]="{ width: '40%' }"
+>
+  <button class="status close-modal" (click)="closeLoadCommite()">
+    <span class="pi pi-times"></span>
+  </button>
+  <div class="row d-flex justify-content-center">
+    <div class="col-12">
+      <ng-template *ngIf="typeCommitte === attachmentTypes.MINUTES">
+        <ng-container *ngTemplateOutlet="fileLoad"></ng-container>
+      </ng-template>
+      <p-tabView (onChange)="onTabChange($event)">
+        <p-tabPanel header="Acta" *ngIf="typeCommitte === attachmentTypes.MINUTES">
+          <ng-container *ngTemplateOutlet="fileLoad"></ng-container>
+        </p-tabPanel>
+        <p-tabPanel header="Presentación" *ngIf="typeCommitte !== attachmentTypes.MINUTES">
+          <ng-container *ngTemplateOutlet="fileLoad"></ng-container>
+        </p-tabPanel>
+        <p-tabPanel header="Anexo" *ngIf="typeCommitte !== attachmentTypes.MINUTES">
+          <ng-container *ngTemplateOutlet="fileLoad"></ng-container>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+</p-dialog>
+
+<app-preview-document
+  *ngIf="previewDocument"
+  [visible]="visibleViewCommite"
+  (closeModal)="closeModal($event)"
+  [previewDocument]="previewDocument"
+></app-preview-document>
+
+<ng-template #fileLoad>
+  <div class="row container d-flex justify-content-center">
+    <div class="col-md-8">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Seleccione un documento</label>
+        <br />
+        <input
+          type="file"
+          id="archivo"
+          name="archivo"
+          class="input-file"
+          [accept]="allowedExtension"
+          (change)="loadFile($event)"
+        />
+        <label for="archivo" class="btn">Adjuntar</label>
+      </div>
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+      <p>{{ fileName }}</p>
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col-12 d-flex justify-content-between">
+      <button pButton pRipple class="btn approve" (click)="sendUploadMinutes()">
+        <span class="pi pi-check"></span>
+        Guardar
+      </button>
+    </div>
+  </div>
+</ng-template>

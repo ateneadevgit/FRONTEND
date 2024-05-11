@@ -1,0 +1,43 @@
+<p>Manténgase al tanto de las vigencias de sus programas académicos</p>
+
+<!-- eslint-disable @angular-eslint/template/elements-content -->
+<div class="header-active d-flex justify-content-between">
+  Programas académicos vigentes
+  <p-button icon="pi pi-replay" class="button-replay" (click)="loadPrograms()"></p-button>
+</div>
+<p-table [value]="rows" dataKey="name">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Denominación</th>
+      <th>Número de resolución</th>
+      <th>Fecha de resolución</th>
+      <th>Fecha de vencimiento</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-item>
+    <tr>
+      <td>
+        <div class="container-image">
+          <img class="container-image__img" [src]="item?.logo" alt="" />
+          <span class="container-image__text">
+            {{ item?.name ?? '--' }}
+          </span>
+        </div>
+      </td>
+      <td>{{ item.minute }}</td>
+      <td>
+        {{ item.men_end_date | date: 'dd/MM/yyyy' }}
+      </td>
+      <td>
+        <div class="d-flex" *ngIf="item.men_end_date">
+          <div [style.background-color]="getColor(item.men_end_date, true)" class="flag"></div>
+          {{ item.men_end_date | date: 'dd/MM/yyyy' }}
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<div class="text-center mt-2" *ngIf="rows.length === 0">
+  <p>No se encontraron resultados...</p>
+</div>

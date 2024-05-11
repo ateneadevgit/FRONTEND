@@ -1,0 +1,41 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="row" *ngIf="programActive">
+  <div class="col-md-12">
+    <h6>Actualización de programa</h6>
+  </div>
+  <div class="col-md-12">
+    <h6>
+      {{ programActive.name }}
+    </h6>
+  </div>
+  <div class="col-md-12">
+    <h4>
+      {{ programActive.nameFaculty }}
+    </h4>
+  </div>
+</div>
+
+<div class="row mt-2" *ngIf="this.listaModulosAceptados && this.listaModulosAceptados.length > 0">
+  <div class="col-14 col-md-3" *ngFor="let item of this.listaModulosAceptados">
+    <div class="mt-2 position-relative">
+      <button
+        pButton
+        pRipple
+        class="btn btn-primary p-4 w-100 h-100 btn-padding"
+        (click)="navigateProgramModule(item)"
+      >
+        {{ item.name }}
+      </button>
+      <div
+        class="notification-circle"
+        [ngClass]="{
+          'in-projection': item?.status === enumStatusModule.IN_PROJECTION,
+          'in-update': item?.status === enumStatusModule.IN_UPDATE,
+          'in-summary': item?.status === enumStatusModule.SENT_FOR_REVIEW,
+          'in-approve': item?.status === enumStatusModule.APPROVED
+        }"
+      ></div>
+    </div>
+  </div>
+</div>

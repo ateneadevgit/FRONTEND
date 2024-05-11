@@ -1,0 +1,984 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="row">
+  <div class="p-d-flex p-ai-center">
+    <h2 class="title-page">Programa de asignaturas</h2>
+    <p>Cree, actualice y manténgase informado de sus programas de asignatura</p>
+    <hr class="w-25" />
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12 col-md-3">
+    <label for="">Programa académico</label>
+    <p-dropdown
+      [options]="programs"
+      [(ngModel)]="selectProgram"
+      placeholder="Seleccione programa"
+      [group]="false"
+      [filter]="true"
+      [showClear]="false"
+      filterBy="name"
+      optionLabel="name"
+      (onChange)="loadListData('program')"
+    >
+      <ng-template let-factulty pTemplate="factulty">
+        <div class="flex align-items-center">
+          <span>{{ factulty.name }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+
+  <div class="col-12 col-md-3" *ngIf="role === roleType.DECANO">
+    <label for="">Periodo</label>
+    <p-dropdown
+      [options]="semesterList"
+      [(ngModel)]="selectSemester"
+      placeholder="Seleccione semestre"
+      [group]="false"
+      [filter]="true"
+      [showClear]="true"
+      filterBy="semesterNumber"
+      optionLabel="semesterNumber"
+      (onChange)="loadListData()"
+    >
+      <ng-template let-factulty pTemplate="factulty">
+        <div class="flex align-items-center">
+          <span>{{ factulty.semesterNumber }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+
+  <div class="col-12 col-md-3">
+    <label for="">Estado</label>
+    <p-dropdown
+      [options]="subjectGuideStatusSelect"
+      [(ngModel)]="selectStatus"
+      placeholder="Seleccione estado"
+      [group]="false"
+      [filter]="true"
+      [showClear]="true"
+      filterBy="catalogItemName"
+      optionLabel="catalogItemName"
+      (onChange)="loadListData()"
+    >
+      <ng-template let-factulty pTemplate="factulty">
+        <div class="flex align-items-center">
+          <span>{{ factulty.catalogItemName }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+</div>
+
+<div class="row" *ngIf="role !== roleType.DECANO">
+  <p-tabView (onChange)="onChangeTabView($event)" [activeIndex]="activeIndex">
+    <p-tabPanel header="Actualizaciones programa de asignatura" [tabindex]="0">
+      <ng-container *ngTemplateOutlet="table_subject_programs"></ng-container>
+    </p-tabPanel>
+    <p-tabPanel header="Actualizaciones plan de actividades" [tabindex]="1">
+      <ng-container *ngTemplateOutlet="table_subject_programs"></ng-container>
+    </p-tabPanel>
+  </p-tabView>
+</div>
+
+<!-- Table painting template -->
+<ng-template #table_subject_programs>
+  <div class="row mt-2">
+    <!-- Table DOCENTE COORDINADOR and isActivity === false -->
+    <p-table
+      *ngIf="role === roleType.DOCENTE_COORDINADOR && isActivity === false"
+      [value]="subjectPrograms"
+      (onPage)="onPageChange($event)"
+      [paginator]="totalRecords > pageSize"
+      page
+      [rows]="pageSize"
+      [lazy]="true"
+      [totalRecords]="totalRecords"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="table-bordered">Asignatura</th>
+          <th class="action-center">Semestre</th>
+          <th class="action-center">Fecha de actualización</th>
+          <th class="action-center col-1-5">Estado</th>
+          <th class="action-center"></th>
+          <th class="action-center"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-product>
+        <tr>
+          <td>
+            {{ product?.name ?? '--' }}
+          </td>
+          <td class="action-center">{{ product?.semester }}</td>
+          <td class="action-center">
+            {{ (product?.createdAt | date: 'dd/MM/yyyy') ?? '' }}
+          </td>
+          <td class="action-center">
+            <div *ngIf="product?.idStatus !== null">
+              <button
+                class="status button-styles"
+                [ngClass]="{
+                  review: product?.idStatus === subjectGuideStatus.IN_REVIEW,
+                  requested: product?.idStatus === subjectGuideStatus.COMPLETENESS,
+                  approved: product?.idStatus === subjectGuideStatus.APPROVED
+                }"
+              >
+                {{ getNameSujectGuideStatus(product?.idStatus) }}
+              </button>
+            </div>
+          </td>
+          <td class="action-center" *ngIf="product?.idSubjectGuide !== null">
+            <i
+              class="pi pi-check-square icon-edit mx-1"
+              (click)="
+                redirectCreateUpdateSubjectGuide(
+                  product,
+                  createUpdSubjGuideType.UPDATE_SUBJECT_GUIDE_BY_STATUS_COMPLETENESS
+                )
+              "
+              *ngIf="product?.idStatus !== subjectGuideStatus.IN_REVIEW"
+            ></i>
+            <div
+              *ngIf="product?.commentCount > 0"
+              class="icon-container"
+              (click)="openCommmnts(product, 'subject')"
+              [style]="{ cursor: 'pointer' }"
+            >
+              <i class="pi pi-comments mx-1"></i>
+              <div class="badge">{{ product?.commentCount || 0 }}</div>
+            </div>
+
+            <i
+              *ngIf="product?.commentCount === 0"
+              class="pi pi-comments mx-1"
+              (click)="openCommmnts(product, 'subject')"
+              [style]="{ cursor: 'pointer' }"
+            ></i>
+
+            <div
+              *ngIf="product?.requestUpdateCount > 0"
+              class="icon-container"
+              (click)="openReqUpdate(product)"
+              [style]="{ cursor: 'pointer' }"
+            >
+              <i class="pi pi-edit-request mx-1"></i>
+              <div class="badge">{{ product?.requestUpdateCount || 0 }}</div>
+            </div>
+
+            <i
+              *ngIf="product?.requestUpdateCount === 0 || product?.requestUpdateCount === null"
+              class="pi pi-edit-request mx-1"
+              (click)="openReqUpdate(product)"
+              [style]="{ cursor: 'pointer' }"
+            ></i>
+            <i
+              class="pi pi-eye mx-1"
+              [style]="{ cursor: 'pointer' }"
+              (click)="viewDocument(product, 'subject')"
+            ></i>
+            <i
+              class="pi pi-download mx-1"
+              [style]="{ cursor: 'pointer' }"
+              (click)="downloadDocument(product, 'subject')"
+            ></i>
+          </td>
+          <td class="action-center" *ngIf="product?.idSubjectGuide === null">
+            <button
+              pButton
+              pRipple
+              class="btn btn-secondary mx-0"
+              (click)="
+                redirectCreateUpdateSubjectGuide(
+                  product,
+                  createUpdSubjGuideType.CREATE_SUBJECT_GUIDE_BY_CREATE_COORDINADOR
+                )
+              "
+            >
+              Crear guía de asignatura
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <!-- Table DOCENTE COORDINADOR and isActivity === true -->
+    <p-treeTable
+      *ngIf="role === roleType.DOCENTE_COORDINADOR && isActivity === true"
+      [value]="treeNodeData"
+      [scrollable]="true"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      (onNodeExpand)="onNodeToggle($event)"
+      (onPage)="onPageChange($event)"
+      [paginator]="totalRecords > pageSize"
+      [rows]="pageSize"
+      [lazy]="true"
+      [totalRecords]="totalRecords"
+    >
+      <ng-template pTemplate="header" style="padding-right: 0px; width: 100%">
+        <tr>
+          <th class="">Asignatura</th>
+          <th class="action-center">Semestre</th>
+          <th class="action-center">Fecha de actualización</th>
+          <th class="action-center col-1-5">Estado</th>
+          <th class="action-center"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+        <tr>
+          <td>
+            <p-treeTableToggler
+              [rowNode]="getNode(rowNode)"
+              *ngIf="rowData.typeRow === 0"
+            ></p-treeTableToggler>
+            {{ rowData.typeRow === 0 ? rowData.name : rowData?.userId }}
+          </td>
+          <td class="action-center">
+            <div *ngIf="rowData.typeRow === 2">
+              {{ rowData?.semester }}
+            </div>
+          </td>
+          <td class="action-center">
+            <div *ngIf="rowData.typeRow === 2">
+              {{ (rowData?.activityCreatedAt | date: 'dd/MM/yyyy') ?? '' }}
+            </div>
+          </td>
+          <td class="action-center col-td-ptretable">
+            <div *ngIf="rowData.typeRow === 2 && rowData?.idStatus !== null">
+              <button
+                *ngIf="rowData.typeRow === 2"
+                class="status button-styles"
+                [ngClass]="{
+                  review: rowData?.idStatus === subjectGuideStatus.IN_REVIEW,
+                  requested: rowData?.idStatus === subjectGuideStatus.COMPLETENESS,
+                  approved: rowData?.idStatus === subjectGuideStatus.APPROVED
+                }"
+              >
+                {{ getNameSujectGuideStatus(rowData?.idStatus) }}
+              </button>
+            </div>
+          </td>
+
+          <td class="action-center">
+            <div *ngIf="rowData.typeRow === 2 && rowData?.subjectObj?.idSubjectGuide !== null">
+              <i
+                class="pi pi-eye mx-1"
+                [style]="{ cursor: 'pointer' }"
+                (click)="viewDocument(rowData, 'teacher')"
+              ></i>
+              <i
+                class="pi pi-download mx-1"
+                [style]="{ cursor: 'pointer' }"
+                (click)="downloadDocument(rowData, 'teacher')"
+              ></i>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-treeTable>
+
+    <!-- Table DOCENTE BASICO -->
+    <p-table
+      [value]="subjectPrograms"
+      *ngIf="role === roleType.DOCENTE_BASICO"
+      [value]="subjectPrograms"
+      (onPage)="onPageChange($event)"
+      [paginator]="totalRecords > pageSize"
+      page
+      [rows]="pageSize"
+      [lazy]="true"
+      [totalRecords]="totalRecords"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="table-bordered">Asignatura</th>
+          <th class="action-center">Semestre</th>
+          <th class="action-center">Fecha de actualización</th>
+          <th class="action-center col-1-5">Estado</th>
+          <th class="action-center col-1-5" *ngIf="isActivity === false">Estado Solicitud</th>
+          <th class="action-center"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-product *ngIf="role === roleType.DOCENTE_BASICO">
+        <tr *ngIf="!isActivity">
+          <td>
+            {{ product?.name ?? '--' }}
+          </td>
+          <td class="action-center">{{ product?.semester }}</td>
+          <td class="action-center">
+            {{ (product?.createdAt | date: 'dd/MM/yyyy') ?? '' }}
+          </td>
+          <td class="action-center">
+            <div *ngIf="product?.idStatus !== null">
+              <button
+                class="status button-styles"
+                [ngClass]="{
+                  review: product?.idStatus === subjectGuideStatus.IN_REVIEW,
+                  requested: product?.idStatus === subjectGuideStatus.COMPLETENESS,
+                  approved: product?.idStatus === subjectGuideStatus.APPROVED
+                }"
+              >
+                {{ getNameSujectGuideStatus(product?.idStatus) }}
+              </button>
+            </div>
+          </td>
+          <td class="action-center">
+            <div *ngIf="product?.updateStatus !== null">
+              <button
+                class="status button-styles"
+                [ngClass]="{
+                  requested: product?.updateStatus === updateProgramSubjectStatus.ON_REQUEST,
+                  rejected: product?.updateStatus === updateProgramSubjectStatus.DECLINED,
+                  approved: product?.updateStatus === updateProgramSubjectStatus.APPROVED,
+                  donestatus: product?.updateStatus === updateProgramSubjectStatus.DONE
+                }"
+              >
+                {{ getNameUpdateProgramSubjectStatus(product?.updateStatus) }}
+              </button>
+            </div>
+          </td>
+
+          <td class="action-center">
+            <div *ngIf="product?.idSubjectGuide !== null">
+              <i
+                class="pi pi-edit-request mx-1"
+                *ngIf="
+                  product?.updateStatus === null ||
+                  product?.updateStatus !== updateProgramSubjectStatus.ON_REQUEST
+                "
+                (click)="openCreateRequest(product)"
+                [style]="{ cursor: 'pointer' }"
+              ></i>
+              <i
+                class="pi pi-eye mx-1"
+                [style]="{ cursor: 'pointer' }"
+                (click)="viewDocument(product, 'subject')"
+              ></i>
+              <i
+                class="pi pi-download mx-1"
+                [style]="{ cursor: 'pointer' }"
+                (click)="downloadDocument(product, 'subject')"
+              ></i>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="isActivity">
+          <td>
+            {{ product?.name ?? '--' }}
+          </td>
+          <td class="action-center">{{ product?.semester }}</td>
+          <td class="action-center">
+            {{ (product?.activityCreatedAt | date: 'dd/MM/yyyy') ?? '' }}
+          </td>
+          <td class="action-center">
+            <div
+              *ngIf="
+                product?.activityStatus !== null &&
+                product?.activityStatus !== subjectGuideStatus.WITHOUT_STATES
+              "
+            >
+              <button
+                class="status button-styles"
+                [ngClass]="{
+                  review: product?.activityStatus === subjectGuideStatus.IN_REVIEW,
+                  requested: product?.activityStatus === subjectGuideStatus.COMPLETENESS,
+                  approved: product?.activityStatus === subjectGuideStatus.APPROVED
+                }"
+              >
+                {{ getNameSujectGuideStatus(product?.activityStatus) }}
+              </button>
+            </div>
+          </td>
+          <td
+            class="action-center"
+            *ngIf="
+              product?.idSubjectGuide !== null &&
+              product?.activityStatus !== null &&
+              product?.activityStatus !== subjectGuideStatus.WITHOUT_STATES
+            "
+          >
+            <div>
+              <i
+                class="pi pi-check-square icon-edit mx-1"
+                (click)="
+                  redirectCreateUpdateSubjectGuide(
+                    product,
+                    createUpdSubjGuideType.UPDATE_SUBJECT_GUIDE_BY_STATUS_COMPLETENESS
+                  )
+                "
+                *ngIf="product?.activityStatus === subjectGuideStatus.COMPLETENESS"
+              ></i>
+
+              <i
+                *ngIf="product?.commentCount === 0"
+                class="pi pi-comments mx-1"
+                (click)="openCommmnts(product, 'subject')"
+                [style]="{ cursor: 'pointer' }"
+              ></i>
+
+              <div
+                *ngIf="product?.commentCount > 0"
+                class="icon-container"
+                (click)="openCommmnts(product, 'subject')"
+                [style]="{ cursor: 'pointer' }"
+              >
+                <i class="pi pi-comments mx-1"></i>
+                <div class="badge">{{ product?.commentCount || 0 }}</div>
+              </div>
+
+              <i
+                class="pi pi-eye mx-1"
+                [style]="{ cursor: 'pointer' }"
+                (click)="viewDocument(product, 'subject')"
+              ></i>
+              <i
+                class="pi pi-download mx-1"
+                [style]="{ cursor: 'pointer' }"
+                (click)="downloadDocument(product, 'subject')"
+              ></i>
+            </div>
+          </td>
+
+          <td
+            class="action-center"
+            *ngIf="
+              product?.idSubjectGuide !== null &&
+              (product?.activityStatus === null ||
+                product?.activityStatus === subjectGuideStatus.WITHOUT_STATES)
+            "
+          >
+            <button
+              pButton
+              pRipple
+              class="btn btn-secondary"
+              (click)="
+                redirectCreateUpdateSubjectGuide(
+                  product,
+                  createUpdSubjGuideType.CREATE_ACTIVITY_PLAN_DOCENTE_BASICO
+                )
+              "
+            >
+              Crear plan de actividades
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <!-- Table DIRECTOR and isActivity === false -->
+    <p-table
+      [value]="subjectPrograms"
+      *ngIf="role === roleType.DIRECTOR && isActivity === false"
+      [value]="subjectPrograms"
+      (onPage)="onPageChange($event)"
+      [paginator]="totalRecords > pageSize"
+      page
+      [rows]="pageSize"
+      [lazy]="true"
+      [totalRecords]="totalRecords"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="table-bordered">Asignatura</th>
+          <th class="action-center">Semestre</th>
+          <th class="action-center">Fecha de actualización</th>
+          <th class="action-center col-1-5">Estado</th>
+          <th class="action-center"></th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-product>
+        <tr>
+          <td>
+            {{ product?.name ?? '--' }}
+          </td>
+          <td class="action-center">{{ product?.semester }}</td>
+          <td class="action-center">
+            {{ (product?.createdAt | date: 'dd/MM/yyyy') ?? '' }}
+          </td>
+          <td class="action-center">
+            <div *ngIf="product?.idStatus !== null">
+              <button
+                class="status button-styles"
+                [ngClass]="{
+                  review: product?.idStatus === subjectGuideStatus.IN_REVIEW,
+                  requested: product?.idStatus === subjectGuideStatus.COMPLETENESS,
+                  approved: product?.idStatus === subjectGuideStatus.APPROVED
+                }"
+                (click)="
+                  actionStatusSubjectDirector(
+                    product,
+                    createUpdSubjGuideType.EVALUATE_SUBJECT_GUIDE_DIRECTOR
+                  )
+                "
+              >
+                {{
+                  product?.idStatus === subjectGuideStatus.IN_REVIEW
+                    ? 'Evaluar'
+                    : getNameSujectGuideStatus(product?.idStatus)
+                }}
+              </button>
+            </div>
+          </td>
+          <td class="action-center">
+            <i
+              class="pi pi-user-plus mx-1"
+              (click)="openSelectCoordinador(product)"
+              [style]="{ cursor: 'pointer' }"
+            ></i>
+            <i
+              *ngIf="product?.requestUpdateCount === 0 || product?.requestUpdateCount === null"
+              class="pi pi-edit-request mx-1"
+              (click)="openReqUpdate(product)"
+              [style]="{ cursor: 'pointer' }"
+            ></i>
+            <div
+              *ngIf="product?.requestUpdateCount > 0"
+              class="icon-container"
+              (click)="openReqUpdate(product)"
+              [style]="{ cursor: 'pointer' }"
+            >
+              <i class="pi pi-edit-request mx-1"></i>
+              <div class="badge">{{ product?.requestUpdateCount || 0 }}</div>
+            </div>
+
+            <div
+              *ngIf="product?.commentCount > 0"
+              class="icon-container"
+              (click)="openCommmnts(product, 'subject')"
+              [style]="{ cursor: 'pointer' }"
+            >
+              <i class="pi pi-comments mx-1"></i>
+              <div class="badge">{{ product?.commentCount || 0 }}</div>
+            </div>
+            <i
+              *ngIf="product?.commentCount === 0"
+              class="pi pi-comments mx-1"
+              (click)="openCommmnts(product, 'subject')"
+              [style]="{ cursor: 'pointer' }"
+            ></i>
+            <i
+              class="pi pi-eye mx-1"
+              [style]="{ cursor: 'pointer' }"
+              (click)="viewDocument(product, 'subject')"
+            ></i>
+            <i
+              class="pi pi-download mx-1"
+              [style]="{ cursor: 'pointer' }"
+              (click)="downloadDocument(product, 'subject')"
+            ></i>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <!-- Table DIRECTOR and isActivity === true -->
+    <p-treeTable
+      *ngIf="role === roleType.DIRECTOR && isActivity === true"
+      [value]="treeNodeData"
+      [scrollable]="true"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      (onNodeExpand)="onNodeToggle($event)"
+      (onPage)="onPageChange($event)"
+      [paginator]="totalRecords > pageSize"
+      page
+      [rows]="pageSize"
+      [lazy]="true"
+      [totalRecords]="totalRecords"
+    >
+      <ng-template pTemplate="header" style="padding-right: 0px; width: 100%">
+        <tr>
+          <th class="">Asignatura</th>
+          <th class="action-center">Semestre</th>
+          <th class="action-center">Fecha de actualización</th>
+          <th class="action-center col-1-5">Estado</th>
+          <th class="action-center"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+        <tr>
+          <td>
+            <p-treeTableToggler
+              [rowNode]="getNode(rowNode)"
+              *ngIf="rowData.typeRow === 0"
+            ></p-treeTableToggler>
+            {{ rowData.typeRow === 0 ? rowData.name : rowData?.userId }}
+          </td>
+          <td class="action-center">
+            <div *ngIf="rowData.typeRow === 2">
+              {{ rowData?.semester }}
+            </div>
+          </td>
+          <td class="action-center">
+            <div *ngIf="rowData.typeRow === 2">
+              {{ (rowData?.createdAt | date: 'dd/MM/yyyy') ?? '' }}
+            </div>
+          </td>
+          <td class="action-center col-td-ptretable">
+            <div *ngIf="rowData.typeRow === 2 && rowData?.idStatus !== null">
+              <button
+                class="status button-styles"
+                [ngClass]="{
+                  review: rowData?.idStatus === subjectGuideStatus.IN_REVIEW,
+                  requested: rowData?.idStatus === subjectGuideStatus.COMPLETENESS,
+                  approved: rowData?.idStatus === subjectGuideStatus.APPROVED
+                }"
+                (click)="
+                  actionStatusActivityDirector(
+                    rowData,
+                    createUpdSubjGuideType.EVALUATE_ACTIVITY_PLAN_DIRECTOR
+                  )
+                "
+              >
+                {{
+                  rowData?.idStatus === subjectGuideStatus.IN_REVIEW
+                    ? 'Evaluar'
+                    : getNameSujectGuideStatus(rowData?.idStatus)
+                }}
+              </button>
+            </div>
+          </td>
+          <td class="action-center">
+            <div *ngIf="rowData.typeRow === 2 && rowData?.subjectObj?.idSubjectGuide !== null">
+              <i
+                *ngIf="rowData?.commentCount === 0"
+                class="pi pi-comments mx-1"
+                (click)="openCommmnts(rowData, 'teacher')"
+                [style]="{ cursor: 'pointer' }"
+              ></i>
+              <div
+                *ngIf="rowData?.commentCount > 0"
+                class="icon-container"
+                (click)="openCommmnts(rowData, 'teacher')"
+                [style]="{ cursor: 'pointer' }"
+              >
+                <i class="pi pi-comments mx-1"></i>
+                <div class="badge">{{ rowData?.commentCount || 0 }}</div>
+              </div>
+              <i
+                class="pi pi-eye mx-1"
+                [style]="{ cursor: 'pointer' }"
+                (click)="viewDocument(rowData, 'teacher')"
+              ></i>
+              <i
+                class="pi pi-download mx-1"
+                [style]="{ cursor: 'pointer' }"
+                (click)="downloadDocument(rowData, 'teacher')"
+              ></i>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-treeTable>
+  </div>
+</ng-template>
+
+<div class="row mt-2" *ngIf="role === roleType.DECANO">
+  <!-- Table DECANO -->
+  <p-table
+    [value]="subjectPrograms"
+    *ngIf="role === roleType.DECANO"
+    [value]="subjectPrograms"
+    (onPage)="onPageChange($event)"
+    [paginator]="totalRecords > pageSize"
+    page
+    [rows]="pageSize"
+    [lazy]="true"
+    [totalRecords]="totalRecords"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="table-bordered">Asignatura</th>
+        <th class="action-center">Semestre</th>
+        <th class="action-center">Fecha de actualización</th>
+        <th class="action-center col-1-5">Estado</th>
+        <th class="action-center"></th>
+        <th class="action-center"></th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-product>
+      <tr>
+        <td>
+          {{ product?.name ?? '--' }}
+        </td>
+        <td class="action-center">{{ product?.semester }}</td>
+        <td class="action-center">
+          {{ (product?.createdAt | date: 'dd/MM/yyyy') ?? '' }}
+        </td>
+        <td class="action-center">
+          <div *ngIf="product?.idStatus !== null">
+            <button
+              class="status button-styles"
+              [ngClass]="{
+                review: product?.idStatus === subjectGuideStatus.IN_REVIEW,
+                requested: product?.idStatus === subjectGuideStatus.COMPLETENESS,
+                approved: product?.idStatus === subjectGuideStatus.APPROVED
+              }"
+            >
+              {{ getNameSujectGuideStatus(product?.idStatus) }}
+            </button>
+          </div>
+        </td>
+        <td class="action-center" *ngIf="product?.idSubjectGuide !== null">
+          <i
+            class="pi pi-eye mx-1"
+            [style]="{ cursor: 'pointer' }"
+            (click)="viewDocument(product, 'subject')"
+          ></i>
+          <i
+            class="pi pi-download mx-1"
+            [style]="{ cursor: 'pointer' }"
+            (click)="downloadDocument(product, 'subject')"
+          ></i>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<app-preview-document
+  *ngIf="previewDocument"
+  [visible]="visibleViewDocument"
+  (closeModal)="closeModal($event)"
+  [previewDocument]="previewDocument"
+></app-preview-document>
+
+<p-dialog
+  [closable]="true"
+  (close)="closeSelectCoordinador()"
+  [(visible)]="visibleAssignedCoordinator"
+  [style]="{ width: '40vw' }"
+  [modal]="true"
+>
+  <div class="container margin-container">
+    <h4 class="text-center">Seleccione un docente como coordinador</h4>
+    <br />
+    <input
+      type="text"
+      pInputText
+      [(ngModel)]="searchCoordinador"
+      placeholder="Buscar coordinador"
+    />
+    <br /><br />
+    <div class="info-user" *ngIf="selectSubject?.coordinatorId !== null">
+      El usuario <span>{{ selectSubject?.coordinatorId }}</span> esta actualmente asignado, si
+      quiere reasignar, por favor busca y selecciona el nuevo responsable.
+    </div>
+    <div class="row" *ngIf="listCoordinador">
+      <div
+        *ngFor="let director of listCoordinador | filterDirector: searchCoordinador"
+        class="col-md-12 space-director"
+      >
+        <div class="row">
+          <div class="col-md-9">{{ director?.userEmail }}</div>
+          <div class="col-md-3">
+            <button class="workflow-status in-approve" (click)="selectCoordinator(director)">
+              {{ selectSubject?.coordinatorId !== null ? 'Reasignar' : 'Asignar' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<!--Modal create update request-->
+<p-dialog
+  *ngIf="selectSubjectRequestUpdate"
+  [closable]="true"
+  (close)="closeCreateRequest()"
+  [(visible)]="visibleViewCreateRequest"
+  [style]="{ width: '40vw' }"
+  [modal]="true"
+>
+  <div class="container margin-container">
+    <h4 class="text-center">Solicitud de actualización</h4>
+    <br />
+    <div class="row">
+      <div class="col-12">
+        <div class="card-html">
+          <app-editor
+            (createHtml)="createHtmlRequest($event)"
+            [htmlText]="htmlRequest"
+          ></app-editor>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="text-center">
+        <button class="btn btn-secondary" (click)="saveRequestUpdate()">Enviar solicitud</button>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<!--Modal solicitudes de actualizacion coordinador-->
+<p-dialog
+  *ngIf="selectSubjectView"
+  [closable]="true"
+  (close)="closeReqUpdate()"
+  [(visible)]="visibleReqUpdate"
+  [style]="{ width: '70vw' }"
+  [header]="finishEaluateRequest === 1 ? 'Recuerde' : ''"
+  [modal]="true"
+>
+  <div *ngIf="finishEaluateRequest === 0">
+    <div class="row" *ngIf="role === roleType.DOCENTE_COORDINADOR">
+      <h4 class="text-center">Solicitudes de actualización</h4>
+      <br />
+      <div class="row mt-2">
+        <div class="container" *ngFor="let item of subjectRequestUpdateList">
+          <div class="row mt-2">
+            <div class="col-12 p-button-accordion">
+              <div class="card card-accordion">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="row">
+                      <div class="col-12">
+                        {{ item?.name }}
+                      </div>
+                      <div class="col-12">
+                        {{ item?.userId }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6 text-end">
+                    <i
+                      class="pi pi-check-square icon-edit mx-1"
+                      *ngIf="item?.idStatus === updateProgramSubjectStatus.APPROVED"
+                      (click)="
+                        redirectCreateUpdateSubjectGuide2(
+                          item,
+                          createUpdSubjGuideType.UPDATE_SUBJECT_GUIDE_BY_REQUEST_UPDATE
+                        )
+                      "
+                    ></i>
+                    <button
+                      class="status mx-2"
+                      [ngClass]="{
+                        rejected: item?.idStatus === updateProgramSubjectStatus.DECLINED,
+                        approved: item?.idStatus === updateProgramSubjectStatus.APPROVED,
+                        donestatus: item?.idStatus === updateProgramSubjectStatus.DONE,
+                        requested: item?.idStatus === updateProgramSubjectStatus.ON_REQUEST
+                      }"
+                    >
+                      {{ getNameUpdateProgramSubjectStatus(item?.idStatus) }}
+                    </button>
+                    <i
+                      class="pi"
+                      [ngClass]="item?.expanded ? 'pi-chevron-right' : 'pi-chevron-down'"
+                      style="font-size: 1rem"
+                      (click)="openCloseExpandedReqUpdate(item)"
+                    ></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row collapse" [ngClass]="{ show: item?.expanded }">
+            <div class="col-12">
+              <div class="content-accordion" style="margin-top: -20px">
+                <div [innerHTML]="item?.content"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-2" *ngIf="role === roleType.DIRECTOR">
+      <h4 class="text-center">Solicitudes de actualización</h4>
+      <br />
+      <div class="container" *ngFor="let item of subjectRequestUpdateList">
+        <div class="row mt-2">
+          <div class="col-12 p-button-accordion">
+            <div class="card card-accordion">
+              <div class="row">
+                <div class="col-6">
+                  <div class="row">
+                    <div class="col-12">
+                      {{ item?.name }}
+                    </div>
+                    <div class="col-12">
+                      {{ item?.userId }}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 text-end">
+                  <button
+                    class="status rejected mx-1"
+                    (click)="evaluatedRenovationSubject(item, 'declined')"
+                  >
+                    <span class="pi pi-minus mx-1"></span>Declinado
+                  </button>
+                  <button
+                    class="status approved mx-1"
+                    (click)="evaluatedRenovationSubject(item, 'approved')"
+                  >
+                    <span class="pi pi-check"></span>Aprobado
+                  </button>
+                  <i
+                    class="pi"
+                    [ngClass]="item?.expanded ? 'pi-chevron-right' : 'pi-chevron-down'"
+                    style="font-size: 1rem"
+                    (click)="openCloseExpandedReqUpdate(item)"
+                  ></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row collapse" [ngClass]="{ show: item?.expanded }">
+          <div class="col-12">
+            <div class="content-accordion" style="margin-top: -20px">
+              <div [innerHTML]="item?.content"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="isLoading === false && subjectRequestUpdateList.length === 0">
+      <div class="text-center">No cuentas con solicitudes por aprobar</div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-12 col-md-12">
+        <div class="text-center">
+          <button class="btn btn-primary" (click)="closeReqUpdate()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="finishEaluateRequest === 1">
+    <div class="">
+      Dirigaser a la sección de comentarios, si desea realizar alguno para esta solicitud
+    </div>
+    <div class="row mt-4">
+      <div class="col-12 col-md-12">
+        <div class="text-center">
+          <button class="btn btn-primary" (click)="closeReqUpdate()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-sidebar
+  [(visible)]="visibleComments"
+  *ngIf="visibleComments"
+  (close)="closeCommmnts()"
+  position="right"
+  [style]="{ width: '40vw' }"
+>
+  <app-comments-two
+    [events]="commentsWorkflow"
+    (getCommentsEvent)="getComments()"
+    (saveCommentsEvent)="sendToReplyComments($event)"
+  ></app-comments-two>
+</p-sidebar>

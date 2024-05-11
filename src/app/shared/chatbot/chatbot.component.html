@@ -1,0 +1,68 @@
+<div class="init" *ngIf="!chatOnline">
+  <div class="container-init">
+    <div class="row content-welcome">
+      <div class="col-12">¡Explora nuestra</div>
+      <div class="col-12 text-mediun">plataforma universitaria</div>
+      <div class="col-12">con la ayuda de Atenea!</div>
+      <img src="./assets/images/Icono-atenea.svg" alt="Icono atenea" class="image-welcome" />
+    </div>
+  </div>
+
+  <div class="row">
+    <button class="btn btn-primary" (click)="initChat()">¡Hablemos!</button>
+  </div>
+</div>
+
+<div class="chat-container" *ngIf="chatOnline">
+  <div class="chat-container_message" #chatBox>
+    <div
+      *ngFor="let message of messages; let i = index"
+      class="message-container"
+      [ngClass]="{ left: message.sender === 'server', right: message.sender === 'user' }"
+    >
+      <div class="message">
+        <div
+          *ngIf="message.sender === 'server' && (i === 0 || messages[i - 1]?.sender !== 'server')"
+          class="title-atenea"
+        >
+          <img
+            _ngcontent-ng-c121416919=""
+            src="./assets/images/Icono-atenea.svg"
+            alt="Icono atenea"
+            class="image-login"
+          />Atenea
+        </div>
+
+        <div
+          *ngIf="message.sender === 'user' && (i === 0 || messages[i - 1]?.sender !== 'user')"
+          class="title-atenea"
+        >
+          Estudiante
+          <span
+            *ngIf="message.sender === 'user' && (i === 0 || messages[i - 1]?.sender !== 'user')"
+            class="icon user-icon"
+          ></span>
+        </div>
+
+        {{ message.content }}
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-9">
+      <div class="flex flex-column gap-2">
+        <input pInputText [(ngModel)]="message" />
+      </div>
+    </div>
+    <div class="col-3">
+      <button
+        class="sub-round-btn"
+        [style.background-color]="'#16395f'"
+        (click)="sendMessage(message)"
+      >
+        <i class="pi pi-play"></i>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,93 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<br />
+<ol class="breadcrumb">
+  <ng-container *ngFor="let item of breadcrumbItems; let last = last; let index = index">
+    <li class="breadcrumb-item" [ngClass]="{ active: last }">
+      <a *ngIf="!last" [routerLink]="item.routerLink">{{ item.label }}</a>
+      <span *ngIf="last">{{ item.label }}</span>
+    </li>
+    <span *ngIf="!last"> <i class="pi pi-angle-right"></i> </span>
+  </ng-container>
+</ol>
+
+<h6>Edición de notificación</h6>
+
+<div class="row">
+  <form [formGroup]="formTemplate">
+    <div class="row">
+      <div class="col-6">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Nombre de la notificación</label>
+          <input pInputText formControlName="name" class="ng-invalid" />
+          <small class="error" *ngIf="formControls['name'].errors && formControls['name'].touched">
+            * Campo obligatorio.
+          </small>
+          <small class="error" *ngIf="formControls['name'].errors && formControls['name'].invalid">
+            * Campo no debe sobrepasar los 300 caracteres.
+          </small>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Asunto de la notificación</label>
+          <input pInputText formControlName="subject" class="ng-invalid" />
+          <small
+            class="error"
+            *ngIf="formControls['subject'].errors && formControls['subject'].invalid"
+          >
+            * Campo no debe sobrepasar los 400 caracteres.
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 py-4">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="">Descripción</label>
+        <p class="error-message">Límite máximo de 500 caracteres</p>
+        <input pInputText formControlName="description" class="ng-invalid" />
+        <small
+          class="error"
+          *ngIf="formControls['description'].errors && formControls['description'].invalid"
+        >
+          * Campo no debe sobrepasar los 500 caracteres.
+        </small>
+      </div>
+    </div>
+
+    <div class="col-12 py-2">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="">Contenido de la notificación</label>
+        <p class="error-message">Límite máximo de 5000 caracteres</p>
+        <div class="card-html">
+          <app-editor
+            (createHtml)="createHtml($event)"
+            [htmlText]="currentTemplate?.emailBody || ''"
+          ></app-editor>
+        </div>
+        <small class="error" *ngIf="content === ''"> * Campo obligatorio. </small>
+        <small class="error" *ngIf="contentSize > 5000">
+          * Campo no debe sobrepasar los 5000 caracteres.
+        </small>
+      </div>
+    </div>
+  </form>
+  <div class="col-12">
+    <span class="info-alert"
+      >** Por favor, ten en cuenta que las palabras señaladas entre guiones (por ejemplo:
+      --PROGRAM--) representan banderas que serán automáticamente sustituidas por la información
+      correspondiente al momento de enviar la notificación. Es importante destacar que no es posible
+      crear nuevas banderas, ya que solo aquellas definidas previamente serán reconocidas y
+      reemplazadas. Si deseas añadir más texto, puedes hacerlo sin problema alguno; sin embargo, ten
+      presente que nuevas banderas no serán reemplazadas y, por ende, carecerán de información de
+      valor.</span
+    >
+  </div>
+</div>
+
+<div class="row d-flex py-4 justify-content-end">
+  <div class="col-md-1 d-flex justify-content-end">
+    <button class="btn btn-primary" (click)="updateTemplate()">Guardar</button>
+  </div>
+</div>

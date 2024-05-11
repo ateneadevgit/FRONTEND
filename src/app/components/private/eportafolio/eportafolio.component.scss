@@ -1,0 +1,152 @@
+@import '../../../../assets/styles/abstracts/variables';
+
+.card-header {
+  background-color: $color-indigo;
+  color: $color-quick-silver;
+  align-items: center;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  padding: 10px;
+  button {
+    font-weight: bold;
+  }
+}
+
+.btn-footer:hover {
+  background-color: $color-indigo-lighter;
+  color: $color-white;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.folder-item {
+  width: 80%;
+  height: 100px;
+  border-top-left-radius: 30px;
+  align-items: left;
+  text-align: right;
+  margin-left: auto;
+  margin-right: auto;
+  img {
+    height: 30px;
+    width: 30px;
+    margin-top: 10px;
+  }
+}
+
+.folder-bottom-item {
+  width: 80%;
+  height: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  filter: brightness(80%);
+}
+
+img {
+  height: 60px;
+  width: 60px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.search-button {
+  color: $color-platinum;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 30px;
+  background-color: $color-dodger-blue;
+  border: none;
+  border-radius: 5px;
+}
+
+.clean-button {
+  color: $color-dodger-blue;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 30px;
+  background-color: $color-platinum;
+  border: none;
+  border-radius: 5px;
+}
+
+.header-search {
+  background-color: $color-jelly-bean-blue;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 10px;
+  color: $color-platinum;
+  padding: 20px;
+  margin-bottom: -10px;
+}
+
+.dialog-content {
+  overflow-y: auto;
+}
+
+.message-selected {
+  font-size: 14px;
+  color: $color-jelly-bean-blue-alpha;
+  .email {
+    color: $color-indigo;
+    font-weight: bold;
+  }
+}
+
+.pi-pencil {
+  color: $color-tangerine-yellow;
+}
+
+.pi-trash {
+  color: $color-delete;
+}
+
+.url-blue {
+  color: $color-done-blue;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+td,
+th {
+  text-align: center;
+}
+
+.pi {
+  cursor: pointer;
+}
+
+.progress-message {
+  font-size: 12px;
+  color: $color-davis-gray;
+}
+
+.calendar-input {
+  margin-left: 5%;
+}
+
+.btn-disabled {
+  background-color: $color-auro-metal-saurus;
+  color: $color-cultured;
+  cursor: not-allowed;
+}
+
+.file-label {
+  margin-right: 20px;
+}
+
+.confirm-buttom {
+  margin-top: -10px;
+  button {
+    width: 100px;
+    padding: 5px;
+    margin: 10px;
+    border: none;
+  }
+  .in-update {
+    margin-left: 50px;
+  }
+}

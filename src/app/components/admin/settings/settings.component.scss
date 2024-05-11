@@ -1,0 +1,51 @@
+@import '../../../../assets/styles/abstracts/variables';
+
+.border-left {
+  border-top-left-radius: 10px;
+}
+
+.border-right {
+  border-top-right-radius: 10px;
+}
+
+.pi-pencil {
+  color: $color-tangerine-yellow;
+}
+
+.pi {
+  cursor: pointer;
+}
+
+.colored-item {
+  color: $color-indigo;
+  font-weight: bold;
+}
+
+.workflow-status {
+  margin-right: 10px;
+  border: none;
+  i {
+    text-align: center;
+    font-size: 10px;
+    padding: 5px;
+    margin-left: -5px;
+    margin-right: 5px;
+  }
+}
+
+button {
+  margin-right: 10px;
+}
+
+.in-projection,
+.in-update,
+.in-review,
+.in-approve {
+  padding: 4px 0px 2px 8px;
+  font-size: 10px;
+}
+
+.little-btn {
+  height: 30px;
+  width: 20px;
+}

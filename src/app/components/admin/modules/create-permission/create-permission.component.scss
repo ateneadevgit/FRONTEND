@@ -1,0 +1,50 @@
+@import '../../../../../assets/styles/abstracts/variables';
+
+.border-left {
+  border-top-left-radius: 10px;
+}
+
+.border-right {
+  border-top-right-radius: 10px;
+}
+
+.pi-pencil {
+  color: $color-tangerine-yellow;
+}
+
+.pi {
+  cursor: pointer;
+}
+
+.breadcrumb {
+  color: $color-quick-silver;
+  font-size: 12px;
+  a {
+    color: $color-quick-silver;
+    font-weight: bold;
+  }
+  span {
+    color: $color-quick-silver;
+    font-weight: bold;
+  }
+
+  .pi-angle-right {
+    margin-top: 2px;
+  }
+}
+
+.colored-item {
+  color: $color-indigo;
+  font-weight: bold;
+}
+
+.create-permission {
+  span {
+    margin-left: 10px;
+    color: $color-quick-silver;
+    font-size: 12px;
+  }
+  label {
+    color: $color-indigo;
+  }
+}

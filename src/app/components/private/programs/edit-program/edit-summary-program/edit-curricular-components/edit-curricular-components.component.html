@@ -1,0 +1,17 @@
+<p-tabView *ngIf="activeView">
+  <p-tabPanel header="Epistemológico">
+    <app-editor (createHtml)="createHtml($event, 0)" [htmlText]="html[0]"></app-editor>
+  </p-tabPanel>
+  <p-tabPanel header="Pedagógico">
+    <app-editor (createHtml)="createHtml($event, 1)" [htmlText]="html[1]"></app-editor>
+  </p-tabPanel>
+  <p-tabPanel header="Formativo">
+    <app-editor (createHtml)="createHtml($event, 2)" [htmlText]="html[2]"></app-editor>
+  </p-tabPanel>
+  <p-tabPanel header="Interacción">
+    <app-editor (createHtml)="createHtml($event, 3)" [htmlText]="html[3]"></app-editor>
+  </p-tabPanel>
+  <p-tabPanel header="Evaluativo">
+    <app-editor (createHtml)="createHtml($event, 4)" [htmlText]="html[4]"></app-editor>
+  </p-tabPanel>
+</p-tabView>

@@ -1,0 +1,50 @@
+<!-- eslint-disable @angular-eslint/template/alt-text -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<h6>{{ title }}</h6>
+<div class="row" *ngIf="typeTemplate === 0">
+  <div class="col-md-6">
+    <p [innerHTML]="text"></p>
+  </div>
+  <div class="col-md-6">
+    <img class="img-header-style" [src]="srcImage" />
+  </div>
+</div>
+
+<div class="row" *ngIf="typeTemplate === 1">
+  <div class="col-md-12">
+    <img class="img-header-style2" [src]="srcImage" />
+  </div>
+  <div class="col-md-12">
+    <p [innerHTML]="text"></p>
+  </div>
+</div>
+
+<div class="row" *ngIf="typeTemplate === 2 && childs.length > 0">
+  <div class="col-6 my-4">
+    <div class="row margin-general">
+      <div class="col-10 title-sm" [style.background-color]="'#a6cef9'">
+        Núcleo problématico
+        {{ nameNucleo }}
+      </div>
+      <div class="col-12 content-sm">
+        <div class="row header">
+          <div class="col-10 header-name-subnucleo">Subnúcleos</div>
+          <div class="col-2 header-num credit">Créditos</div>
+        </div>
+
+        <div class="row border-top" *ngFor="let obj of childs">
+          <div class="col-10 header-name" (click)="redirectSubNucleo(obj.curriculumId)">
+            {{ obj.name }}
+          </div>
+          <div class="col-2 credit number-credit">
+            {{ obj.creditNumber }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <img class="img-header-style" [src]="srcImage" />
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<p-dialog [(visible)]="visible" [style]="{ width: '50vw' }" [modal]="true" [closable]="false">
+  <button class="status close-modal" (click)="close()">
+    <span class="pi pi-times"></span>
+  </button>
+  <h6 class="title">{{ config?.header }}</h6>
+
+  <input
+    type="file"
+    id="archivo"
+    name="archivo"
+    class="input-file"
+    [accept]="allowedExtension"
+    (change)="loadFile($event)"
+  />
+  <label for="archivo" class="btn">Elegir archivo</label>
+  <p>{{ fileName }}</p>
+
+  <app-editor (createHtml)="createHtml($event)"></app-editor>
+
+  <div class="text-center mt-4">
+    <button pButton pRipple class="btn btn-primary" (click)="reponseData()">Guardar</button>
+  </div>
+</p-dialog>

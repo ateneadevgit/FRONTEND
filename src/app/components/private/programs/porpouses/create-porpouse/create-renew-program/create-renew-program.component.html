@@ -1,0 +1,289 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<form [formGroup]="formRenovationProgram">
+  <div class="row">
+    <div class="col-md-4 mt-2">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Seleccione programa académico</label>
+        <p-dropdown
+          [options]="programs"
+          formControlName="programOpt"
+          placeholder="Seleccione programa"
+          [group]="false"
+          [filter]="true"
+          [showClear]="true"
+          filterBy="name"
+          optionLabel="name"
+          (onChange)="loadProgram()"
+        >
+          <ng-template let-program pTemplate="program">
+            <div class="flex align-items-center">
+              <span>{{ program.name }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <small
+          class="error"
+          *ngIf="formControls['programOpt'].errors && formControls['programOpt'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="profile-container">
+      <div class="cover-photo">
+        <div class="container">
+          <div class="image">
+            <div class="image-portada" *ngIf="!croppedImagePortada"></div>
+            <img
+              [src]="croppedImagePortada"
+              alt="logo"
+              *ngIf="croppedImagePortada"
+              class="image-cropper-portada"
+              (error)="imageUrlPortada('')"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="profile-photo">
+        <div class="container">
+          <div class="image">
+            <div class="image-cropper" *ngIf="!croppedImageLogo"></div>
+            <img
+              [src]="croppedImageLogo"
+              alt="logo"
+              *ngIf="croppedImageLogo"
+              class="image-cropper"
+              (error)="imageUrlLogo('')"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row container">
+    <div class="col-md-8">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="">Denominación programa académico</label>
+        <input pInputText formControlName="programName" class="ng-invalid" />
+        <small
+          class="error"
+          *ngIf="formControls['programName'].errors && formControls['programName'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row container">
+    <div class="col-md-4">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Facultad</label>
+        <p-dropdown
+          formControlName="facultyId"
+          disable="true"
+          [options]="faculties"
+          placeholder="Seleccione facultad"
+          [group]="false"
+          [filter]="true"
+          [showClear]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+        >
+          <ng-template let-factulty pTemplate="factulty">
+            <div class="flex align-items-center">
+              <span>{{ factulty.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <small
+          class="error"
+          *ngIf="formControls['facultyId'].errors && formControls['facultyId'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Tipo de programa</label>
+        <p-dropdown
+          [options]="typeFormation"
+          [disabled]="false"
+          formControlName="formationTypeId"
+          placeholder="Seleccione formación"
+          [group]="false"
+          [filter]="true"
+          [showClear]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+        >
+          <ng-template let-factulty pTemplate="factulty">
+            <div class="flex align-items-center">
+              <span>{{ factulty.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <small
+          class="error"
+          *ngIf="formControls['formationTypeId'].errors && formControls['formationTypeId'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Nivel de formación</label>
+        <p-dropdown
+          [options]="levelFormation"
+          formControlName="formationLevel"
+          placeholder="Seleccione nivel"
+          [group]="false"
+          [filter]="true"
+          [showClear]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+        >
+          <ng-template let-factulty pTemplate="factulty">
+            <div class="flex align-items-center">
+              <span>{{ factulty.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <small
+          class="error"
+          *ngIf="formControls['formationLevel'].errors && formControls['formationLevel'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row container">
+    <div class="col-md-4">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Tipo de registro</label>
+        <p-dropdown
+          [options]="typeRegister"
+          formControlName="registryTypeId"
+          placeholder="Seleccione registro"
+          [group]="false"
+          [filter]="true"
+          [showClear]="true"
+          filterBy="catalogItemName"
+          optionLabel="catalogItemName"
+        >
+          <ng-template let-factulty pTemplate="factulty">
+            <div class="flex align-items-center">
+              <span>{{ factulty.catalogItemName }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <small
+          class="error"
+          *ngIf="formControls['registryTypeId'].errors && formControls['registryTypeId'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Lugar de desarrollo</label>
+
+        <div class="multi-select flex justify-content-center">
+          <p-multiSelect
+            [options]="campus"
+            formControlName="campus"
+            placeholder="Seleccione lugar"
+            display="chip"
+            [filter]="true"
+            optionLabel="catalogItemName"
+          >
+          </p-multiSelect>
+        </div>
+        <small
+          class="error"
+          *ngIf="formControls['campus'].errors && formControls['campus'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Modalidad</label>
+        <div class="multi-select flex justify-content-center">
+          <p-multiSelect
+            [options]="modality"
+            formControlName="modality"
+            placeholder="Seleccione modalidad"
+            display="chip"
+            [filter]="true"
+            optionLabel="catalogItemName"
+          >
+          </p-multiSelect>
+        </div>
+        <small
+          class="error"
+          *ngIf="formControls['modality'].errors && formControls['modality'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row container">
+    <div class="col-md-4">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Adjuntar archivo</label>
+        <br />
+        <!--   <label for="file" class="custom-file-input"> Seleccionar </label>
+          <input type="file"  (change)="onFileChange($event)" /> -->
+        <input
+          type="file"
+          id="archivo"
+          name="archivo"
+          class="input-file"
+          [accept]="allowedExtension"
+          (change)="loadFile($event)"
+        />
+        <label for="archivo" class="btn">Elegir archivo</label>
+      </div>
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+      <p>{{ fileName }}</p>
+    </div>
+  </div>
+
+  <div class="row container">
+    <div class="col-md-12 button-action-center">
+      <p-button (click)="createProgram()" [disabled]="!formRenovationProgram.valid">
+        Enviar propuesta
+      </p-button>
+    </div>
+  </div>
+</form>
+
+<app-crop-image
+  [visible]="visibleLogoModal"
+  [aspectRatio]="4 / 4"
+  (imageUrl)="imageUrlLogo($event)"
+>
+</app-crop-image>
+<app-crop-image
+  [visible]="visiblePortadaModal"
+  [aspectRatio]="10 / 3"
+  (imageUrl)="imageUrlPortada($event)"
+>
+</app-crop-image>
+<p-toast></p-toast>

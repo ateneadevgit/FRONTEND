@@ -1,0 +1,38 @@
+<div *ngIf="role === RoleEnum.ADMINISTRADOR">
+  <img src="../../../../assets/images/landing-backoffice.jpg" alt="" class="landing-image" />
+  <div class="landing-content">
+    <h3>Bienvenido al portal administrador de</h3>
+    <img src="../../../../assets/images/logo-atenea.svg" alt="" />
+  </div>
+</div>
+
+<div *ngIf="role !== RoleEnum.ADMINISTRADOR">
+  <h6>¡Hola {{ session?.userData?.name }}, bienvenido a Atenea!</h6>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <app-academic-program></app-academic-program>
+        <app-news-widget></app-news-widget>
+        <app-my-academic-program-current
+          *ngIf="role === RoleEnum.ESTUDIANTE || role === RoleEnum.ESTUDIANTE_NO_FORMAL"
+        ></app-my-academic-program-current>
+        <app-programs-active
+          *ngIf="role !== RoleEnum.ESTUDIANTE && role !== RoleEnum.ESTUDIANTE_NO_FORMAL"
+        ></app-programs-active>
+        <app-programs-current
+          *ngIf="role !== RoleEnum.ESTUDIANTE && role !== RoleEnum.ESTUDIANTE_NO_FORMAL"
+        ></app-programs-current>
+      </div>
+      <div class="col-md-4">
+        <app-my-academic-program-progress
+          *ngIf="role === RoleEnum.ESTUDIANTE || role === RoleEnum.ESTUDIANTE_NO_FORMAL"
+        ></app-my-academic-program-progress>
+        <app-statistic
+          *ngIf="role !== RoleEnum.ESTUDIANTE && role !== RoleEnum.ESTUDIANTE_NO_FORMAL"
+        ></app-statistic>
+        <app-advertising></app-advertising>
+        <app-calendar></app-calendar>
+      </div>
+    </div>
+  </div>
+</div>

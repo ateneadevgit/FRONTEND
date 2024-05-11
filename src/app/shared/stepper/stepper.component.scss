@@ -1,0 +1,12 @@
+@import '../../../assets/styles/abstracts/variables';
+@import '../../../assets/styles/main.scss';
+.eye-button {
+  background-color: $color-white;
+  color: $color-indigo;
+  border: 0;
+  margin-left: 5px;
+}
+.select-item {
+  background-color: $color-jelly-bean-blue-alpha;
+  color: $color-white;
+}

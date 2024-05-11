@@ -1,0 +1,116 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<h6>Mi programa académico</h6>
+<p>Accede a tu plan de estudios, detalle de asignaturas, seguimiento académico y mucho más</p>
+<hr class="w-25 yellow_line" />
+<div class="row d-flex justify-content-evenly">
+  <div class="col-12 col-md-4" *ngFor="let program of listPrograms">
+    <p-card styleClass="ngx-color">
+      <ng-template pTemplate="header">
+        <img alt="Card" src="{{ program.cover }}" />
+      </ng-template>
+      <div class="text-center">
+        <div class="card-title">Mi programa académico</div>
+        <div class="card-program">
+          {{ program.name }}
+        </div>
+        <div class="card-subtitle">Componentes curriculares</div>
+      </div>
+      <div *ngIf="Role.ESTUDIANTE === role">
+        <div
+          class="custom-button"
+          (click)="redirectType(program.idProgram, componenteCurricularType.EPISTEMOLOGICO)"
+        >
+          Epistemológico
+        </div>
+        <div
+          class="custom-button"
+          (click)="redirectType(program.idProgram, componenteCurricularType.PEDAGOGICO)"
+        >
+          Pedagógico
+        </div>
+        <div
+          class="custom-button"
+          (click)="redirectType(program.idProgram, componenteCurricularType.FORMATIVO)"
+        >
+          Formativo
+        </div>
+        <div
+          class="custom-button"
+          (click)="redirectType(program.idProgram, componenteCurricularType.INTERACCION)"
+        >
+          De interacción
+        </div>
+        <div
+          class="custom-button"
+          (click)="redirectType(program.idProgram, componenteCurricularType.EVALUACION)"
+        >
+          Evaluativo
+        </div>
+      </div>
+      <div *ngIf="Role.ESTUDIANTE_NO_FORMAL === role">
+        <div
+          class="custom-button"
+          (click)="redirectType(program.idProgram, componenteCurricularType.GRADUATE_PROFILE)"
+        >
+          Perfil del egresado
+        </div>
+        <div
+          class="custom-button"
+          (click)="redirectType(program.idProgram, componenteCurricularType.PROGRAM_JUSTIFICATION)"
+        >
+          Justificación del programa
+        </div>
+        <div
+          class="custom-button"
+          (click)="redirectType(program.idProgram, componenteCurricularType.CURRICULUM)"
+        >
+          Plan de estudios
+        </div>
+        <div
+          class="custom-button"
+          (click)="redirectType(program.idProgram, componenteCurricularType.RESOURCES)"
+        >
+          Recursos
+        </div>
+        <div class="custom-button" (click)="visibleRegulation = true">
+          Reglamento de estudiantes y de formadores
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>
+
+<p-dialog
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  [(visible)]="visibleRegulation"
+  [style]="{ width: '60%' }"
+>
+  <div class="row d-flex justify-content-center">
+    <div class="row d-flex justify-content-center w-75">
+      <div class="col-8 d-flex">
+        <img src="../../../../assets/images/logo-sanmartin-new.svg" alt="logo san martin" />
+      </div>
+      <div class="col-4">
+        <img
+          src="../../../../assets/images/logo-atenea.svg"
+          alt="logo san martin"
+          style="width: 150px"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 text-center">
+        <h6>Ingresa al reglamento deseado</h6>
+      </div>
+      <div class="col-12 text-center">
+        <h6 class="text-regulation" (click)="downloadDocument(urlA)">Reglamento de estudiantes</h6>
+      </div>
+      <div class="col-12 text-center">
+        <h6 class="text-regulation" (click)="downloadDocument(urlB)">Reglamento de formadores</h6>
+      </div>
+    </div>
+  </div>
+</p-dialog>

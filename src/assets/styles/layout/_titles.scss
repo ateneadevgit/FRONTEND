@@ -1,0 +1,57 @@
+@import '../abstracts/variables';
+
+.title-page {
+  color: $color-indigo;
+  margin: 20px 0;
+  font-weight: 400;
+  i {
+    margin-right: 10px;
+  }
+}
+
+h6 {
+  color: $color-indigo;
+  font-family: $font-medium;
+  font-weight: 300;
+  font-size: 22px;
+  margin: 20px 0;
+}
+
+.sub-h6 {
+  color: $color-indigo;
+  font-family: $font-medium;
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 20px;
+}
+
+.yellow_line {
+  border-width: 3px !important;
+  color: $color-tangerine-yellow !important;
+}
+
+.tittle-style-module {
+  color: $color-indigo;
+}
+
+.subtitle_card {
+  color: $color-gray;
+  font-size: 15px;
+}
+
+.label-prop {
+  color: $color-gray;
+  font-size: 10px;
+}
+
+.subtitle-card-dashboard {
+  color: $color-jelly-bean-blue;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.subtitle-blue {
+  color: $color-jelly-bean-blue;
+}

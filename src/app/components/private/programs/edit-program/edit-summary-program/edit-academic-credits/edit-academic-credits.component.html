@@ -1,0 +1,61 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+
+<div class="row">
+  <div class="col-10">
+    <div class="alert-ministerio">
+      Para solicitar la modificación de créditos académicos, es necesario obtener la aprobación de
+      Vicerrectoria Académica
+    </div>
+  </div>
+</div>
+<div class="row mb-4">
+  <div class="col-2">
+    <div class="input-icon-container">
+      <input type="text" pInputText [(ngModel)]="buscador" placeholder="Buscador" />
+      <i class="pi pi-search search-icon default-icon" (click)="search()"></i>
+    </div>
+  </div>
+  <div class="col-2"><i class="pi pi-undo default-icon pt-3" (click)="cleanSearch()"></i></div>
+</div>
+<p-table [value]="subnucleosFiltrados || []">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Subnúcleos o asignaturas</th>
+      <th>Semestre</th>
+      <th>N° de créditos</th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-item>
+    <tr>
+      <td>{{ item.name }}</td>
+      <td>{{ item.semester }}</td>
+      <td>
+        <ng-container *ngIf="editandoId === item.subjectId; else mostrarValor">
+          <input type="text" pInputText [(ngModel)]="creditosEditados" placeholder="Creditos" />
+        </ng-container>
+        <ng-template #mostrarValor>
+          {{ item.creditNumber }}
+          <!-- Muestra el botón de lápiz solo si no estamos editando este elemento -->
+        </ng-template>
+      </td>
+      <td>
+        <i
+          class="pi pi-check-square"
+          (click)="guardarCambios(item.subjectId)"
+          *ngIf="editandoId === item.subjectId"
+        ></i>
+        <i
+          class="pi pi-pencil"
+          (click)="activarEdicion(item.subjectId, item.creditNumber)"
+          *ngIf="editandoId !== item.subjectId"
+        ></i>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<div class="text-center mt-2" *ngIf="(objAcademicCredits || []).length === 0">
+  <p>No se encontraron resultados...</p>
+</div>

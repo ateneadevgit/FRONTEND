@@ -1,0 +1,60 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<h6>Facultades</h6>
+<p>Manténgase informado de las facultades existentes</p>
+<hr class="w-25 yellow_line" />
+
+<div class="row space"></div>
+
+<form [formGroup]="formSearch">
+  <div class="col-6">
+    <div class="input-icon-container">
+      <input type="text" pInputText formControlName="name" placeholder="Buscar nombre o apellido" />
+      <i
+        class="pi pi-search search-icon default-icon"
+        (click)="onSearch()"
+        *ngIf="keyWord === null"
+      ></i>
+      <i
+        class="pi pi-delete-left search-icon default-icon"
+        (click)="onCleanSearch()"
+        *ngIf="keyWord !== null"
+      ></i>
+    </div>
+  </div>
+</form>
+
+<div class="row space"></div>
+
+<div class="row">
+  <div class="col-12">
+    <div>
+      <div class="mt-2">
+        <p-table [value]="facultyList || []" [paginator]="true" [rows]="10">
+          <!--<ng-template pTemplate="header">
+              <tr>
+                <th></th>
+                <th>Nombre</th>
+                <th>Cargo</th>
+                <th>Correo electrónico</th>
+                <th>Facultad</th>
+                <th>Sede</th>
+              </tr>
+            </ng-template>-->
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td><i class="pi pi-building"></i></td>
+              <td class="blue-bold">{{ item.catalogItemName }}</td>
+              <td>ABC123</td>
+              <td>Sede Puerto Colombia, Sede Bogotá</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <div class="text-center mt-2" *ngIf="(facultyList || []).length === 0">
+        <p>No se encontraron resultados...</p>
+      </div>
+    </div>
+  </div>
+</div>

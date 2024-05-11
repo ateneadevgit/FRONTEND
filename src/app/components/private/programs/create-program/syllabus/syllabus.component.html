@@ -1,0 +1,660 @@
+<h6 *ngIf="!editProgram">Creación de programas Académicos</h6>
+<div class="row" *ngIf="!editProgram">
+  <div class="col-12 col-md-8">
+    <h6 class="title">Sílabos</h6>
+  </div>
+  <div class="col-12 col-md-4">
+    <button pButton pRipple class="btn btn-primary" (click)="moveCreateProgram()">
+      <span class="pi pi-arrow-left"></span>
+      Creación de condiciones
+    </button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-4">
+    <label for="nucleo">Seleccione el núcleo</label>
+    <p-dropdown
+      id="nucleo"
+      [options]="nucleoList"
+      [(ngModel)]="selectNucleo"
+      placeholder="Seleccione el núcleo"
+      [group]="false"
+      [filter]="true"
+      filterBy="name"
+      optionLabel="name"
+      (onChange)="loadSubNucleo()"
+    >
+      <ng-template let-catalog pTemplate="catalog">
+        <div class="flex align-items-center">
+          <span>{{ catalog.name }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+  <div class="col-4">
+    <label for="Subnucleo">Seleccione subnúcleo o asignatura</label>
+    <p-dropdown
+      id="Subnucleo"
+      [options]="subnucleoList"
+      [(ngModel)]="selectSubnucleo"
+      placeholder="Seleccione subnúcleo o asignatura"
+      [group]="false"
+      [filter]="true"
+      filterBy="name"
+      optionLabel="name"
+      (onChange)="getDataPreload()"
+    >
+      <ng-template let-catalog pTemplate="catalog">
+        <div class="flex align-items-center">
+          <span>{{ catalog.name }}</span>
+          <i *ngIf="catalog.hasSyllabus" class="pi pi-check"></i>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+  <div class="col-12 col-md-4">
+    <button pButton pRipple class="btn btn-secondary mt-4" (click)="openPdf()" *ngIf="edit">
+      Ver pdf
+    </button>
+  </div>
+</div>
+
+<form [formGroup]="formSyllabus" *ngIf="visibleForm">
+  <div class="row mt-4">
+    <p-card>
+      <div class="row">
+        <div class="col-12 col-md-4">
+          <label for="code">Código</label>
+          <input type="text" pInputText placeholder="Escribir" formControlName="code" />
+          <small
+            class="error"
+            *ngIf="
+              formSyllabus.controls.code.dirty && formSyllabus.controls.code?.hasError('required')
+            "
+            >Campo requerido.</small
+          >
+        </div>
+        <div class="col-12 col-md-4">
+          <label for="fAprobacion" class="w-100">Fecha de aprobación</label>
+          <p-calendar
+            formControlName="approvedDate"
+            dateFormat="yy-mm-dd"
+            class="w-100"
+          ></p-calendar>
+          <small
+            class="error"
+            *ngIf="formControls['approvedDate'].errors && formControls['approvedDate'].touched"
+            >* Campo obligatorio.</small
+          >
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <div class="row mt-4">
+    <p-card>
+      <h5>1. Información general del subnúcleo o asignatura</h5>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <label for="selectNucleo">Núcleo integrador</label>
+          <input
+            type="text"
+            pInputText
+            placeholder="Escribir"
+            id="selectNucleo"
+            [value]="selectNucleo?.name"
+            [disabled]="true"
+          />
+        </div>
+        <div class="col-12 col-md-6">
+          <label for="selectSubnucleo">Subnúcleo o asignatura</label>
+          <input
+            type="text"
+            pInputText
+            placeholder="Escribir"
+            id="selectSubnucleo"
+            [value]="selectSubnucleo?.name"
+            [disabled]="true"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <label for="code">Código del Subnúcleo o asignatura</label>
+          <input
+            type="text"
+            pInputText
+            placeholder="Escribir"
+            id="code"
+            [value]="selectSubnucleo?.code"
+            [disabled]="true"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <label for="campus">Sede</label>
+          <p-multiSelect
+            id="campus"
+            [options]="campus"
+            formControlName="campus"
+            optionLabel="catalogItemName"
+            placeholder="Seleccione Sede"
+          >
+          </p-multiSelect>
+        </div>
+        <div class="col-12 col-md-6">
+          <label for="cat">Centros de atención tutorial (CAT)</label>
+          <input type="text" pInputText placeholder="Escribir" id="cat" formControlName="cat" />
+          <small class="error" *ngIf="formControls['cat'].errors && formControls['cat'].touched"
+            >* Campo obligatorio.</small
+          >
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <label for="facultyId">Facultad</label>
+          <p-dropdown
+            id="facultyId"
+            [options]="faculties"
+            placeholder="Seleccione facultad"
+            [group]="false"
+            [filter]="false"
+            filterBy="catalogItemName"
+            optionLabel="catalogItemName"
+            formControlName="facultyId"
+          >
+            <ng-template let-catalog pTemplate="catalog">
+              <div class="flex align-items-center">
+                <span>{{ catalog.catalogItemName }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-12 col-md-6">
+          <label for="programName">Programa</label>
+          <input
+            type="text"
+            class="ng-invalid ng-dirty"
+            pInputText
+            placeholder="Programa"
+            formControlName="programName"
+            id="programName"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <label for="cine">Clasificación CINE programa</label>
+          <input type="text" pInputText placeholder="Escribir" id="cine" formControlName="cine" />
+          <small class="error" *ngIf="formControls['cine'].errors && formControls['cine'].touched"
+            >* Campo obligatorio.</small
+          >
+        </div>
+        <div class="col-12 col-md-6">
+          <label for="nbc">Núcleo básico del conocimiento (NBC)</label>
+          <input type="text" pInputText placeholder="Escribir" id="nbc" formControlName="nbc" />
+          <small class="error" *ngIf="formControls['nbc'].errors && formControls['nbc'].touched"
+            >* Campo obligatorio.</small
+          >
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <label for="modalities">Modalidad</label>
+          <p-multiSelect
+            id="modalities"
+            [options]="modality"
+            optionLabel="catalogItemName"
+            placeholder="Seleccione Modalidad"
+            formControlName="modalities"
+          >
+          </p-multiSelect>
+        </div>
+        <div class="col-12 col-md-6">
+          <span class="p-insite-label">
+            <label for="modalityObservation">Observación</label>
+            <textarea
+              id="modalityObservation"
+              rows="3"
+              style="resize: auto"
+              class="w-100"
+              pInputTextarea
+              [readOnly]="false"
+              formControlName="modalityObservation"
+            ></textarea>
+            <small
+              class="error"
+              *ngIf="
+                formControls['modalityObservation'].errors &&
+                formControls['modalityObservation'].touched
+              "
+              >* Campo obligatorio.</small
+            >
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-3">
+          <label for="levelFormationId">Nivel de formación</label>
+          <p-dropdown
+            id="levelFormationId"
+            [options]="levelFormation"
+            placeholder="Seleccione Nivel de formación"
+            [group]="false"
+            [filter]="false"
+            filterBy="catalogItemName"
+            optionLabel="catalogItemName"
+            formControlName="levelFormationId"
+          >
+            <ng-template let-catalog pTemplate="catalog">
+              <div class="flex align-items-center">
+                <span>{{ catalog.catalogItemName }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small
+            class="error"
+            *ngIf="
+              formControls['levelFormationId'].errors && formControls['levelFormationId'].touched
+            "
+            >* Campo obligatorio.</small
+          >
+        </div>
+        <div class="col-12 col-md-3">
+          <label for="levelFormationCredits">N° Créditos</label>
+          <input
+            type="text"
+            pInputText
+            placeholder="Escribir"
+            id="levelFormationCredits"
+            formControlName="levelFormationCredits"
+          />
+          <small
+            class="error"
+            *ngIf="
+              formControls['levelFormationCredits'].errors &&
+              formControls['levelFormationCredits'].touched
+            "
+            >* Campo obligatorio.</small
+          >
+        </div>
+        <div class="col-12 col-md-6">
+          <label for="levelFormationPrerequisites">Prerrequisitos</label>
+          <p-dropdown
+            id="levelFormationPrerequisites"
+            [options]="subjects"
+            placeholder="Seleccione la asignatura"
+            [group]="false"
+            [filter]="false"
+            filterBy="name"
+            optionLabel="name"
+            formControlName="levelFormationPrerequisites"
+          >
+            <ng-template let-catalog pTemplate="catalog">
+              <div class="flex align-items-center">
+                <span>{{ catalog.name }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small
+            class="error"
+            *ngIf="
+              formControls['levelFormationPrerequisites'].errors &&
+              formControls['levelFormationPrerequisites'].touched
+            "
+            >* Campo obligatorio.</small
+          >
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <label for="signatureType">Tipo de asignatura</label>
+          <p-dropdown
+            id="Tipo_de_asignatura"
+            [options]="subjectType"
+            formControlName="signatureType"
+            placeholder="Seleccione Tipo de asignatura"
+            [group]="false"
+            [filter]="true"
+            filterBy="catalogItemName"
+            optionLabel="catalogItemName"
+          >
+            <ng-template let-catalog pTemplate="catalog">
+              <div class="flex align-items-center">
+                <span>{{ catalog.catalogItemName }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small
+            class="error"
+            *ngIf="formControls['signatureType'].errors && formControls['signatureType'].touched"
+            >* Campo obligatorio.</small
+          >
+        </div>
+        <div class="col-12 col-md-6">
+          <span class="p-insite-label">
+            <label for="signatureTypeObservation">Observación</label>
+            <textarea
+              id="signatureTypeObservation"
+              rows="3"
+              style="resize: auto"
+              class="w-100"
+              pInputTextarea
+              [readOnly]="false"
+              formControlName="signatureTypeObservation"
+            ></textarea>
+            <small
+              class="error"
+              *ngIf="
+                formControls['signatureTypeObservation'].errors &&
+                formControls['signatureTypeObservation'].touched
+              "
+              >* Campo obligatorio.</small
+            >
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-12">
+          <label for="attendance">Asistencia (para el programa de la asignatura)</label>
+          <input
+            type="text"
+            pInputText
+            placeholder="Escribir"
+            id="attendance"
+            formControlName="attendance"
+          />
+          <small
+            class="error"
+            *ngIf="formControls['attendance'].errors && formControls['attendance'].touched"
+            >* Campo obligatorio.</small
+          >
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <div class="row mt-4">
+    <p-card>
+      <h5>2. Información particular del núcleo integrador y subnúcleo o asignatura</h5>
+
+      <div class="row">
+        <div class="col-12 col-md-12">
+          <span class="p-insite-label">
+            <label for="subjectConformation"
+              >2.1 Contexto y conformación del núcleo integrador en el marco de la estructura
+              curricular</label
+            >
+            <textarea
+              id="subjectConformation"
+              rows="3"
+              style="resize: auto"
+              class="w-100"
+              pInputTextarea
+              [readOnly]="false"
+              formControlName="subjectConformation"
+            ></textarea>
+            <small
+              class="error"
+              *ngIf="
+                formControls['subjectConformation'].errors &&
+                formControls['subjectConformation'].touched
+              "
+              >* Campo obligatorio.</small
+            >
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-12">
+          <span class="p-insite-label">
+            <label for="subjectContext"
+              >2.2 Contexto del subnúcleo o asignatura en la estructura curricular</label
+            >
+            <textarea
+              id="subjectContext"
+              rows="3"
+              style="resize: auto"
+              class="w-100"
+              pInputTextarea
+              [readOnly]="false"
+              formControlName="subjectContext"
+            ></textarea>
+            <small
+              class="error"
+              *ngIf="
+                formControls['subjectContext'].errors && formControls['subjectContext'].touched
+              "
+              >* Campo obligatorio.</small
+            >
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-12">
+          <span class="p-insite-label">
+            <label for="subjectDescription"
+              >2.3 Descripción general del subnúcleo o asignaturas</label
+            >
+            <textarea
+              id="subjectDescription"
+              rows="3"
+              style="resize: auto"
+              class="w-100"
+              pInputTextarea
+              [readOnly]="false"
+              formControlName="subjectDescription"
+            ></textarea>
+            <small
+              class="error"
+              *ngIf="
+                formControls['subjectDescription'].errors &&
+                formControls['subjectDescription'].touched
+              "
+              >* Campo obligatorio.</small
+            >
+          </span>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <div class="row mt-4">
+    <p-card>
+      <h5>3. Resultado de aprendizaje esperado</h5>
+
+      <div class="row">
+        <div class="col-12 col-md-12">
+          <span class="p-insite-label">
+            <label for="learningGeneral">Generales</label>
+            <textarea
+              id="learningGeneral"
+              rows="3"
+              style="resize: auto"
+              class="w-100"
+              pInputTextarea
+              [readOnly]="false"
+              formControlName="learningGeneral"
+            ></textarea>
+            <small
+              class="error"
+              *ngIf="
+                formControls['learningGeneral'].errors && formControls['learningGeneral'].touched
+              "
+              >* Campo obligatorio.</small
+            >
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-12">
+          <span class="p-insite-label">
+            <label for="learningSpecific">Específicos</label>
+            <textarea
+              id="learningSpecific"
+              rows="3"
+              style="resize: auto"
+              class="w-100"
+              pInputTextarea
+              [readOnly]="false"
+              formControlName="learningSpecific"
+            ></textarea>
+            <small
+              class="error"
+              *ngIf="
+                formControls['learningSpecific'].errors && formControls['learningSpecific'].touched
+              "
+              >* Campo obligatorio.</small
+            >
+          </span>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <div class="row mt-4">
+    <p-card>
+      <h5>4. Contenidos</h5>
+
+      <div class="row">
+        <div class="col-12 col-md-12">
+          <span class="p-insite-label">
+            <textarea
+              id="content"
+              rows="3"
+              style="resize: auto"
+              class="w-100"
+              pInputTextarea
+              [readOnly]="false"
+              formControlName="content"
+            ></textarea>
+            <small
+              class="error"
+              *ngIf="formControls['content'].errors && formControls['content'].touched"
+              >* Campo obligatorio.</small
+            >
+          </span>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <div class="row mt-4">
+    <p-card>
+      <h5>5. Practicas pedagógicas</h5>
+
+      <div class="row">
+        <div class="col-12 col-md-12">
+          <span class="p-insite-label">
+            <textarea
+              id="pedagogicalPractices"
+              rows="3"
+              style="resize: auto"
+              class="w-100"
+              pInputTextarea
+              [readOnly]="false"
+              formControlName="pedagogicalPractices"
+            ></textarea>
+            <small
+              class="error"
+              *ngIf="
+                formControls['pedagogicalPractices'].errors &&
+                formControls['pedagogicalPractices'].touched
+              "
+              >* Campo obligatorio.</small
+            >
+          </span>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <div class="row mt-4">
+    <p-card>
+      <h5>6. Bibliografía</h5>
+
+      <div class="row">
+        <div class="col-12 col-md-12">
+          <span class="p-insite-label">
+            <label for="bibliographyBasic">6.1 Básica</label>
+            <textarea
+              id="bibliographyBasic"
+              rows="3"
+              style="resize: auto"
+              class="w-100"
+              pInputTextarea
+              [readOnly]="false"
+              formControlName="bibliographyBasic"
+            ></textarea>
+            <small
+              class="error"
+              *ngIf="
+                formControls['bibliographyBasic'].errors &&
+                formControls['bibliographyBasic'].touched
+              "
+              >* Campo obligatorio.</small
+            >
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-12">
+          <span class="p-insite-label">
+            <label for="bibliographyLenguaje">6.2 En otros idiomas</label>
+            <textarea
+              id="bibliographyLenguaje"
+              rows="3"
+              style="resize: auto"
+              class="w-100"
+              pInputTextarea
+              [readOnly]="false"
+              formControlName="bibliographyLenguaje"
+            ></textarea>
+            <small
+              class="error"
+              *ngIf="
+                formControls['bibliographyLenguaje'].errors &&
+                formControls['bibliographyLenguaje'].touched
+              "
+              >* Campo obligatorio.</small
+            >
+          </span>
+        </div>
+        <div class="col-12 col-md-12">
+          <span class="p-insite-label">
+            <label for="bibliographyWeb">6.3 Cibergrafía</label>
+            <textarea
+              id="bibliographyWeb"
+              rows="3"
+              style="resize: auto"
+              class="w-100"
+              pInputTextarea
+              [readOnly]="false"
+              formControlName="bibliographyWeb"
+            ></textarea>
+            <small
+              class="error"
+              *ngIf="
+                formControls['bibliographyWeb'].errors && formControls['bibliographyWeb'].touched
+              "
+              >* Campo obligatorio.</small
+            >
+          </span>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <div class="row justify-content-center d-flex mt-3">
+    <div class="col-md-6 justify-content-center d-flex">
+      <button
+        class="btn btn-primary right-btn"
+        (click)="sendData()"
+        *ngIf="editProgram ? !activeButton : true"
+      >
+        <span class="pi pi-save"></span> Guardar
+      </button>
+    </div>
+  </div>
+</form>

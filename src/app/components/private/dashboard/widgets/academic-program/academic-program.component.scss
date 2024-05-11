@@ -1,0 +1,27 @@
+:host {
+  ::ng-deep .p-card .p-card-content {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  ::ng-deep .p-button.p-button-primary {
+    font-size: 12px;
+  }
+}
+
+.container-programs {
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 260px;
+}
+
+.label-snies {
+  display: flex;
+  font-size: 10px;
+  font-weight: bold;
+  align-items: flex-end;
+}
+.text-info-program {
+  font-size: 12px;
+}

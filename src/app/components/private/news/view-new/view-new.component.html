@@ -1,0 +1,50 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="row">
+  <div class="p-d-flex p-ai-center">
+    <h2 class="title-page">Noticias</h2>
+    <p class="noticias-subtitle">
+      Manténgase informado con las últimas novedades y eventos de la universidad.
+    </p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <div class="col-md-12 mt-2">
+      <div class="image justify-content-center mt-1">
+        <div class="image-portada" *ngIf="!this.newObject?.cover"></div>
+        <img
+          *ngIf="this.newObject?.cover"
+          [src]="this.newObject?.cover"
+          alt="logo"
+          class="img-header-news"
+        />
+      </div>
+
+      <small class="mt-3 date-title">
+        {{ dateName }}
+      </small>
+    </div>
+
+    <div class="col-md-12 mt-2">
+      <h6>{{ this.newObject?.tittle }}</h6>
+    </div>
+
+    <div
+      class="col-md-12 mt-4"
+      [innerHTML]="this.newObject?.content"
+      *ngIf="this.newObject?.content"
+      class="justify-text"
+    ></div>
+
+    <div class="col-md-12 mt-2">
+      <div class="row">
+        <div class="col-md-6" *ngFor="let item of this.newObject?.images">
+          <div class="image" class="mt-1 justify-content-center">
+            <img [src]="item" alt="logo" class="img-footer-news" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

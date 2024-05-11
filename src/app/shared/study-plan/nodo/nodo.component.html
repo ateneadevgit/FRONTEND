@@ -1,0 +1,200 @@
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<div class="text-center" *ngIf="component.childs.length > 0">
+  <div class="sub-component">
+    {{ getCatalogName(component.childs[0].type) }}
+    <button
+      class="rounded"
+      *ngIf="isEditable && component.childs.length > 0 && !editModule"
+      (click)="addOtherLevel(component, 1)"
+    >
+      <span class="rounded-plus">+</span>
+    </button>
+  </div>
+
+  <div class="levels">
+    <div class="levels-item" *ngFor="let levels of component.childs; let indexChild = index">
+      <div
+        [ngClass]="{
+          'level-0': indexChild === 0,
+          'level-1': indexChild === 1,
+          'level-2': indexChild === 2,
+          'level-3': indexChild === 3,
+          'level-4': indexChild === 4,
+          'level-5': indexChild === 5,
+          'level-6': indexChild === 6,
+          'level-7': indexChild === 7,
+          'level-8': indexChild === 8,
+          'level-9': indexChild === 9,
+          'component-active':
+            currentComponent && levels.curriculumId === currentComponent.curriculumId
+        }"
+        [pTooltip]="levels.description"
+        tooltipPosition="top"
+        (click)="activeComponent(levels)"
+      >
+        {{ levels.name }}
+        <span
+          class="pi pi-trash delete-icon"
+          *ngIf="isEditable && !editModule"
+          (click)="confirmDeleteComponent(levels)"
+        ></span>
+        <span
+          class="pi pi-pencil edit-icon"
+          *ngIf="isEditable"
+          (click)="editComponent(levels)"
+        ></span>
+        <span
+          class="pi pi-exclamation-circle detail-icon"
+          *ngIf="!isEditable"
+          (click)="redirectStudyPlan(levels.curriculumId)"
+        ></span>
+      </div>
+      <!--anadir tercer nivel nivel-->
+      <button
+        class="rounded"
+        *ngIf="isEditable && levels.childs.length === 0 && !editModule"
+        (click)="addOtherLevel(levels, 0)"
+      >
+        <span class="rounded-plus">+</span>
+      </button>
+    </div>
+  </div>
+</div>
+<app-nodo
+  *ngIf="currentComponent"
+  [editModule]="editModule"
+  [monitoringEdit]="monitoringEdit"
+  [component]="currentComponent"
+  [isEditable]="isEditable"
+  (emitResponse)="savedComponent($event)"
+></app-nodo>
+
+<div class="text-center container" *ngIf="subjectSelected">
+  <div class="row">
+    <div class="col-4">
+      <button
+        pButton
+        pRipple
+        class="btn btn-primary mb-2"
+        *ngIf="isEditable && subjectSelected && subjectSelected.childs.length > 0 && !editModule"
+        (click)="addOtherLevel(subjectSelected, 1, true)"
+      >
+        Añadir Subnúcleo
+      </button>
+    </div>
+  </div>
+
+  <p-table
+    [value]="subjectSelected.childs"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    *ngIf="subjectSelected.childs.length > 0"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Código</th>
+        <th>Nombre de subnúcleo o asignatura</th>
+        <th>N° de créditos</th>
+        <th>Semestre</th>
+        <th>Horas de interacción con el profesor</th>
+        <th>Horas de trabajo autónoma</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-subject>
+      <tr>
+        <td>{{ subject?.subjectRequest?.code }}</td>
+        <td>{{ subject?.name }}</td>
+        <td class="text-center">{{ subject?.numberCredits }}</td>
+        <td class="text-center">{{ subject?.subjectRequest?.semester }}</td>
+        <td class="text-center">{{ subject?.subjectRequest?.hoursInteractionTeacher }}</td>
+        <td class="text-center">{{ subject?.subjectRequest?.hourSelfWork }}</td>
+        <td>
+          <span
+            class="pi pi-pencil table-edit"
+            *ngIf="isEditable"
+            (click)="editComponent(subject, true)"
+          ></span>
+          <span
+            class="pi pi-trash table-delete"
+            *ngIf="isEditable && !editModule"
+            (click)="confirmDeleteComponent(subject)"
+          ></span>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  *ngIf="addComponent"
+  [(visible)]="addComponent"
+  [modal]="true"
+  [style]="{ width: '60vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="false"
+>
+  <h6>
+    {{ !editComponentData ? 'Creación de ' : 'Edición de ' }}
+    {{
+      typeComponent === studyPlanCatalog.SUBNUCLEUS_SUBJECT
+        ? 'Subnúcleo o asignatura'
+        : 'componente'
+    }}
+  </h6>
+  <button class="status close-modal" (click)="closeModal()">
+    <span class="pi pi-times"></span>
+  </button>
+  <app-create-component
+    [idProgram]="idProgram ?? ''"
+    [idWorkflow]="idWorkflow ?? ''"
+    [idStep]="idStep ?? ''"
+    [typeComponent]="typeComponent"
+    (emitResponse)="savedComponent($event)"
+    [editComponent]="editComponentData"
+    [hasSubject]="hasSubject"
+    [currentComponent]="themeSelected"
+    [editModule]="editModule"
+    (emitUpdateCurriculum)="updateCurriculumEditModule($event)"
+  ></app-create-component>
+</p-dialog>
+
+<p-dialog
+  *ngIf="addLevel"
+  [(visible)]="addLevel"
+  [modal]="true"
+  [style]="{ width: '60vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="false"
+>
+  <h6>Asignación de nivel</h6>
+  <button class="status close-modal" (click)="closeModal()">
+    <span class="pi pi-times"></span>
+  </button>
+  <app-add-level
+    *ngIf="currentComponentToAdd"
+    [idProgram]="idProgram ?? ''"
+    [idWorkflow]="idWorkflow ?? ''"
+    [nuevo]="currentLevelAdd"
+    [label]="
+      currentLevelAdd === 1
+        ? 'Añadir al nivel ' +
+          getCatalogName(currentComponentToAdd.childs[0].type) +
+          ' ' +
+          currentComponentToAdd.childs[0].name
+        : 'Nuevo nivel para ' +
+          getCatalogName(currentComponentToAdd.type) +
+          ' ' +
+          currentComponentToAdd.name
+    "
+    [currentComponentToAdd]="currentComponentToAdd"
+    (emitResponse)="savedComponent($event)"
+    [idStep]="idStep ?? ''"
+  >
+  </app-add-level>
+</p-dialog>
+
+<p-toast></p-toast>
+<p-confirmDialog [style]="{ width: '50vw' }"></p-confirmDialog>

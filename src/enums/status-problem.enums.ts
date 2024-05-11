@@ -1,0 +1,7 @@
+export enum StatusProblem {
+  COMPLETENESS = 115,
+  REQUEST_SENT = 116,
+  DEACTIVATION_REQUEST_SENT = 117,
+  ACTIVE = 114,
+  INACTIVE = 119,
+}

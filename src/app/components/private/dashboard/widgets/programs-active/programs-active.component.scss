@@ -1,0 +1,35 @@
+@import '../../../../../../assets/styles/abstracts/variables';
+:host {
+  ::ng-deep .p-datatable-wrapper {
+    max-height: 300px;
+  }
+  ::ng-deep .p-ripple {
+    max-height: 30px;
+    background: #ffce01;
+    color: #000;
+  }
+}
+.header-active {
+  background-color: $color-indigo;
+  border-radius: 0.5em 0.5em 0 0;
+  color: #fff;
+  font-size: 20px;
+  padding: 10px;
+  margin-top: 10px;
+  border-bottom: 1px #fff solid;
+}
+th {
+  background-color: $color-indigo;
+}
+.flag {
+  margin-top: 4px;
+  margin-right: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+}

@@ -1,0 +1,57 @@
+@import '../../../../../assets/styles/abstracts/variables';
+
+h3 {
+  margin: 0 0 10px;
+}
+
+pre {
+  background-color: #f5f5f5;
+  padding: 15px;
+}
+
+.bg-institucional {
+  background-color: #98a094;
+}
+
+.bg-faculty {
+  background-color: #469d1e;
+}
+
+.bg-program {
+  background-color: #ad2121;
+}
+
+.bg-docent {
+  background-color: #16395f;
+}
+
+.bg-personal {
+  background-color: #e3bc08;
+}
+
+.bg-moodle {
+  background-color: #09b0d0;
+}
+
+.bg-default {
+  background-color: #000000;
+}
+
+.tittle-style {
+  color: #16395f;
+}
+
+hr {
+  border-width: 3px;
+  color: $color-tangerine-yellow;
+}
+
+.icon-edit {
+  cursor: pointer;
+  color: $color-icon-edit;
+}
+
+.icon-delete {
+  cursor: pointer;
+  color: $color-icon-delete;
+}

@@ -1,0 +1,116 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="row">
+  <div class="col-6">
+    <label htmlFor="">Nombre</label>
+    <br />
+    <span>{{ currentStepData?.name }}</span>
+  </div>
+  <div class="col-2">
+    <label htmlFor="">Orden</label>
+    <br />
+    <span>{{ currentStepData?.stepOrder }}</span>
+  </div>
+</div>
+
+<div class="row py-2">
+  <div class="col-6">
+    <label htmlFor="">Prerrequisito</label>
+    <br />
+    <span>{{ currentStepData?.isPrerrequeriment ? 'Si' : 'No' }}</span>
+  </div>
+  <div class="col-2">
+    <label htmlFor="">Resumen</label>
+    <br />
+    <span>{{ currentStepData?.hasSummary ? 'Si' : 'No' }}</span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-6">
+    <label htmlFor="">Rol y acciones asociados al paso</label>
+  </div>
+  <div *ngFor="let item of currentStepData?.roleActions">
+    <div class="row mt-2">
+      <div class="col-12 p-button-accordion">
+        <div class="card card-accordion">
+          <div class="row">
+            <div class="col-6">
+              <div class="row">
+                <div class="col-12">
+                  <i
+                    class="pi"
+                    [ngClass]="!item?.expanded ? 'pi-chevron-right' : 'pi-chevron-down'"
+                    style="font-size: 1rem"
+                    (click)="openCloseExpandedRelation(item)"
+                  ></i>
+                  {{ item.role?.nameRole }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row collapse" [ngClass]="{ show: item?.expanded }">
+      <div class="col-12">
+        <div class="content-accordion" style="margin-top: -50px">
+          <div class="row mt-4">
+            <div class="col-md-3 mt-3" *ngFor="let action of item.actionIds">
+              <div class="row d-flex">
+                <div class="col-1">
+                  <p-checkbox
+                    [binary]="true"
+                    [(ngModel)]="isSelected"
+                    inputId="binary"
+                    [ngModelOptions]="{ standalone: true }"
+                    [disabled]="true"
+                  ></p-checkbox>
+                </div>
+                <div class="col-10">
+                  <label htmlFor="">{{ action?.actionName }}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="currentStepData?.minimumRequired !== null">
+  <div class="col-6">
+    <label htmlFor="">Anexos mínimos requeridos</label>
+  </div>
+  <div class="row mt-2">
+    <div class="col-12 p-button-accordion">
+      <div class="card card-accordion">
+        <div class="row">
+          <div class="col-6">
+            <div class="row">
+              <div class="col-12">
+                <i
+                  class="pi"
+                  [ngClass]="!currentStepData?.expanded ? 'pi-chevron-right' : 'pi-chevron-down'"
+                  style="font-size: 1rem"
+                  (click)="openCloseExpandedStep()"
+                ></i>
+                Anexos mínimos requeridos
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row collapse" [ngClass]="{ show: currentStepData?.expanded }">
+    <div class="col-12">
+      <div class="content-accordion" style="margin-top: -50px">
+        <div class="row mt-4">
+          <div [innerHTML]="currentStepData?.minimumRequired"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

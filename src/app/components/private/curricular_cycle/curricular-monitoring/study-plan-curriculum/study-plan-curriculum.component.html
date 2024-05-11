@@ -1,0 +1,32 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<app-module-header [module]="selectedModule" [programId]="idProgram"></app-module-header>
+
+<app-program-history
+  [programHistorical]="programHistorical"
+  [selectedModule]="selectedModule"
+  (emitInfo)="activePlan($event)"
+  *ngIf="objPlan.length === 0"
+></app-program-history>
+
+<div class="row" *ngIf="objPlan.length > 0">
+  <div class="col-2">
+    <button pButton pRipple class="btn btn-primary" (click)="reset()">Volver</button>
+  </div>
+</div>
+<p-tabView *ngIf="objPlan.length > 0">
+  <p-tabPanel header="Estructura curricular">
+    <app-study-plan
+      [isEditable]="false"
+      [monitoringEdit]="true"
+      *ngIf="objPlan.length > 0"
+      (data)="(objPlan)"
+    ></app-study-plan>
+  </p-tabPanel>
+  <p-tabPanel header="Semestres">
+    <app-semestre-curriculum
+      [objSemesterList]="objSemesterList"
+      *ngIf="objSemesterList.length > 0"
+    ></app-semestre-curriculum>
+  </p-tabPanel>
+</p-tabView>

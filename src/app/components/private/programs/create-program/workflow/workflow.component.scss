@@ -1,0 +1,142 @@
+@import '../../../../../../assets/styles/abstracts/variables';
+
+.pi {
+  margin-right: 8px;
+}
+th {
+  background-color: $color-white;
+  color: $color-indigo;
+  font-size: 13px;
+}
+.title {
+  margin: 50px 0;
+}
+
+::ng-deep .p-sidebar-right {
+  width: 35rem;
+}
+
+button {
+  border: 0;
+  text-align: center;
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.in-projection,
+.in-update,
+.in-review,
+.in-approve {
+  padding: 4px 0px 2px 8px;
+  font-size: 12px;
+}
+
+td:first-child,
+th:first-child {
+  width: 280px;
+  text-align: left;
+}
+
+th:nth-child(5),
+td:nth-child(5) {
+  width: 150px;
+}
+
+td:last-child,
+th:last-child {
+  width: 160px;
+  text-align: right;
+}
+
+td {
+  text-align: center;
+  padding: 5px 0;
+}
+
+.td-original {
+  background: $color-platinum;
+}
+
+th {
+  text-align: center;
+}
+
+.pi-eye,
+.pi-download,
+.pi-trash {
+  font-size: 16px;
+  cursor: pointer;
+  margin: 5px;
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.workflow-status {
+  margin: 0px 2px;
+}
+
+.annexes {
+  margin-left: 20px;
+  font-family: $font-medium;
+  list-style-type: none;
+}
+
+.annexes-child {
+  margin-left: 40px;
+  list-style-type: none;
+}
+
+.sub-title-annexes {
+  font-family: $font-light;
+  color: $color-jelly-bean-blue;
+  margin: -14px 0 40px;
+}
+
+.anex-container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 90%;
+}
+
+.smaller-header td {
+  background-color: $color-cultured;
+  color: $color-indigo;
+  font-weight: bold;
+  text-align: center;
+  font-size: 13px;
+}
+
+.border-left {
+  border-top-left-radius: 10px;
+}
+
+.border-right {
+  border-top-right-radius: 10px;
+}
+
+.attach-declined {
+  background-color: rgba(255, 0, 0, 0.301);
+}
+
+.table-attach {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.radio {
+  padding: 5px;
+}
+
+.declined:disabled,
+.approve:disabled {
+  background-color: $color-davis-gray;
+  cursor: not-allowed;
+  color: $color-cultured;
+}
+
+.attach-old {
+  background-color: $color-gray-cultured;
+}

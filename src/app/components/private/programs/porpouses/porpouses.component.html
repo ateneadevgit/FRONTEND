@@ -1,0 +1,223 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<p-toast></p-toast>
+<p-table
+  [value]="porpouses"
+  (onPage)="onPageChange($event)"
+  page
+  [paginator]="totalRecords > pageSize"
+  [rows]="pageSize"
+  [lazy]="true"
+  (onLazyLoad)="getPorpouses()"
+  [totalRecords]="totalRecords"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th class="table-bordered">Programa académico</th>
+      <th class="action-center" *ngIf="role === 2">Facultad</th>
+      <th class="action-center">Lugar de desarrollo</th>
+      <th class="action-center">Nivel de formación</th>
+      <th class="action-center">Fecha de desarrollo</th>
+      <th class="action-center">Estado</th>
+      <th class="action-center"></th>
+      <th class="action-center"></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-product>
+    <tr>
+      <td>
+        <div class="container-image">
+          <img class="container-image__img" [src]="product?.logo" [alt]="product?.name" />
+          <span class="container-image__text">
+            {{ product?.name ?? '--' }}
+          </span>
+        </div>
+      </td>
+
+      <td *ngIf="role === 2">{{ product?.setFaculty }}</td>
+      <td>
+        <div *ngFor="let item of product?.setCampus">
+          {{ item }}
+        </div>
+      </td>
+      <td>{{ product?.setLevelFormation }}</td>
+      <td>{{ product?.development_date }}</td>
+      <td>
+        <button
+          class="status"
+          [ngClass]="{
+            send: product?.id_status === 3,
+            review: product?.id_status === 4,
+            rejected: product?.id_status === 5,
+            requested: product?.id_status === 6,
+            approved: product?.id_status === 7
+          }"
+          (click)="evaluate(product)"
+        >
+          {{ product.id_status === 3 && role === 2 ? 'Evaluar' : product?.setStatus }}
+        </button>
+      </td>
+      <td>
+        <i class="pi pi-book" (click)="openHistory(product?.id_program)"></i>
+      </td>
+      <td class="action-right">
+        <i class="pi pi-angle-down"></i>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  *ngIf="evaluatePorpouse"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  header="Propuesta programa académico"
+  [(visible)]="visibleEvaluateModal"
+  [style]="{ width: '60%' }"
+>
+  <div class="row">
+    <div class="col-md-12">
+      <img class="image-cover" [src]="evaluatePorpouse.cover" alt="cover" />
+      <div class="image-logo">
+        <img class="image-logo__img" [src]="evaluatePorpouse.logo" alt="logo" />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <label for="">Denominación programa académico</label>
+      <p class="m-left-10">{{ evaluatePorpouse?.name }}</p>
+    </div>
+    <div class="col-md-6">
+      <label for="">Fecha de desarrollo</label>
+      <p class="m-left-10">
+        {{ evaluatePorpouse?.developmentDate }}
+      </p>
+    </div>
+
+    <div class="col-md-4">
+      <label for="">Facultad</label>
+      <p class="m-left-10">{{ evaluatePorpouse?.setFaculty?.catalogItemName }}</p>
+    </div>
+    <div class="col-md-4">
+      <label for="">Tipo de programa</label>
+      <p class="m-left-10">{{ evaluatePorpouse?.setTypeFormation?.catalogItemName }}</p>
+    </div>
+    <div class="col-md-4">
+      <label for="">Nivel de formación</label>
+      <p class="m-left-10">{{ evaluatePorpouse?.setLevelFormation?.catalogItemName }}</p>
+    </div>
+
+    <div class="col-md-4">
+      <label for="">Tipo de registro</label>
+      <p class="m-left-10">{{ evaluatePorpouse?.setFaculty?.catalogItemName }}</p>
+    </div>
+    <div class="col-md-4">
+      <label for="">Lugar de desarrollo</label>
+      <p class="m-left-10">
+        <span *ngFor="let campus of evaluatePorpouse?.setCampus; let i = index">
+          {{ campus }} <br />
+        </span>
+      </p>
+    </div>
+    <div class="col-md-4">
+      <label for="">Modalidad</label>
+      <p class="m-left-10">
+        <span *ngFor="let modality of evaluatePorpouse?.setModality; let i = index">
+          {{ modality }} <br />
+        </span>
+      </p>
+    </div>
+
+    <div class="col-md-6">
+      <label for="">Documento adjunto</label>
+      <div class="input-document">
+        <div class="row">
+          <div class="col-md-8">{{ evaluatePorpouse?.fileUrl | slice: 0 : 20 }}...</div>
+          <div class="col-md-2 text-end">
+            <i class="pi pi-eye" (click)="previewDocumentEvent(evaluatePorpouse?.fileUrl)"></i>
+          </div>
+          <div class="col-md-2">
+            <i class="pi pi-download" (click)="downloadDocument(evaluatePorpouse?.fileUrl)"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <label for="">Adjuntar documento</label>
+      <br />
+      <input
+        type="file"
+        id="archivo"
+        name="archivo"
+        class="input-file"
+        [accept]="allowedExtension"
+        (change)="loadFile($event)"
+      />
+      <label for="archivo" class="btn">Elegir archivo</label>
+    </div>
+    <div class="col-md-3 d-flex align-items-end">
+      <p>{{ fileName }}</p>
+    </div>
+  </div>
+  <div class="row mt-4" *ngIf="role === 2">
+    <div class="col-md-4 text-end">
+      <button
+        class="btn-action declined button-styles"
+        (click)="changeStatus(workflowStatus.DECLINED)"
+      >
+        <i class="pi pi-minus"></i> No aprobado
+      </button>
+    </div>
+    <div class="col-md-4 text-center">
+      <button
+        class="btn-action waiting button-styles"
+        (click)="changeStatus(workflowStatus.COMPLETNESS)"
+      >
+        <i class="pi pi-exclamation-circle"></i> Solicitud de completitud
+      </button>
+    </div>
+    <div class="col-md-4 text-start">
+      <button
+        class="btn-action approve button-styles"
+        (click)="changeStatus(workflowStatus.APPROVED)"
+      >
+        <i class="pi pi-check"></i> Aprobar
+      </button>
+    </div>
+  </div>
+
+  <div class="row mt-4" *ngIf="role === 5">
+    <div class="col-md-12 text-center">
+      <!--  <button class="btn-action send" (click)="decanoUpdateWorkflow(evaluatePorpouse)">
+        <i class="pi pi-minus"></i> Enviar solicitud
+      </button> -->
+      <button class="btn-action send" (click)="changeStatus(workflowStatus.REVIEW)">
+        <i class="pi pi-minus"></i> Enviar solicitud
+      </button>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog
+  *ngIf="programIdHistory > 0"
+  [modal]="true"
+  [closable]="false"
+  [closeIcon]="'pi pi-times'"
+  header="Historial de proceso"
+  [(visible)]="visibleHistoryModal"
+  [style]="{ width: '60%' }"
+>
+  <button class="status close-modal" (click)="close()">
+    <span class="pi pi-times"></span>
+  </button>
+
+  <app-history [IdProgram]="programIdHistory"></app-history>
+</p-dialog>
+
+<app-preview-document
+  *ngIf="previewDocument"
+  [visible]="visiblePreviewDocument"
+  (closeModal)="closeModalPreviewDocument($event)"
+  [previewDocument]="previewDocument"
+></app-preview-document>

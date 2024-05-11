@@ -1,0 +1,49 @@
+<div class="container-comments">
+  <p-timeline [value]="events" class="w-full md:w-20rem" [align]="'left'">
+    <ng-template pTemplate="content" let-event>
+      {{ event?.createdBy }}
+      <br />
+      <span class="date-comment"> {{ event?.createdAt | date }}</span>
+      <p [innerHTML]="event?.review"></p>
+
+      <button class="btn in-projection" (click)="replyData(event)" *ngIf="!replyComment">
+        Responder
+      </button>
+
+      <div *ngIf="event?.replies.length > 0" class="reply-comments">
+        <p-timeline
+          [value]="event.replies"
+          class="w-full md:w-20rem"
+          [align]="'left'"
+          styleClass="customized-timeline"
+        >
+          <ng-template pTemplate="marker" let-event>
+            <span class="custom-marker shadow-2">
+              <i class="pi pi-reply"></i>
+            </span>
+          </ng-template>
+          <ng-template pTemplate="content" let-reply>
+            {{ reply?.createdBy }}
+            <br />
+            <span class="date-comment"> {{ reply?.createdAt | date }}</span>
+            <div [innerHTML]="reply?.review"></div>
+          </ng-template>
+        </p-timeline>
+      </div>
+
+      <div class="container mt-2" *ngIf="replyComment?.reviewId === event?.reviewId">
+        <app-editor (createHtml)="createHtmlToReplay($event)" *ngIf="!disabledEditor"></app-editor>
+        <button class="btn in-approve mx-1" (click)="sendToReply(1)">Responder</button>
+        <button class="btn in-projection mx-1" (click)="replyComment = undefined">Cancelar</button>
+      </div>
+    </ng-template>
+  </p-timeline>
+</div>
+
+<div class="card-html" *ngIf="!replyComment">
+  <h5>Agregar comentario</h5>
+  <app-editor (createHtml)="createHtml($event)" *ngIf="!disabledEditor"></app-editor>
+  <button class="btn btn-primary right-btn mt-4" (click)="sendToReply(2)">
+    Agregar comentario
+  </button>
+</div>

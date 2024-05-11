@@ -1,0 +1,262 @@
+<!-- eslint-disable @angular-eslint/template/alt-text -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+
+<div class="row d-flex justify-content-between" *ngIf="select !== 0">
+  <div class="col-md-4">
+    <div class="p-d-flex p-ai-center">
+      <h6 (click)="select = 0">
+        <span class="pi pi-arrow-left"></span>
+        Regresar
+      </h6>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="select === 0">
+  <div class="row d-flex justify-content-between">
+    <div class="col-md-4">
+      <div class="p-d-flex p-ai-center">
+        <h6 (click)="closeComponentEmit()">
+          <span class="pi pi-arrow-left"></span>
+          Atras
+        </h6>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="subCoreData">
+    <div class="row mt-2">
+      <div class="col-md-12">
+        <div class="card-program d-flex">
+          {{ subCoreData?.name }}
+        </div>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-12 mt-2">
+        <img [src]="imageSubCore" class="w-100 img-header-news" />
+      </div>
+      <div class="row d-flex justify-content-center">
+        <div class="col-11 px-0 header-bottom mt-2">
+          Semestre: {{ subCoreData.semester }} | Créditos: {{ subCoreData.credits }} | Horas de
+          interacción con el profesor: {{ subCoreData.hoursInteractionTeacher }} | Horas de trabajo
+          autónomo:
+          {{ subCoreData.hoursSelfWork }}
+        </div>
+      </div>
+
+      <div class="col-12 mt-2">
+        <h4>NIFS - {{ subCoreData?.name }} - Semestre {{ subCoreData?.semester }}</h4>
+      </div>
+
+      <div class="col-12 mt-2">
+        <p>
+          {{ subCoreData?.description }}
+        </p>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-12 card-footer">
+        <div class="row d-flex justify-content-center">
+          <div class="col-1">
+            <div class="btn-footer" (click)="select = 1">Sílabos</div>
+          </div>
+          <div class="col-2">
+            <div class="btn-footer" (click)="select = 2">Guía de asignatura</div>
+          </div>
+          <div class="col-1">
+            <div class="btn-footer" (click)="select = 3">R.A.E.G</div>
+          </div>
+          <div class="col-2">
+            <div class="btn-footer" (click)="select = 4">Competencias</div>
+          </div>
+          <div class="col-1">
+            <div class="btn-footer" (click)="select = 5">Recursos</div>
+          </div>
+          <div class="col-2">
+            <div class="btn-footer" (click)="select = 6">Organizacion de actividades</div>
+          </div>
+          <div class="col-2">
+            <div class="btn-footer" (click)="select = 7">Actividades integradoras</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="select === 1">
+  <div class="row">
+    <div class="p-d-flex p-ai-center">
+      <h6>Sílabos</h6>
+      <p>
+        ¡Ser parte de la San Martín es un honor construya el NIFS para el conocimiento idóneo de
+        toda la comunidad sanmartiniana.
+      </p>
+      <hr class="w-25" />
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-12">
+      <ngx-doc-viewer
+        [viewerUrl]="syllabusUrlPdf"
+        [url]="getObjPdf(syllabusUrlPdf)"
+        viewer="url"
+        style="width: 100%; height: 70vh"
+      >
+      </ngx-doc-viewer>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="select === 2">
+  <div class="row">
+    <div class="p-d-flex p-ai-center">
+      <h6>Guia de asignatura</h6>
+      <p>
+        ¡Ser parte de la San Martín es un honor construya el NIFS para el conocimiento idóneo de
+        toda la comunidad sanmartiniana.
+      </p>
+      <hr class="w-25" />
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-12">
+      <ngx-doc-viewer
+        [viewerUrl]="sujectGuideUrlPdf"
+        [url]="getObjPdf(syllabusUrlPdf)"
+        viewer="url"
+        style="width: 100%; height: 70vh"
+      >
+      </ngx-doc-viewer>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="select === 3">
+  <div class="row">
+    <div class="p-d-flex p-ai-center">
+      <h6>R.A.E.G</h6>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-11 mt-4">
+      <div class="card-html">
+        <div [innerHTML]="this.subCoreData?.rae" class="cleaner-css"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="select === 4">
+  <div class="row">
+    <div class="p-d-flex p-ai-center">
+      <h6>Competencias</h6>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-11 mt-4">
+      <div class="card-html">
+        <div [innerHTML]="this.subCoreData?.competences" class="cleaner-css"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="select === 5">
+  <div class="row">
+    <div class="p-d-flex p-ai-center">
+      <h6>Recursos</h6>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-12 mt-4">
+    <label htmlFor="basic">Basica</label>
+    <div class="col-12 mt-2">
+      <p>
+        {{ subCoreSubjectGuideData?.bibliographyBasic }}
+      </p>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-12 mt-4">
+    <label htmlFor="basic">En otros idiomas</label>
+    <div class="col-12 mt-2">
+      <p>
+        {{ subCoreSubjectGuideData?.bibliographyLanguage }}
+      </p>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-12 mt-4">
+    <label htmlFor="basic">Cibergrafia</label>
+    <div class="col-12 mt-2">
+      <p>
+        {{ subCoreSubjectGuideData?.bibliographyWeb }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="select === 6">
+  <div class="row mt-2">
+    <p-table [value]="subCoreSubjectGuideData?.activityRequestList || []">
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="action-center">Fecha</th>
+          <th class="action-center">Resultado de aprendizaje</th>
+          <th class="action-center">Temática</th>
+          <th class="action-center">Actividades sincrónas</th>
+          <th class="action-center">Actividades previas y posteriores</th>
+          <th class="action-center">Estrategias pedagogicas y evaluativas</th>
+          <th class="action-center">Link</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-product let-i="rowIndex">
+        <tr>
+          <td class="text-center">{{ product?.activityDate | date: 'dd/MM/yyyy' }}</td>
+          <td class="text-center">{{ product?.result }}</td>
+          <td class="text-center">{{ product?.topic }}</td>
+          <td class="text-center">{{ product?.syncActivities }}</td>
+          <td class="text-center">{{ product?.previusActivities }}</td>
+          <td class="text-center">{{ product?.strategies }}</td>
+          <td>
+            <a [href]="product?.url" target="_blank">{{ product?.url }}</a>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<div class="row" *ngIf="select === 7">
+  <div class="row mt-4">
+    <ul *ngFor="let item of subCoreData?.activities">
+      <li>{{ item?.tittle }}</li>
+
+      <div class="col-12 col-md-12 mt-2">
+        <label htmlFor="basic">Descripción</label>
+        <div class="col-12 mt-2">
+          <p>
+            {{ item?.description }}
+          </p>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-12 mt-2">
+        <label htmlFor="basic">Actividad</label>
+        <div class="col-12 mt-2">
+          <p>
+            {{ item?.activity }}
+          </p>
+        </div>
+      </div>
+    </ul>
+  </div>
+</div>

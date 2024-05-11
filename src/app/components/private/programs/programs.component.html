@@ -1,0 +1,97 @@
+<h6>Programas académicos</h6>
+
+<div class="row">
+  <div class="col-md-3" *ngIf="role === RoleEnum.VICERRECTOR">
+    <label for="">Facultad</label>
+    <p-dropdown
+      [options]="faculties"
+      [(ngModel)]="selectFaculty"
+      placeholder="Seleccionar facultad"
+      [group]="false"
+      [filter]="true"
+      [showClear]="true"
+      filterBy="catalogItemName"
+      optionLabel="catalogItemName"
+      (onChange)="filterByFaculty($event)"
+    >
+      <ng-template let-factulty pTemplate="factulty">
+        <div class="flex align-items-center">
+          <span>{{ factulty.catalogItemName }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+
+  <div class="col-md-3">
+    <label for="">Lugar de desarrollo</label>
+    <p-dropdown
+      [options]="campus"
+      [(ngModel)]="selectCampus"
+      placeholder="Seleccionar sede"
+      [group]="false"
+      [filter]="true"
+      [showClear]="true"
+      filterBy="catalogItemName"
+      optionLabel="catalogItemName"
+      (onChange)="filterByCampus($event)"
+    >
+      <ng-template let-factulty pTemplate="factulty">
+        <div class="flex align-items-center">
+          <span>{{ factulty.catalogItemName }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+  <div class="col-md-3" *ngIf="role === RoleEnum.DECANO"></div>
+  <div class="col-md-6" *ngIf="role === RoleEnum.DECANO">
+    <div class="button-action align-bottom">
+      <p-button
+        label="Crear propuesta"
+        styleClass="p-button-sm p-button-primary"
+        (click)="createProgram()"
+      ></p-button>
+    </div>
+  </div>
+</div>
+
+<p-tabView>
+  <p-tabPanel header="Programas activos">
+    <app-active-programs></app-active-programs>
+  </p-tabPanel>
+  <p-tabPanel
+    *ngIf="role === RoleEnum.VICERRECTOR || role === RoleEnum.DECANO"
+    header="Propuestas académicas"
+  >
+    <app-porpouses></app-porpouses>
+  </p-tabPanel>
+  <p-tabPanel header="Programas en construcción">
+    <app-construction-programs></app-construction-programs>
+  </p-tabPanel>
+  <p-tabPanel header="Programas no aprobados">
+    <app-declined-programs></app-declined-programs>
+  </p-tabPanel>
+  <p-tabPanel header="Programas desactivados">
+    <app-desactivated-programs></app-desactivated-programs>
+  </p-tabPanel>
+</p-tabView>
+
+<p-dialog
+  [header]="
+    typeProgram === null
+      ? 'Propuesta programa académico'
+      : typeProgram === '1'
+        ? 'Programas académicos'
+        : 'Renovaciones'
+  "
+  [(visible)]="visible"
+  [resizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  [style]="{ width: '60vw' }"
+>
+  <app-create-porpouse
+    (typeProgramEmit)="typeProgramEmit($event)"
+    (succesCreateProgram)="succesCreate()"
+  ></app-create-porpouse>
+</p-dialog>

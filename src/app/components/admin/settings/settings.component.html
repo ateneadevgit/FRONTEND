@@ -1,0 +1,84 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<h6>Configuraciones</h6>
+
+<div class="row">
+  <div class="col-12">
+    <div>
+      <form [formGroup]="formSettings">
+        <div class="mt-2 shadow-table">
+          <p-table [value]="settingList || []" [paginator]="settingList.length > 10" [rows]="10">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="border-left">Nombre</th>
+                <th style="width: 40%">Descripción</th>
+                <th style="width: 20%" class="text-center">Valor</th>
+                <th class="text-center">Fecha de actualización</th>
+                <th style="width: 2%" class="text-center" *ngIf="isOnEdit"></th>
+                <th style="width: 2%" class="text-center border-right"></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+              <tr>
+                <td class="colored-item">{{ item.previewName }}</td>
+                <td>
+                  <div *ngIf="item.settingId !== onEditSetting">
+                    {{ item.description }}
+                  </div>
+                  <div *ngIf="isOnEdit && item.settingId === onEditSetting">
+                    <input pInputText formControlName="description" class="ng-invalid" />
+                    <small
+                      class="error"
+                      *ngIf="
+                        formControls['description'].errors && formControls['description'].invalid
+                      "
+                    >
+                      * Campo no debe sobrepasar los 500 caracteres.
+                    </small>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div *ngIf="item.settingId !== onEditSetting">
+                    {{ item.settingValue }}
+                  </div>
+                  <div *ngIf="isOnEdit && item.settingId === onEditSetting">
+                    <input pInputText formControlName="value" class="ng-invalid" />
+                    <small
+                      class="error"
+                      *ngIf="formControls['value'].errors && formControls['value'].touched"
+                    >
+                      * Campo obligatorio.
+                    </small>
+                    <small
+                      class="error"
+                      *ngIf="formControls['value'].errors && formControls['value'].invalid"
+                    >
+                      * Campo no debe sobrepasar los 255 caracteres.
+                    </small>
+                  </div>
+                </td>
+                <td class="text-center">{{ (item?.updatedAt | date: 'dd/MM/yyyy') ?? '--' }}</td>
+                <td *ngIf="!isOnEdit">
+                  <i class="pi pi-pencil" (click)="changeToEdit(item)"></i>
+                </td>
+                <td *ngIf="isOnEdit && item.settingId === onEditSetting">
+                  <button class="workflow-status in-update" (click)="discardChanges()">
+                    <i class="pi pi-minus"></i>
+                  </button>
+                </td>
+                <td *ngIf="isOnEdit && item.settingId === onEditSetting">
+                  <button class="workflow-status in-approve" (click)="updateSetting(item)">
+                    <i class="pi pi-check"></i>
+                  </button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div class="text-center mt-2" *ngIf="(settingList || []).length === 0">
+          <p>No se encontraron resultados...</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

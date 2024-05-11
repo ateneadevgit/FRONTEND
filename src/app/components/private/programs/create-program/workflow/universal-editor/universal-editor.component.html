@@ -1,0 +1,70 @@
+<h6>Creación de programas Académicos</h6>
+
+<div class="row mt-2">
+  <div class="col-md-6">
+    <h4>{{ progamName }}</h4>
+  </div>
+  <div class="col-md-6 text-end">
+    <button pButton pRipple class="btn btn-primary" (click)="navigateCreateProgram()">
+      <span class="pi pi-arrow-left"></span>
+      Creación de condiciones
+    </button>
+  </div>
+</div>
+
+<div class="row mt-2">
+  <div class="col-14 col-md-6">
+    <h6>{{ titleComponent }}</h6>
+  </div>
+  <div class="col-14 col-md-6 text-end">
+    <button
+      pButton
+      pRipple
+      class="btn approve right-btn me-3"
+      *ngIf="!sumaryRegister?.curriculumSummaryId && permissionsCreate"
+      (click)="sendSumary()"
+    >
+      <i class="pi pi-save"></i> Guardar
+    </button>
+    <button
+      pButton
+      pRipple
+      class="btn approve right-btn me-3"
+      *ngIf="sumaryRegister?.curriculumSummaryId && permissionsCreate"
+      (click)="updateSumary()"
+    >
+      <i class="pi pi-pencil"></i> Actualizar
+    </button>
+
+    <button
+      pButton
+      pRipple
+      (click)="sidebarComments = true"
+      class="btn btn-primary"
+      *ngIf="permissionsService.permissions.canViewComments"
+    >
+      <span class="pi pi-clone"></span>
+      Comentarios
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-10 center" *ngIf="html !== null && permissionsCreate === true">
+    <div class="card-html">
+      <app-editor (createHtml)="createHtml($event)" [htmlText]="html"></app-editor>
+    </div>
+  </div>
+
+  <div class="col-md-10 center" *ngIf="!permissionsCreate && permissionsView">
+    <div class="card-html">
+      <div [innerHTML]="sumaryRegister?.curriculumSummary"></div>
+    </div>
+  </div>
+</div>
+
+<p-sidebar [(visible)]="sidebarComments" *ngIf="sidebarComments" position="right" class="w-50rem">
+  <app-comments [currentStep]="currentStep" [workFlowId]="workFlowId"></app-comments>
+</p-sidebar>
+
+<p-toast position="bottom-right" key="tl"></p-toast>

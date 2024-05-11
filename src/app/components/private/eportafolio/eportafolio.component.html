@@ -1,0 +1,443 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<h6>Mi E-Portafolio</h6>
+<p>Crea, administra y comparte tus archivos académicos y profesionales</p>
+<hr class="w-25 yellow_line" />
+
+<div class="row align-items-center">
+  <div class="row mt-2 align-items-center">
+    <div class="col-4 py-2">
+      <p-progressBar
+        [value]="consumed?.consumedPercentage || 0"
+        [showValue]="false"
+        [color]="'#4b878d'"
+      ></p-progressBar>
+      <span class="progress-message">{{
+        (consumed?.consumed || 0).toFixed(2) + ' MB ocupados de ' + consumed?.avaliable + ' MB'
+      }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="row align-items-center">
+  <div class="row d-flex card-header justify-content-end">
+    <div class="col-md-2">
+      <div class="btn-footer" (click)="loadFolders(true)">Mi E-Portafolio</div>
+    </div>
+    <div class="col-md-2">
+      <div class="btn-footer" (click)="select = 2">Favoritos</div>
+    </div>
+    <div class="col-md-2">
+      <div class="btn-footer" (click)="select = 3">Compartidos</div>
+    </div>
+    <div class="col-md-2"></div>
+    <div class="col-md-2">
+      <button class="btn btn-clear" (click)="openCreateFolder()">Crear carpeta</button>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-warning" (click)="openCreateFile()">Cargar archivo</button>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4" *ngIf="select === 1">
+  <div *ngFor="let item of folderList" class="col-md-3 mt-3 text-center">
+    <div>
+      <div
+        [style.background-color]="item.color"
+        (contextmenu)="showMenu($event, item)"
+        (click)="loadFilesByFolder(item)"
+        class="folder-item"
+        #targetElement
+      >
+        <img [src]="item.icon" alt="" />
+      </div>
+      <div [style.background-color]="item.color" class="folder-bottom-item"></div>
+      <span>{{ item.name }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="row py-4" *ngIf="select === 4">
+  <h6>{{ currentFolder?.name }}</h6>
+  <div class="row">
+    <div class="col-12">
+      <form [formGroup]="formFolder" class="header-search">
+        <div class="row d-flex justify-content-between">
+          <div class="col-6">
+            <div>Buscar</div>
+            <div class="input-icon-container">
+              <input type="text" pInputText formControlName="searchKeyWord" placeholder="Buscar" />
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="row d-flex justify-content-end">
+              <div class="col-md-4">
+                <div>Desde</div>
+                <p-calendar formControlName="searchStartDate" dateFormat="dd/mm/yy"></p-calendar>
+              </div>
+              <div class="col-md-4">
+                <div>Hasta</div>
+                <p-calendar formControlName="searchEndDate" dateFormat="dd/mm/yy"></p-calendar>
+              </div>
+            </div>
+          </div>
+          <div class="row d-flex justify-content-end">
+            <div class="col-md-2 d-flex justify-content-end py-4">
+              <button
+                label="Buscar"
+                *ngIf="!searchTable"
+                class="search-button"
+                (click)="searchFile()"
+              >
+                Buscar
+              </button>
+              <button
+                label="Limpiar"
+                *ngIf="searchTable"
+                class="clean-button"
+                (click)="cleanSearch()"
+              >
+                Limpiar
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div>
+        <p-table
+          class="table-files"
+          [value]="sharedFilesList || []"
+          [paginator]="totalRecords > pageSize"
+          [rows]="pageSize"
+          [lazy]="true"
+          (onLazyLoad)="loadFilesByFolderPage()"
+          [totalRecords]="totalRecords"
+          (onPage)="onPageChange($event)"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="border-left">Formato</th>
+              <th>Nombre</th>
+              <th>Link</th>
+              <th>Fecha</th>
+              <th style="width: 2%" class="border-right"></th>
+              <th style="width: 2%" class="border-right"></th>
+              <th style="width: 2%" class="border-right"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td>{{ item.fileFormat }}</td>
+              <td>{{ item.name }}</td>
+              <td class="url-blue">
+                <a [href]="item.url" target="_blank">{{ item.url }}</a>
+              </td>
+              <td>{{ (item.createdAt | date: 'dd/MM/yyyy') ?? '--' }}</td>
+              <td>
+                <i class="pi pi-pencil" (click)="openUpdateDocument(item)"></i>
+              </td>
+              <td>
+                <i
+                  *ngIf="item.type !== 143"
+                  (click)="downloadDocument(item.fileUrl)"
+                  class="pi pi-download"
+                ></i>
+              </td>
+              <td>
+                <!--<i class="pi pi-trash" (click)="deleteFile(item.fileId)"></i>-->
+                <i class="pi pi-trash" (click)="openDeleteFile(item)"></i>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <div class="text-center mt-2" *ngIf="(sharedFilesList || []).length === 0">
+        <p>No se encontraron resultados...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4" *ngIf="select === 2">
+  <app-favorite-table></app-favorite-table>
+</div>
+
+<div class="row mt-4" *ngIf="select === 3">
+  <app-shared-table></app-shared-table>
+</div>
+
+<p-dialog
+  [header]="folderPopUp"
+  [(visible)]="createFolderKey"
+  [style]="{ width: '30%' }"
+  [resizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+>
+  <div class="row">
+    <form [formGroup]="formFolder">
+      <div class="col-12">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Nombre</label>
+          <input pInputText formControlName="name" class="ng-invalid" />
+          <small class="error" *ngIf="formControls['name'].errors && formControls['name'].touched">
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+      <div class="col-12" *ngIf="!editFolder">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Seleccione icono representativo</label>
+          <div class="flex flex-wrap d-flex">
+            <div
+              *ngFor="let icon of eportafolioIcons"
+              class="field-checkbox flex align-items-center"
+            >
+              <p-radioButton
+                [inputId]="icon.key"
+                [value]="icon.value"
+                formControlName="icon"
+                name="icon"
+              ></p-radioButton>
+              <img [src]="icon.value" alt="" />
+            </div>
+          </div>
+          <small class="error" *ngIf="formControls['icon'].errors && formControls['icon'].touched">
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+      <div class="col-12 py-2" *ngIf="!editFolder">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="">Seleccione el color de la carpeta</label>
+          <br />
+          <p-colorPicker appendTo="body" formControlName="color"></p-colorPicker>
+          <small
+            class="error"
+            *ngIf="formControls['color'].errors && formControls['color'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+      <div class="col-12 py-2 text-center">
+        <button class="btn btn-primary" (click)="createFolder()">
+          {{ editFolder ? 'Actualizar' : 'Crear' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</p-dialog>
+
+<p-contextMenu #cm [model]="items" (click)="handleItemClick($event)"></p-contextMenu>
+
+<p-dialog
+  [header]="filePopUp"
+  [(visible)]="createFileKey"
+  [style]="{ width: '50%' }"
+  [resizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  (onHide)="resetFileForm()"
+>
+  <div class="row">
+    <form [formGroup]="formFolder">
+      <div class="row">
+        <div class="col-6">
+          <div class="flex flex-column gap-2">
+            <label htmlFor="">Tipo de archivo</label>
+            <p-dropdown
+              [options]="formatTypeList"
+              formControlName="formatType"
+              placeholder="Seleccione tipo de archivo"
+              [filter]="true"
+              filterBy="catalogItemName"
+              optionLabel="catalogItemName"
+              (onChange)="changeFileType($event)"
+            >
+              <ng-template let-item pTemplate="item">
+                <div class="flex align-items-center">
+                  <span>{{ item.catalogItemName }}</span>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="flex flex-column gap-2">
+            <label htmlFor="">Nombre</label>
+            <input pInputText formControlName="fileName" class="ng-invalid" />
+            <small
+              class="error"
+              *ngIf="formControls['fileName'].errors && formControls['fileName'].touched"
+            >
+              * Campo obligatorio.
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12" *ngIf="fileType === 143">
+          <div class="flex flex-column gap-2">
+            <label htmlFor="">Link</label>
+            <input pInputText formControlName="link" class="ng-invalid" />
+            <small
+              class="error"
+              *ngIf="formControls['link'].errors && formControls['link'].touched"
+            >
+              * Campo obligatorio.
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4" *ngIf="fileType !== 143">
+          <div class="flex flex-column py-2">
+            <label htmlFor="username" class="file-label">Adjuntar archivo</label>
+            <input
+              type="file"
+              id="archivo"
+              name="archivo"
+              class="input-file"
+              [accept]="allowedExtension"
+              (change)="loadFile($event)"
+              [disabled]="editFolder"
+            />
+            <label for="archivo" class="btn" *ngIf="!editFolder">Adjuntar</label>
+            <label for="archivo" class="btn btn-disabled" *ngIf="editFolder">Adjuntar</label>
+          </div>
+        </div>
+        <div class="col-md-6 d-flex align-items-end">
+          <p>{{ fileName }}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12" *ngIf="fileType !== 143">
+          <div class="flex flex-column gap-2">
+            <label htmlFor="">Palabras claves</label>
+            <input pInputText formControlName="keyWord" class="ng-invalid" />
+            <small
+              class="error"
+              *ngIf="formControls['keyWord'].errors && formControls['keyWord'].touched"
+            >
+              * Campo obligatorio.
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <label htmlFor="username">Privacidad</label>
+          <p-dropdown
+            [options]="filePrivacityList"
+            formControlName="privacity"
+            placeholder="Seleccione nivel de privacidad"
+            [filter]="true"
+            [showClear]="true"
+            [group]="false"
+            filterBy="catalogItemName"
+            optionLabel="catalogItemName"
+            (onChange)="changePrivacity($event)"
+            appendTo="body"
+          >
+            <ng-template let-item pTemplate="item">
+              <div class="flex align-items-center">
+                <span>{{ item.catalogItemName }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col-12 col-md-6">
+          <label htmlFor="username">Carpeta</label>
+          <p-dropdown
+            [options]="folderList"
+            formControlName="folderId"
+            placeholder="Seleccione la carpeta"
+            [filter]="true"
+            [showClear]="true"
+            [group]="false"
+            filterBy="name"
+            optionLabel="name"
+            appendTo="body"
+            (onChange)="changeFolder($event)"
+          >
+            <ng-template let-item pTemplate="item">
+              <div class="flex align-items-center">
+                <span>{{ item.name }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12" *ngIf="privacityType === 148 || privacityType === 147">
+          <div class="row d-flex justify-content-between py-4">
+            <label htmlFor="username">Compartir con</label>
+            <div class="col-12">
+              <div class="input-icon-container">
+                <input
+                  type="text"
+                  pInputText
+                  formControlName="searchUser"
+                  placeholder="Buscar por correo electrónico"
+                  (input)="filterTable()"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="listUser">
+            <div *ngFor="let user of filteredListUser" class="col-md-12">
+              <div class="row">
+                <div class="col-md-1">
+                  <label>
+                    <input
+                      type="checkbox"
+                      [checked]="user.selected"
+                      (change)="onSelectuser(user)"
+                    />
+                  </label>
+                </div>
+                <div class="col-md-5">{{ user?.userEmail }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 message-selected" *ngIf="selectedUsers !== ''">
+            <span>El archivo se compartirá con:</span>
+            <span class="email">{{ selectedUsers }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 py-4 text-center">
+          <button class="btn btn-primary" (click)="createFile()">
+            {{ editFolder ? 'Actualizar' : 'Crear' }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</p-dialog>
+
+<p-dialog
+  [(visible)]="deleteFileKey"
+  [style]="{ width: '40%' }"
+  [resizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  (onHide)="closeDeleteFile()"
+>
+  <div class="row">
+    <div class="col-12 text-center confirm-buttom">
+      <h6>¿Estás seguro de que deseas eliminar este archivo?</h6>
+      <button class="in-approve" (click)="deleteFile()">Si</button>
+      <button class="in-update" (click)="closeDeleteFile()">No</button>
+    </div>
+  </div>
+</p-dialog>

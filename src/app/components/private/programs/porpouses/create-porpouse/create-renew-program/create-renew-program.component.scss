@@ -1,0 +1,19 @@
+/* profile.component.css */
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cover-photo {
+  width: 100%;
+  overflow: hidden;
+}
+
+.cover-photo img {
+  width: 100%;
+}
+
+.profile-photo {
+  margin-top: -75px; /* Ajusta según sea necesario */
+}

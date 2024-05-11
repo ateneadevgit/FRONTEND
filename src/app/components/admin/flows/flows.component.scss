@@ -1,0 +1,49 @@
+@import '../../../../assets/styles/abstracts/variables';
+
+.border-left {
+  border-top-left-radius: 10px;
+}
+
+.border-right {
+  border-top-right-radius: 10px;
+}
+
+.active-label {
+  margin-left: 10px;
+}
+
+.colored-item {
+  color: $color-indigo;
+  font-weight: bold;
+}
+
+.pi-pencil {
+  color: $color-tangerine-yellow;
+}
+
+.pi {
+  cursor: pointer;
+}
+
+.rounded-icon {
+  background-color: $color-indigo;
+  text-align: center;
+  height: 40px;
+  width: 40px;
+  border-radius: 100%;
+  .pi {
+    color: $color-anti-flash-white;
+    margin-top: 10px;
+  }
+}
+
+.flow-text {
+  color: $color-indigo;
+  font-weight: bold;
+  font-size: 12px;
+  &::before {
+    content: '*';
+    color: red;
+    margin-right: 5px;
+  }
+}

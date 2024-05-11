@@ -1,0 +1,152 @@
+<div class="row container">
+  <div class="col-md-6">
+    <label for="level">Niveles</label>
+    <p-dropdown
+      [options]="levelsSelect"
+      [(ngModel)]="selectLevel"
+      placeholder="Seleccionar nivel"
+      [group]="false"
+      [filter]="true"
+      filterBy="catalogItemName"
+      optionLabel="catalogItemName"
+      [disabled]="nuevo === 1"
+    >
+      <ng-template let-factulty pTemplate="factulty">
+        <div class="flex align-items-center">
+          <span>{{ factulty.catalogItemName }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+</div>
+
+<div class="row container">
+  <div class="col-md-12 container">
+    <label for="level">{{ label }}</label>
+    <div class="levels">
+      <button class="rounded" (click)="removeLevelItem()">
+        <span class="rounded-plus">-</span>
+      </button>
+      <span class="quantity-levels">
+        {{ quantityLevels }}
+      </span>
+
+      <button class="rounded" (click)="addLevelItem()">
+        <span class="rounded-plus">+</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="row container">
+  <div class="col-md-12 container">
+    <form [formGroup]="formLevels" *ngIf="formLevels">
+      <div formArrayName="items">
+        <div *ngFor="let item of items.controls; let i = index">
+          <div [formGroupName]="i">
+            <p-accordion class="w-full">
+              <p-accordionTab>
+                <ng-template pTemplate="header">
+                  <div class="flex align-items-center">
+                    <span class="vertical-align-middle"
+                      >{{ selectLevel?.catalogItemName
+                      }}{{ selectLevel?.catalogItemName ? ':' : '' }}
+                      {{ item.value.name }}
+                    </span>
+
+                    <button class="close-modal" (click)="removeLevelItemByIndex(i)">
+                      <span class="pi pi-times"></span>
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-template pTemplate="content">
+                  <div class="row">
+                    <div class="col-md-8">
+                      <label for="name">Nombre del componente </label>
+                      <input
+                        pInputText
+                        class="ng-invalid"
+                        formControlName="name"
+                        [maxlength]="150"
+                      />
+                      <small
+                        class="error"
+                        *ngIf="item.get('name')?.touched && item.get('name')?.errors?.['required']"
+                      >
+                        * Campo obligatorio.
+                      </small>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="cretis">N° créditos</label>
+                      <input
+                        pInputText
+                        class="ng-invalid"
+                        type="number"
+                        formControlName="numberCredits"
+                      />
+
+                      <small
+                        class="error"
+                        *ngIf="
+                          item.get('numberCredits')?.touched &&
+                          item.get('numberCredits')?.errors?.['required']
+                        "
+                      >
+                        * Campo obligatorio.
+                      </small>
+                      <small
+                        class="error"
+                        *ngIf="
+                          item.get('numberCredits')?.touched &&
+                          item.get('numberCredits')?.errors?.['min']
+                        "
+                      >
+                        * El campo debe contener solo números enteros positivos.
+                      </small>
+                    </div>
+                    <!-- <div class="col-md-3">
+                      <label for="cretis">Participación %</label>
+                      <input
+                        pInputText
+                        class="ng-invalid"
+                        type="number"
+                        formControlName="participation"
+                      />
+                    </div> -->
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <label for="description">Descripción</label>
+                      <textarea
+                        rows="5"
+                        cols="30"
+                        pInputTextarea
+                        formControlName="description"
+                        [maxlength]="1000"
+                      ></textarea>
+                      <small
+                        class="error"
+                        *ngIf="
+                          item.get('description')?.touched &&
+                          item.get('description')?.errors?.['required']
+                        "
+                      >
+                        * Campo obligatorio.
+                      </small>
+                    </div>
+                  </div>
+                </ng-template>
+              </p-accordionTab>
+            </p-accordion>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row container">
+  <button class="btn btn-primary" (click)="createAsignLevel()">
+    {{ editLevel ? 'Guardar' : 'Crear' }}
+  </button>
+</div>

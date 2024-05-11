@@ -1,0 +1,203 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<p-table
+  [value]="rows"
+  (onPage)="onPageChange($event)"
+  page
+  [paginator]="totalRecords > pageSize"
+  [rows]="pageSize"
+  [lazy]="true"
+  (onLazyLoad)="loadPrograms()"
+  [totalRecords]="totalRecords"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Programa académico</th>
+      <th *ngIf="role === RoleEnum.VICERRECTOR">Facultad</th>
+      <th>Lugar de desarrollo</th>
+      <th>Nivel de formación</th>
+      <th *ngIf="role === RoleEnum.DECANO">Tipo de registro</th>
+      <th *ngIf="role !== RoleEnum.ASEGURAMIENTO_DE_CALIDAD_COORDINADOR">Estado</th>
+      <th class="action-right"></th>
+      <th
+        class="action-right"
+        *ngIf="role === RoleEnum.ASEGURAMIENTO_DE_CALIDAD_COORDINADOR"
+        class="action-right"
+      ></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-item>
+    <tr>
+      <td>
+        <div class="container-image">
+          <img class="container-image__img" [src]="item?.logo" alt="" />
+          <span class="container-image__text">
+            {{ item?.name ?? '--' }}
+          </span>
+        </div>
+      </td>
+      <td *ngIf="role === RoleEnum.VICERRECTOR">{{ item?.setFaculty?.catalogItemName ?? '--' }}</td>
+      <td>
+        <div *ngFor="let item of item?.setCampus">
+          {{ item }}
+        </div>
+      </td>
+
+      <td>{{ item?.setLevelFormation?.catalogItemName ?? '--' }}</td>
+      <td *ngIf="role === RoleEnum.DECANO">{{ item?.setRegistryType?.catalogItemName ?? '--' }}</td>
+      <td *ngIf="role !== RoleEnum.ASEGURAMIENTO_DE_CALIDAD_COORDINADOR">
+        <button class="status review button-styles" (click)="editProgram(item?.id_program)">
+          En edición
+        </button>
+      </td>
+
+      <td class="action-right">
+        <button
+          class="btn-action declined button-styles"
+          *ngIf="role === RoleEnum.VICERRECTOR"
+          (click)="delcineProgram(item)"
+        >
+          <i class="pi pi-minus"></i> Declinar
+        </button>
+        <button
+          class="btn-action btn-clear"
+          *ngIf="role === RoleEnum.DECANO || role === RoleEnum.DIRECTOR"
+          (click)="editProgram(item?.id_program)"
+        >
+          <i class="pi pi-pencil"></i>
+        </button>
+      </td>
+      <td class="action-right" *ngIf="role === RoleEnum.ASEGURAMIENTO_DE_CALIDAD_COORDINADOR">
+        <i (click)="onAssignQalityClick(item?.id_program)" class="pi pi-user-plus"></i>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<div class="text-center mt-2" *ngIf="rows.length === 0">
+  <p>No se encontraron resultados...</p>
+</div>
+
+<p-confirmDialog [style]="{ width: '50vw' }"></p-confirmDialog>
+
+<p-dialog
+  header="Proceso de declinación"
+  [(visible)]="visibleDeclineProgram"
+  [style]="{ width: '50vw' }"
+  [modal]="true"
+  [closable]="false"
+>
+  <div class="row">
+    <div class="col-md-6">
+      <label for="">Denominación de programa académico</label>
+      <p>{{ detailDeclineProgram?.name }}</p>
+    </div>
+    <div class="col-md-6">
+      <label for="">Fecha de desarrollo</label>
+      <p>{{ evaluatePorpouse?.developmentDate }}</p>
+    </div>
+
+    <div class="col-md-4">
+      <label for="">Facultad</label>
+      <p>{{ detailDeclineProgram?.setFaculty?.catalogItemName }}</p>
+    </div>
+    <div class="col-md-4">
+      <label for="">Tipo de programa</label>
+      <p>{{ evaluatePorpouse?.setTypeFormation?.catalogItemDescription }}</p>
+    </div>
+    <div class="col-md-4">
+      <label for="">Nivel de formación</label>
+      <p>{{ detailDeclineProgram?.setLevelFormation?.catalogItemName }}</p>
+    </div>
+
+    <div class="col-md-4">
+      <label for="">Tipo de registro</label>
+      <p>{{ evaluatePorpouse?.setTypeRegistry?.catalogItemName }}</p>
+    </div>
+    <div class="col-md-4">
+      <label for="">Lugar de desarrollo</label>
+      <p>
+        <span *ngFor="let item of detailDeclineProgram?.setCampus">{{ item }},</span>
+      </p>
+    </div>
+    <div class="col-md-4">
+      <label for="">Modalidad</label>
+      <p>
+        <span *ngFor="let item of evaluatePorpouse?.setModality"> {{ item }}, </span>
+      </p>
+    </div>
+  </div>
+
+  <div class="row d-flex">
+    <div class="col-md-3">
+      <label for="">Adjuntar acta</label>
+      <br />
+      <input
+        type="file"
+        id="archivo"
+        name="archivo"
+        class="input-file"
+        [accept]="allowedExtension"
+        (change)="loadFile($event)"
+      />
+      <label for="archivo" class="btn">Elegir archivo</label>
+    </div>
+    <div class="col-md-3 d-flex align-items-end">
+      <p>{{ fileName }}</p>
+    </div>
+  </div>
+  <br />
+
+  <div class="row">
+    <div class="col-md-6 text-end">
+      <button class="workflow-status in-projection" (click)="cancelDecline()">Cancelar</button>
+    </div>
+    <div class="col-md-6">
+      <button class="workflow-status in-update" (click)="decline()">Declinar</button>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog
+  [closable]="false"
+  [(visible)]="visibleAssignAC"
+  [style]="{ width: '40vw' }"
+  [modal]="true"
+>
+  <button class="status close-modal" (click)="closeAssignQalityLevel()">
+    <span class="pi pi-times"></span>
+  </button>
+  <br />
+  <p>Seleccione el responsable de la evaluación de la propuesta académica</p>
+  <br />
+  <div class="info-user" *ngIf="listAssignedUser.length !== 0">
+    El usuario <span>{{ listAssignedUser[0].userEmail }}</span> esta actualmente asignado, si quiere
+    reasignar, por favor busca y selecciona el nuevo responsable.
+  </div>
+  <div class="row d-flex justify-content-between py-4">
+    <div class="col-12">
+      <div class="input-icon-container">
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="searchQa"
+          placeholder="Buscar por correo electrónico"
+          (input)="filterTable()"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="row margin-container" *ngIf="listQuality">
+    <div *ngFor="let director of filteredListQuality" class="col-md-12 space-director">
+      <div class="row">
+        <div class="col-md-9">{{ director?.userEmail }}</div>
+        <div class="col-md-3">
+          <button class="workflow-status in-approve" (click)="relateUserToWorkflow(director)">
+            {{ listAssignedUser.length !== 0 ? 'Reasignar' : 'Asignar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-toast></p-toast>

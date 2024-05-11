@@ -1,0 +1,68 @@
+@import '../../../../../assets/styles/abstracts/variables';
+hr {
+  border-width: 3px;
+  color: $color-tangerine-yellow;
+}
+.margin-general {
+  margin: 0px 10px;
+}
+.header {
+  font-size: 12px;
+}
+.header-name {
+  color: #6d839b;
+  cursor: pointer;
+  user-select: none; /* Evita la selección de texto al hacer clic */
+  transition: background-color 0.3s ease;
+}
+
+.header-name:hover {
+  background-color: $color-indigo;
+  color: $color-white;
+}
+
+.header-name:active {
+  background-color: $color-blue-subtitle;
+  color: $color-white;
+}
+
+.header-name-subnucleo {
+  background-color: #e2e2e2;
+  color: $color-indigo;
+  font-weight: 500;
+}
+.title-sm {
+  border-radius: 0.5em 0.5em 0em 0em;
+  background: #a6cef9;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 5px 5px 5px 20px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+.content-sm {
+  border-radius: 0px 8px 8px 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+.header-num {
+  border-radius: 0px 8px 0px 0px;
+}
+.credit {
+  text-align: center;
+  background: #c8c9c9;
+}
+.number-credit {
+  font-weight: 500;
+}
+.border-top {
+  border-top: 1px solid #eaeaea;
+}
+.img-header-style {
+  height: 500px;
+  border-radius: 5%;
+}
+
+.img-header-style2 {
+  height: 250px;
+  border-radius: 5%;
+}

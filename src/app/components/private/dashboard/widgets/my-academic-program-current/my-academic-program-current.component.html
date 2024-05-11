@@ -1,0 +1,58 @@
+<div class="col-12 subtitle-card-dashboard mt-2">
+  <span class="pi pi pi-book" style="font-size: 1.7rem"> </span>Mi programa académico
+</div>
+<div class="row">
+  <div class="col-6">
+    <label for="Programa">Programa</label>
+    <p-dropdown
+      id="Programa"
+      [options]="listPrograms"
+      [(ngModel)]="programSelect"
+      [showClear]="true"
+      placeholder="Seleccione programa"
+      [group]="false"
+      [filter]="true"
+      filterBy="name"
+      optionLabel="name"
+      (onChange)="loadData()"
+    >
+      <ng-template let-catalog pTemplate="catalog">
+        <div class="flex align-items-center">
+          <span>{{ catalog?.name }}</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+</div>
+
+<div class="container-x mt-2">
+  <div class="col-md-4" *ngFor="let item of listCourse">
+    <div class="container-curse" [ngStyle]="{ 'background-color': getColor(item.coreName) }">
+      {{ item.name }}
+      <div>
+        <div
+          class="container-curse_data"
+          [ngStyle]="{ 'background-color': getColorBody(item.coreName) }"
+        >
+          <div class="d-flex justify-content-between">
+            <div>Créditos</div>
+            <div>{{ item.credits }}</div>
+          </div>
+          <!--
+        <div class="d-flex justify-content-between">
+          <div>Calificación</div>
+          <div>{{ item.qalification }}</div>
+        </div>
+       -->
+          <div class="d-flex justify-content-between">
+            <div>Período</div>
+            <div>{{ item.period }}</div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-center mt-2">
+          <button pButton class="p-button-primary" (click)="redirect(item.subjectId)">Ver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

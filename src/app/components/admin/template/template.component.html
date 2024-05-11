@@ -1,0 +1,71 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<h6>Notificaciones</h6>
+
+<div class="row">
+  <div class="col-12">
+    <div>
+      <div class="mt-2 shadow-table">
+        <p-table [value]="templateList || []" [paginator]="templateList.length > 6" [rows]="6">
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="border-left" style="width: 20%">Plantillas</th>
+              <th style="width: 70%">Descripción</th>
+              <th style="width: 5%" class="text-center"></th>
+              <th style="width: 5%" class="border-right text-center"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td class="colored-item">{{ item.templateName }}</td>
+              <td>{{ item.description }}</td>
+              <td>
+                <i class="pi pi-eye" (click)="openViewTemplate(item)"></i>
+              </td>
+              <td>
+                <i
+                  class="pi pi-pencil"
+                  [routerLink]="
+                    '/' +
+                    routerApp.TEMPLATE +
+                    '/' +
+                    routerApp.UPDATE_TEMPLATE +
+                    '/' +
+                    item?.templateId
+                  "
+                ></i>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <div class="text-center mt-2" *ngIf="(templateList || []).length === 0">
+        <p>No se encontraron resultados...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  header="Notificación"
+  [(visible)]="viewTemplate"
+  [style]="{ width: '40%' }"
+  [resizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+>
+  <div class="row pop-up-margin">
+    <div class="row">
+      <div class="col-12">
+        <h5>{{ currentTemplate?.subject }}</h5>
+        <div [innerHTML]="currentTemplate?.emailBody"></div>
+        <span class="info-alert"
+          >** Recuerda que las palabras del tipo bandera, indicadas entre guiones (por ejemplo:
+          --PROGRAM--), serán reemplazadas automáticamente por la información correspondiente al
+          momento de enviar la notificación.</span
+        >
+      </div>
+    </div>
+  </div>
+</p-dialog>

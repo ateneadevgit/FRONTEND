@@ -1,0 +1,130 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div
+  class="row py-2 header-table"
+  *ngIf="
+    (nif && role === RoleEnum.VICERRECTOR) ||
+    (!nif && (role === RoleEnum.DECANO || role === RoleEnum.DIRECTOR))
+  "
+>
+  <div class="col-4">
+    <button pButton class="btn-white" (click)="activeNew()">+ Nueva Competencia</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <div>
+      <div class="mt-2">
+        <p-table [value]="competenciesList || []">
+          <ng-template pTemplate="header">
+            <tr class="colored-header">
+              <th style="width: 5%">#</th>
+              <th style="width: 25%"></th>
+              <th style="width: 10%">Código</th>
+              <th style="width: 60%">Descripción</th>
+              <th
+                *ngIf="
+                  (nif && role === RoleEnum.VICERRECTOR) ||
+                  (!nif && (role === RoleEnum.DECANO || role === RoleEnum.DIRECTOR))
+                "
+              ></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item let-i="rowIndex">
+            <tr>
+              <td>{{ calculateRowId(item, i) }}</td>
+              <td
+                [attr.rowspan]="item.countCategory"
+                *ngIf="item.start"
+                [style.background-color]="defineBackGroundColor(i)"
+                class="text-center"
+              >
+                {{ item.categoryName }}
+              </td>
+              <td>{{ item.code }}</td>
+              <td [innerHTML]="item.description"></td>
+              <td
+                class="align-items-center justify-content-end"
+                *ngIf="
+                  (nif && role === RoleEnum.VICERRECTOR) ||
+                  (!nif && (role === RoleEnum.DECANO || role === RoleEnum.DIRECTOR))
+                "
+              >
+                <i class="pi pi-check-square icon-edit" (click)="editCompetencies(item)"></i>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <div class="text-center mt-2" *ngIf="(competenciesList || []).length === 0">
+        <p>No se encontraron resultados...</p>
+      </div>
+    </div>
+  </div>
+</div>
+<p-dialog
+  header="Competencias"
+  [(visible)]="visible"
+  [resizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  [style]="{ width: '60vw' }"
+>
+  <form [formGroup]="formCreate">
+    <div class="row">
+      <div class="col-6">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="username">Tipo de competencia</label>
+          <p-dropdown
+            [options]="listAbility"
+            formControlName="abilityId"
+            placeholder="Seleccione nivel"
+            [group]="false"
+            [filter]="true"
+            [showClear]="true"
+            filterBy="catalogItemName"
+            optionLabel="catalogItemName"
+          >
+            <ng-template let-item pTemplate="item">
+              <div class="flex align-items-center">
+                <span>{{ item.catalogItemName }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small
+            class="error"
+            *ngIf="formControls['abilityId'].errors && formControls['abilityId'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3">
+        <div class="flex flex-column gap-2">
+          <label htmlFor=""> Código</label>
+          <input pInputText formControlName="code" class="ng-invalid" />
+          <small class="error" *ngIf="formControls['code'].errors && formControls['code'].touched">
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+      <div class="col-9">
+        <label htmlFor=""> Descripción</label>
+        <br />
+        <app-editor (createHtml)="createHtml($event)" *ngIf="activeHtml" [htmlText]="html">
+        </app-editor>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-12 text-md-end">
+        <button class="btn btn-primary" (click)="createCompetencies()">
+          {{ activeItem ? 'Editar' : 'Agregar' }} competencia
+        </button>
+      </div>
+    </div>
+  </form>
+</p-dialog>

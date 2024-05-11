@@ -1,0 +1,187 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="row pop-up-margin">
+  <form [formGroup]="formStep">
+    <div class="col-12">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="">Nombre</label>
+        <input pInputText formControlName="name" class="ng-invalid" />
+        <small
+          class="error"
+          *ngIf="formStepControls['name'].errors && formStepControls['name'].touched"
+        >
+          * Campo obligatorio.
+        </small>
+      </div>
+      <div class="row py-4">
+        <div class="col-4">
+          <label htmlFor="">Orden</label>
+          <br />
+          <p-inputNumber formControlName="order" class="ng-invalid"></p-inputNumber>
+          <small
+            class="error"
+            *ngIf="formStepControls['order'].errors && formStepControls['order'].invalid"
+          >
+            * Campo debe ser un número positivo
+          </small>
+        </div>
+        <div class="col-4">
+          <label htmlFor="">Paso prerrequisito</label>
+          <br />
+          <p-checkbox
+            inputId="binary"
+            [binary]="true"
+            [(ngModel)]="isPrerrequirement"
+            [ngModelOptions]="{ standalone: true }"
+          ></p-checkbox>
+          <br />
+          <span class="prerre-label"
+            >Los prerrequisitos son condiciones previas que deben cumplirse antes de iniciar o
+            llevar a cabo el desarrollo del flujo.</span
+          >
+        </div>
+        <div class="col-4">
+          <label htmlFor="">Resumen</label>
+          <br />
+          <p-checkbox
+            inputId="binary"
+            [binary]="true"
+            [(ngModel)]="hasSummary"
+            [ngModelOptions]="{ standalone: true }"
+          ></p-checkbox>
+        </div>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="col-6">
+          <label htmlFor="">Rol y acciones asociadas al paso</label>
+          <p-dropdown
+            [options]="roleList"
+            formControlName="role"
+            placeholder="Seleccione el rol"
+            [filter]="true"
+            [showClear]="true"
+            [group]="false"
+            filterBy="nameRole"
+            optionLabel="nameRole"
+            appendTo="body"
+            (onChange)="changeRole($event)"
+          >
+            <ng-template let-item pTemplate="item">
+              <div class="flex align-items-center">
+                <span>{{ item.nameRole }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+      </div>
+      <div class="row py-2" *ngIf="actionList.length > 0">
+        <div class="col-12">
+          <div class="row mt-4">
+            <label htmlFor="">Acciones</label>
+            <div class="col-md-3 mt-3" *ngFor="let item of actionList">
+              <div class="row d-flex">
+                <div class="col-1">
+                  <p-checkbox
+                    [binary]="true"
+                    [(ngModel)]="item.isSelected"
+                    inputId="binary"
+                    [ngModelOptions]="{ standalone: true }"
+                    (onChange)="addActionToRole(item)"
+                  ></p-checkbox>
+                </div>
+                <div class="col-10">
+                  <label htmlFor="">{{ item?.actionName }}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 py-4 text-center">
+            <button class="btn btn-primary button-center" (click)="saveNewActionToRole()">
+              Asociar
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="roleAction.length > 0">
+        <div *ngFor="let item of roleAction">
+          <div class="row mt-2">
+            <div class="col-12 p-button-accordion">
+              <div class="card card-accordion">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="row">
+                      <div class="col-12">
+                        <i
+                          class="pi"
+                          [ngClass]="!item?.expanded ? 'pi-chevron-right' : 'pi-chevron-down'"
+                          style="font-size: 1rem"
+                          (click)="openCloseExpandedReqUpdate(item)"
+                        ></i>
+                        {{ item.role?.nameRole }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6 text-end">
+                    <i
+                      class="pi pi-pencil icon-edit mx-1"
+                      style="font-size: 1rem"
+                      (click)="openUpdateRoleActionRelation(item)"
+                    ></i>
+                    <i
+                      class="pi pi-trash"
+                      style="font-size: 1rem"
+                      (click)="deleteRoleActionFromSteo(item)"
+                    ></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row collapse" [ngClass]="{ show: item?.expanded }">
+            <div class="col-12">
+              <div class="content-accordion" style="margin-top: -50px">
+                <div class="row mt-4">
+                  <div class="col-md-3 mt-3" *ngFor="let action of item.actionIds">
+                    <div class="row d-flex">
+                      <div class="col-1">
+                        <p-checkbox
+                          [binary]="true"
+                          [(ngModel)]="action.isSelected"
+                          inputId="binary"
+                          [ngModelOptions]="{ standalone: true }"
+                          [disabled]="!updateRoleActionRelationKey"
+                        ></p-checkbox>
+                      </div>
+                      <div class="col-10">
+                        <label htmlFor="">{{ action?.actionName }}</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row d-flex justify-content-end">
+                  <div class="col-md-2 d-flex justify-content-end py-2">
+                    <button
+                      class="btn btn-primary"
+                      *ngIf="updateRoleActionRelationKey"
+                      (click)="updateRoleActionRelation(item)"
+                    >
+                      Guardar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="row">
+  <div class="col-12 py-4 text-center">
+    <button class="btn btn-primary" (click)="updateStep()">Actualizar</button>
+  </div>
+</div>

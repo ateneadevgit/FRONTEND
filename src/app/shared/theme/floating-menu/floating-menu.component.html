@@ -1,0 +1,50 @@
+<div class="floating-menu">
+  <div class="menu-items" [ngClass]="{ show: isMenuOpen }">
+    <div *ngFor="let item of menuItems">
+      <div class="d-flex">
+        <div class="container-btn" *ngIf="item.enableData">{{ item.label }}</div>
+        <button
+          class="sub-round-btn"
+          [style.background-color]="item.color"
+          (mouseenter)="enableData(item)"
+          (mouseleave)="disabledData(item)"
+          (click)="redirectUrl(item)"
+        >
+          <i class="pi" [class]="item.icon"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="menu-items" [ngClass]="{ show: chatItem.enable }">
+    <div class="d-flex">
+      <div class="container-btn" *ngIf="chatItem.enableData">{{ chatItem.label }}</div>
+      <button
+        class="sub-round-btn"
+        [style.background-color]="chatItem.color"
+        (mouseenter)="enableData(chatItem)"
+        (mouseleave)="disabledData(chatItem)"
+        (click)="openChat()"
+      >
+        <i class="pi pi-comment"></i>
+      </button>
+    </div>
+  </div>
+  <button (click)="toggleMenu()" class="round-btn">&#9776;</button>
+</div>
+
+<p-dialog
+  header="Chat"
+  [(visible)]="displayChat"
+  [modal]="false"
+  position="bottomright"
+  [style]="{
+    'margin-top': 'auto',
+    'margin-bottom': '20px',
+    bottom: '20px',
+    right: '20px',
+    width: '30%'
+  }"
+  [draggable]="false"
+>
+  <app-chatbot></app-chatbot>
+</p-dialog>

@@ -1,0 +1,236 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="row">
+  <div class="p-d-flex p-ai-center">
+    <h2 class="title-page">
+      <span class="pi pi-calendar" style="font-size: 1.7rem"></span>Calendario
+    </h2>
+    <p>Consulta fechas importantes, eventos y gestiona tu propio calendario.</p>
+    <hr class="w-25" />
+  </div>
+</div>
+
+<div class="card">
+  <div class="row">
+    <div class="col-12 col-md-12">
+      <br />
+      <ng-template #loading>
+        <div class="text-center">Cargando eventos...</div>
+      </ng-template>
+      <div *ngIf="events$ | async; else loading; let events" [ngSwitch]="view">
+        <mwl-calendar-month-view
+          *ngSwitchCase="CalendarView.Month"
+          [viewDate]="viewDate"
+          [events]="events"
+          [refresh]="refresh"
+          [activeDayIsOpen]="activeDayIsOpen"
+          (dayClicked)="dayClicked($event.day)"
+          (eventClicked)="handleEvent('Clicked', $event.event)"
+          locale="es"
+        >
+        </mwl-calendar-month-view>
+        <mwl-calendar-week-view
+          *ngSwitchCase="CalendarView.Week"
+          [viewDate]="viewDate"
+          [events]="events"
+          [refresh]="refresh"
+          (eventClicked)="handleEvent('Clicked', $event.event)"
+          locale="es"
+        >
+        </mwl-calendar-week-view>
+        <mwl-calendar-day-view
+          *ngSwitchCase="CalendarView.Day"
+          [viewDate]="viewDate"
+          [events]="events"
+          [refresh]="refresh"
+          (eventClicked)="handleEvent('Clicked', $event.event)"
+          locale="es"
+        >
+        </mwl-calendar-day-view>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-12 mt-4">
+      <div class="col-md-7">
+        <label htmlFor="username">Mis calendarios</label>
+      </div>
+
+      <div class="col-md-7 mt-2">
+        <div *ngFor="let item of eventTypes; let i = index" class="form-check">
+          <input
+            class="form-check-input {{ getColorByEventTypeId(item.catalogItemId).class }}"
+            type="checkbox"
+            id="checkbox{{ i }}"
+            [(ngModel)]="item.value"
+            (click)="loadEventType()"
+          />
+          <label class="form-check-label" for="checkbox{{ i }}"> {{ item.catalogItemName }} </label>
+        </div>
+      </div>
+
+      <div class="col-md-10 mt-4">
+        <button class="btn-action send" (click)="resetEventTypes()">Reestablecer estados</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  *ngIf="modalData?.event"
+  [modal]="true"
+  [closable]="false"
+  [header]="'Evento'"
+  [(visible)]="visibleViewEvento"
+  [style]="{ width: '60%' }"
+>
+  <button class="status close-modal" (click)="closeViewEvent()">
+    <span class="pi pi-times"></span>
+  </button>
+
+  <button
+    *ngIf="modalData?.event?.meta?.canEdit"
+    class="status close-modal"
+    (click)="deleteEventItem(modalData?.event)"
+  >
+    <span class="pi pi-trash icon-delete"></span>
+  </button>
+
+  <button
+    *ngIf="modalData?.event?.meta?.canEdit"
+    class="status close-modal"
+    (click)="updateEventItem(modalData?.event)"
+  >
+    <span class="pi pi-check-square icon-edit"></span>
+  </button>
+
+  <div class="row">
+    <div class="col-md-12">
+      <h2 for="">{{ modalData?.event?.title }}</h2>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-6">
+      <label for="">Tipo de evento</label>
+      <p class="m-left-10">
+        {{ getNameEventType(modalData?.event?.meta?.eventType) }}
+      </p>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-5" *ngIf="modalData?.event?.meta?.facultyId">
+      <label for="">Facultad</label>
+      <p class="m-left-10">
+        {{ getNameFaculty(modalData?.event?.meta?.facultyId) }}
+      </p>
+    </div>
+
+    <div class="col-md-5" *ngIf="modalData?.event?.meta?.programId">
+      <label for="">Programa</label>
+      <p class="m-left-10">
+        {{ getNameProgramById(modalData?.event?.meta?.programId) }}
+      </p>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-4">
+      <label for="">Fecha de inicio</label>
+      <p class="m-left-10">
+        {{ modalData?.event?.start ?? viewDate | calendarDate: viewDay + 'ViewTitle' : 'es-ES' }}
+      </p>
+    </div>
+
+    <div class="col-md-4" *ngIf="modalData?.event?.end">
+      <label for="">Fecha de fin</label>
+      <p class="m-left-10">
+        {{
+          (modalData?.event?.end ?? viewDate | calendarDate: viewDay + 'ViewTitle' : 'ES') ?? '--'
+        }}
+      </p>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-4">
+      <label for="">Hora inicial</label>
+      <p class="m-left-10">
+        {{ getFormatHour(modalData?.event?.meta?.startHour) }}
+      </p>
+    </div>
+
+    <div class="col-md-4" *ngIf="modalData?.event?.meta?.endHour">
+      <label for="">Hora final</label>
+      <p class="m-left-10">
+        {{ getFormatHour(modalData?.event?.meta?.endHour) }}
+      </p>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-10">
+      <label for="">Nota</label>
+      <p class="m-left-10">{{ modalData?.event?.meta?.feedback }}</p>
+    </div>
+
+    <div class="col-md-10">
+      <label for="">Link de evento</label>
+      <p class="m-left-10">
+        <a class="color-url-link m-0" [href]="modalData?.event?.meta?.eventUrl" target="_blank">{{
+          modalData?.event?.meta?.eventUrl
+        }}</a>
+      </p>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog
+  *ngIf="selectModalOpt"
+  [modal]="true"
+  [closable]="false"
+  [header]="selectModalOpt.id === 1 ? 'Evento' : 'Evento personal'"
+  [(visible)]="visibleModalEvento"
+  [style]="{ width: '60%' }"
+>
+  <button class="status close-modal" (click)="closeModalEvent()">
+    <span class="pi pi-times"></span>
+  </button>
+  <app-create-event
+    *ngIf="selectModalOpt.id === 1"
+    (succesCreate)="closeModalEventCreate()"
+  ></app-create-event>
+  <app-create-event-person
+    *ngIf="selectModalOpt.id === 2"
+    (succesCreate)="closeModalEventCreate()"
+  ></app-create-event-person>
+</p-dialog>
+
+<p-dialog
+  *ngIf="editEvent && editEvent.meta"
+  [modal]="true"
+  [closable]="false"
+  [header]="eventTypeEnum.PERSONAL === editEvent.meta.eventType ? 'Evento personal' : 'Evento'"
+  [(visible)]="visibleEditEvent"
+  [style]="{ width: '60%' }"
+>
+  <button class="status close-modal" (click)="closeUpdateEvent()">
+    <span class="pi pi-times"></span>
+  </button>
+
+  <app-create-event
+    [editEvent]="editEvent"
+    (succesCreate)="closeSuccessUpdateEvent()"
+  ></app-create-event>
+</p-dialog>
+
+<p-confirmDialog #confirmdialog key="confirm-dialog-2" [style]="{ width: '50vw' }">
+  <ng-template pTemplate="footer">
+    <button pButton class="btn-secondary" severity="secondary" (click)="confirmdialog.reject()">
+      Cancelar
+    </button>
+    <button pButton class="btn-danger" severity="secondary" (click)="confirmdialog.accept()">
+      Eliminar
+    </button>
+  </ng-template></p-confirmDialog
+>

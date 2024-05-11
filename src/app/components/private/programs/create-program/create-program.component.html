@@ -1,0 +1,176 @@
+<h6>Creación de programas académicos</h6>
+<div *ngIf="!showSyllabus">
+  <div class="row">
+    <div class="col-md-3">
+      <div *ngIf="this.isFormal">
+        <label for="condiciones">Condiciones</label>
+        <p-dropdown
+          [options]="conditionsList"
+          [(ngModel)]="selectCondition"
+          placeholder="Seleccionar condición"
+          [group]="false"
+          [filter]="true"
+          filterBy="catalogItemDescription"
+          optionLabel="catalogItemDescription"
+          (onChange)="selectTypeCondition()"
+        >
+          <ng-template let-catalog pTemplate="catalog">
+            <div class="flex align-items-center">
+              <span>{{ catalog.catalogItemDescription }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="py-4" *ngIf="role === RoleEnum.DECANO">
+        <button pButton pRipple class="btn reassign" (click)="openSelectDirector()">
+          Reasignar director
+        </button>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div class="workflow">
+        <div
+          class="workflow-status"
+          [ngClass]="{
+            'in-projection': status?.catalogItemId === 32,
+            'in-update': status?.catalogItemId === 30,
+            'in-summary': status?.catalogItemId === 29,
+            'in-approve': status?.catalogItemId === 28
+          }"
+          *ngFor="let status of statusList"
+        >
+          {{ status?.catalogItemName }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="currentStep?.controlId === 2">
+    <div class="col-12">
+      <app-traceability [idProgram]="idProgram"></app-traceability>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="currentStep?.controlId === 1">
+    <div class="col-12">
+      <app-stepper
+        [items]="stepperItems"
+        [activeStep]="step"
+        [showStepHorizonal]="showStepHorizonal"
+        (emitCurrentStep)="currentStepper($event)"
+      ></app-stepper>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="currentStep?.controlId === 1">
+    <div class="col-12">
+      <app-workflow
+        [isPaper]="isPaper"
+        [currentStep]="currentStep"
+        *ngIf="currentStep"
+        [workFlowId]="currentWorkFlow?.workflowBaseId"
+        [idProgram]="idProgram"
+        [selectCondition]="selectCondition"
+        (openSyllabus)="openSyllabus($event)"
+      ></app-workflow>
+    </div>
+  </div>
+</div>
+<!--
+<app-syllabus (openSyllabus)="openSyllabus($event)" [idProgram]="idProgram" [currentWorkFlow]="currentWorkFlow" *ngIf="showSyllabus"> </app-syllabus>
+
+-->
+<!-- <div class="row" *ngIf="currentStep?.controlId === 1">
+  <div class="col-12">
+    <app-stepper
+      [items]="stepperItems"
+      [showStepHorizonal]="showStepHorizonal"
+      (emitCurrentStep)="currentStepper($event)"
+    ></app-stepper>
+  </div>
+</div> -->
+
+<!-- <div class="row" *ngIf="currentStep?.controlId === 1">
+  <div class="col-12">
+    <app-workflow
+      [currentStep]="currentStep"
+      *ngIf="currentStep"
+      [workFlowId]="currentWorkFlow?.workflowBaseId"
+      [idProgram]="idProgram"
+    ></app-workflow>
+  </div>
+</div> -->
+
+<p-dialog
+  [closable]="false"
+  [(visible)]="visibleCreateDirector"
+  [style]="{ width: '40vw' }"
+  [modal]="true"
+>
+  <div class="container margin-container">
+    <p>Seleccione el responsable de la construcción de la propuesta académica</p>
+    <br />
+    <input type="text" pInputText [(ngModel)]="search" placeholder="Buscar director" />
+    <br /><br />
+    <div class="row" *ngIf="listDirector">
+      <div
+        *ngFor="let director of listDirector | filterDirector: search"
+        class="col-md-12 space-director"
+      >
+        <div class="row">
+          <div class="col-md-9">{{ director?.userEmail }}</div>
+          <div class="col-md-3">
+            <button class="workflow-status in-approve" (click)="selectDirector(director)">
+              Asignar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog
+  [closable]="false"
+  [(visible)]="visibleAssignDc"
+  [style]="{ width: '40vw' }"
+  [modal]="true"
+>
+  <button class="status close-modal" (click)="closeAssignDirectorLevel()">
+    <span class="pi pi-times"></span>
+  </button>
+  <br />
+  <p>Seleccione el responsable de la evaluación de la propuesta académica</p>
+  <br />
+  <div class="info-user" *ngIf="listAssignedDirector.length !== 0">
+    El usuario <span>{{ listAssignedDirector[0].userEmail }}</span> esta actualmente asignado, si
+    quiere reasignar, por favor busca y selecciona el nuevo responsable.
+  </div>
+  <div class="row d-flex justify-content-between py-4">
+    <div class="col-12">
+      <div class="input-icon-container">
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="searchDc"
+          placeholder="Buscar director"
+          (input)="filterTable()"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="row margin-container" *ngIf="listDirector">
+    <div *ngFor="let director of filteredListDirector" class="col-md-12 space-director">
+      <div class="row">
+        <div class="col-md-9">{{ director?.userEmail }}</div>
+        <div class="col-md-3">
+          <button class="workflow-status in-approve" (click)="relateUserToWorkflow(director)">
+            {{ listAssignedDirector.length !== 0 ? 'Reasignar' : 'Asignar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-toast></p-toast>

@@ -1,0 +1,166 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<br />
+<ol class="breadcrumb">
+  <ng-container *ngFor="let item of breadcrumbItems; let last = last; let index = index">
+    <li class="breadcrumb-item" [ngClass]="{ active: last }">
+      <a *ngIf="!last" [routerLink]="item.routerLink">{{ item.label }}</a>
+      <span *ngIf="last">{{ item.label }}</span>
+    </li>
+    <span *ngIf="!last"> <i class="pi pi-angle-right"></i> </span>
+  </ng-container>
+</ol>
+
+<h6>{{ currentModule?.name }}</h6>
+
+<div class="row d-flex justify-content-end">
+  <div class="col-md-2 d-flex justify-content-end py-2">
+    <button class="btn btn-primary" (click)="openCreatePopUp()">Asociar permisos</button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <p-table
+      class="py-4"
+      [value]="permissionModuleList || []"
+      [paginator]="permissionModuleList.length > 10"
+      [rows]="10"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="border-left">Rol</th>
+          <th class="text-center">Crear</th>
+          <th class="text-center">Modificar</th>
+          <th class="text-center">Visualizar</th>
+          <th class="text-center">Eliminar</th>
+          <th class="border-right"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td class="colored-item">{{ item.roleName }}</td>
+          <td class="text-center">
+            <p-checkbox
+              [(ngModel)]="item.canCreate"
+              [binary]="item.canCreate"
+              inputId="binary"
+              [disabled]="true"
+            ></p-checkbox>
+          </td>
+          <td class="text-center">
+            <p-checkbox
+              [(ngModel)]="item.canUpdate"
+              [binary]="item.canUpdate"
+              inputId="binary"
+              [disabled]="true"
+            ></p-checkbox>
+          </td>
+          <td class="text-center">
+            <p-checkbox
+              [(ngModel)]="item.canView"
+              [binary]="item.canView"
+              inputId="binary"
+              [disabled]="true"
+            ></p-checkbox>
+          </td>
+          <td class="text-center">
+            <p-checkbox
+              [(ngModel)]="item.canDelete"
+              [binary]="item.canDelete"
+              inputId="binary"
+              [disabled]="true"
+            ></p-checkbox>
+          </td>
+          <td>
+            <i class="pi pi-pencil" (click)="updatePermission(item)"></i>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  <div class="text-center mt-2" *ngIf="(permissionModuleList || []).length === 0">
+    <p>No se encontraron resultados...</p>
+  </div>
+</div>
+
+<p-dialog
+  [header]="popUpTittle"
+  [(visible)]="createPermissionKey"
+  [style]="{ width: '30%' }"
+  [resizable]="true"
+  [modal]="true"
+  [closable]="true"
+  [closeIcon]="'pi pi-times'"
+  (onHide)="cleanForm()"
+>
+  <div class="row pop-up-margin create-permission">
+    <div class="col-12">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="">Rol</label>
+        <p-dropdown
+          [options]="editPermissionKey ? allRolesList : roleList"
+          [(ngModel)]="roleModel"
+          placeholder="Seleccione el rol"
+          [filter]="true"
+          [showClear]="true"
+          [group]="false"
+          filterBy="nameRole"
+          optionLabel="nameRole"
+          appendTo="body"
+          [disabled]="editPermissionKey"
+        >
+          <ng-template let-item pTemplate="item">
+            <div class="flex align-items-center">
+              <span>{{ item.nameRole }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row d-flex">
+      <label htmlFor="" class="py-2">Permisos</label>
+      <div class="row py-2">
+        <div class="col-6">
+          <p-checkbox
+            [(ngModel)]="canCreate"
+            [binary]="true"
+            [ngModelOptions]="{ standalone: true }"
+          ></p-checkbox>
+          <span>Crear</span>
+        </div>
+        <div class="col-6">
+          <p-checkbox
+            [(ngModel)]="canView"
+            [binary]="true"
+            [ngModelOptions]="{ standalone: true }"
+          ></p-checkbox>
+          <span>Visualizar</span>
+        </div>
+      </div>
+      <div class="row py-2">
+        <div class="col-6">
+          <p-checkbox
+            [(ngModel)]="canUpdate"
+            [binary]="true"
+            [ngModelOptions]="{ standalone: true }"
+          ></p-checkbox>
+          <span>Modificar</span>
+        </div>
+        <div class="col-6">
+          <p-checkbox
+            [(ngModel)]="canDelete"
+            [binary]="true"
+            [ngModelOptions]="{ standalone: true }"
+          ></p-checkbox>
+          <span>Eliminar</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 py-4 text-center">
+      <button class="btn btn-primary" (click)="createPermission()">
+        {{ editPermissionKey ? 'Guardar' : 'Asociar' }}
+      </button>
+    </div>
+  </div>
+</p-dialog>

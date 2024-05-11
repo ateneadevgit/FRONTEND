@@ -1,0 +1,155 @@
+<div class="row">
+  <div class="col-md-12">
+    <h6>Actualización de programa</h6>
+  </div>
+  <div class="col-md-12" *ngIf="programActive">
+    <h6 [routerLink]="'/' + routerApp.PROGRAMS + '/' + routerApp.EDIT_PROGRAM + '/' + idProgram">
+      <span class="pi pi-arrow-left"></span>
+      {{ programActive.name }}
+    </h6>
+  </div>
+  <div class="col-md-6" *ngIf="programActive">
+    <h4>
+      {{ programActive.nameFaculty }}
+    </h4>
+  </div>
+  <div class="col-md-6 btn-status">
+    <div
+      class="workflow-status btn-status-content"
+      [ngClass]="{
+        'in-projection': moduleActive?.status === statusModule.IN_PROJECTION,
+        'in-update': moduleActive?.status === statusModule.IN_UPDATE,
+        'in-summary': moduleActive?.status === statusModule.SENT_FOR_REVIEW,
+        'in-approve': moduleActive?.status === statusModule.APPROVED
+      }"
+    >
+      {{ moduleActive?.nameStatus }}
+    </div>
+  </div>
+  <div class="col-md-6">
+    <h6>{{ moduleActive?.name }}</h6>
+  </div>
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-md-4">
+        <button pButton pRipple class="btn btn-primary" (click)="sidebarComments = true">
+          <span class="pi pi-clone"></span>
+          Comentarios
+        </button>
+      </div>
+      <div class="col-md-4">
+        <button
+          pButton
+          pRipple
+          class="btn btn-warning"
+          (click)="sendObjectTemp()"
+          *ngIf="
+            (moduleActive?.status === statusModule.IN_PROJECTION ||
+              moduleActive?.status === statusModule.IN_UPDATE) &&
+            role === roleList.DECANO
+          "
+        >
+          Guardar
+        </button>
+
+        <button
+          pButton
+          pRipple
+          class="btn declined"
+          (click)="sendDenyApprove(false)"
+          *ngIf="
+            moduleActive?.status === statusModule.SENT_FOR_REVIEW && role === roleList.VICERRECTOR
+          "
+        >
+          <span class="pi pi-minus"></span>
+          En actualización
+        </button>
+      </div>
+      <div class="col-md-4">
+        <button
+          pButton
+          pRipple
+          class="btn btn-warning"
+          (click)="sendModuleToReview()"
+          *ngIf="
+            (moduleActive?.status === statusModule.IN_PROJECTION ||
+              moduleActive?.status === statusModule.IN_UPDATE) &&
+            objectJson?.value &&
+            !editActive &&
+            role === roleList.DECANO
+          "
+        >
+          {{ moduleActive?.hasEvaluation ? 'Enviar a revisión' : 'Aprobar Edición' }}
+        </button>
+        <button
+          pButton
+          pRipple
+          class="btn approve"
+          (click)="sendDenyApprove(true)"
+          *ngIf="
+            moduleActive?.status === statusModule.SENT_FOR_REVIEW && role === roleList.VICERRECTOR
+          "
+        >
+          <span class="pi pi-check"></span>
+          Aprobar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="moduleActive?.moduleType === ModuleTypes.SPECIFIC_SUMARY">
+  <div class="col-md-12">
+    <div class="container">
+      <app-editor (createHtml)="createHtml($event)" [htmlText]="html"></app-editor>
+    </div>
+  </div>
+</div>
+
+<app-edit-curricular-components
+  [objCurricularComponents]="objCurricularComponents"
+  *ngIf="moduleActive?.moduleType === ModuleTypes.CURRICULAR_COMPONENTS"
+  (updateObject)="setUpdateObject($event)"
+>
+</app-edit-curricular-components>
+
+<app-edit-study-plan
+  *ngIf="moduleActive?.moduleType === ModuleTypes.STUDY_PLAN && objStudyPlan.length > 0"
+  [objStudyPlan]="objStudyPlan"
+  (updateObject)="setUpdateObject($event)"
+>
+</app-edit-study-plan>
+
+<app-edit-syllabus
+  [objSyllabus]="objSyllabus"
+  *ngIf="moduleActive?.moduleType === ModuleTypes.SYLLABUS"
+  (updateObject)="setUpdateObject($event)"
+  [activeButton]="
+    moduleActive?.status === statusModule.SENT_FOR_REVIEW && role === roleList.VICERRECTOR
+  "
+>
+</app-edit-syllabus>
+
+<app-edit-academic-credits
+  *ngIf="moduleActive?.moduleType === ModuleTypes.ACADEMIC_CREDITS"
+  [moduleId]="idProgram"
+  [programId]="idModule"
+  [coreId]="idModule"
+  [objAcademicCredits]="objAcademicCredits"
+  (updateObject)="setUpdateObject($event)"
+>
+</app-edit-academic-credits>
+
+<app-edit-core-subcore
+  *ngIf="moduleActive?.moduleType === ModuleTypes.CORE_AND_SUBCORES"
+  [objCoreAndSubnucleo]="objCoreAndSubnucleo"
+  (updateObject)="setUpdateObject($event)"
+></app-edit-core-subcore>
+
+<app-edit-curricular-output
+  *ngIf="moduleActive?.moduleType === ModuleTypes.CURRICULAR_OUTPUT"
+></app-edit-curricular-output>
+
+<p-sidebar [(visible)]="sidebarComments" *ngIf="sidebarComments" position="right" class="w-75">
+  <app-comments [programId]="idProgram" [type]="'84'" [flow]="2"></app-comments>
+</p-sidebar>

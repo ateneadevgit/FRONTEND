@@ -1,0 +1,66 @@
+@import '../../../../../assets/styles/abstracts/variables';
+
+.header-table {
+  background-color: $color-indigo;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.icon-edit {
+  margin-left: 5px;
+  cursor: pointer;
+  color: #ffce01;
+}
+.icon-view {
+  margin-left: 5px;
+  cursor: pointer;
+  color: $color-indigo;
+}
+
+.td-cod {
+  font-weight: 500;
+}
+
+.btn-table {
+  margin-right: 5px;
+  margin-top: 3px;
+  padding: 10px;
+}
+
+.evaluate {
+  background-color: $color-dodger-blue;
+  color: $color-white;
+}
+.approved {
+  background-color: $color-approved;
+  color: $color-white;
+}
+
+.completeness {
+  background-color: $color-waiting-request;
+  color: $color-white;
+}
+
+.colored-header th {
+  background-color: $color-indigo;
+}
+
+.status-button {
+  width: 50%;
+  margin-left: auto;
+  margin-right: 5%;
+}
+.create-problem-container {
+  width: 100%;
+}
+
+.icon-bigger {
+  font-size: 18px;
+  margin-right: 20px;
+}
+.file-name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,58 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<h6>Banco de problemas</h6>
+<div
+  *ngIf="role === RoleEnum.VICERRECTOR || role === RoleEnum.DECANO || role === RoleEnum.DIRECTOR"
+>
+  <p>Cree, evalúe y analice los problemas adecuados para sus estudiantes</p>
+  <hr class="w-25 yellow_line" />
+  <form [formGroup]="formCurricularMonitoring">
+    <div class="row d-flex justify-content-between">
+      <div class="col-md-4 mt-2">
+        <div class="flex flex-column gap-2">
+          <label htmlFor="username">Programa</label>
+          <p-dropdown
+            [options]="programs"
+            formControlName="programOpt"
+            placeholder="Seleccione programa"
+            [group]="false"
+            [filter]="true"
+            [showClear]="true"
+            filterBy="name"
+            optionLabel="name"
+            (onChange)="selectProgram()"
+          >
+            <ng-template let-program pTemplate="program">
+              <div class="flex align-items-center">
+                <span>{{ program.name }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small
+            class="error"
+            *ngIf="formControls['programOpt'].errors && formControls['programOpt'].touched"
+          >
+            * Campo obligatorio.
+          </small>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="row" *ngIf="idProgram">
+    <div class="col-12">
+      <p-tabView (onChange)="onTabChange($event)">
+        <p-tabPanel header="Problemas">
+          <app-problem-bank-table [idProgram]="idProgram"></app-problem-bank-table>
+        </p-tabPanel>
+        <p-tabPanel header="Competencias">
+          <app-competencies></app-competencies>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="role === RoleEnum.ESTUDIANTE || role === RoleEnum.ESTUDIANTE_NO_FORMAL">
+  <app-problem-bank-table [idProgram]="idProgram"></app-problem-bank-table>
+</div>

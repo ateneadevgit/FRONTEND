@@ -1,0 +1,60 @@
+@import '../../../../../assets/styles/abstracts/variables';
+
+::ng-deep .p-timeline-event-separator {
+  margin-left: -90%;
+}
+
+::ng-deep .p-timeline .p-timeline-event-marker {
+  border: 2px solid $color-indigo;
+}
+.date-comment {
+  color: $color-quick-silver;
+  font-size: 12px;
+}
+
+.in-projection,
+.in-approve {
+  padding: 2px 5px;
+  float: right;
+  margin-bottom: 0px;
+}
+
+.in-approve {
+  background-color: $color-indigo;
+}
+
+.card-html {
+  position: fixed;
+  bottom: -10px;
+  width: 528px;
+  background-color: $color-white;
+  padding: 20px;
+}
+
+.container-comments {
+  margin-bottom: 250px;
+}
+
+.reply-comments {
+  margin-left: 20px;
+  background-color: $color-cultured;
+  list-style: none;
+  padding-top: 5px;
+  margin-top: 54px;
+  border-radius: 8px;
+}
+
+.line-reply {
+  border-bottom: 3px solid $color-white;
+  padding: 10px;
+}
+
+.title-reply {
+  margin: 5px;
+  color: $color-auro-metal-saurus;
+}
+
+.right-btn {
+  float: right;
+  margin: 5px 0;
+}

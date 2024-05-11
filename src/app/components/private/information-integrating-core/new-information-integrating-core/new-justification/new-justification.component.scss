@@ -1,0 +1,28 @@
+/* profile.component.css */
+@import '../../../../../../assets/styles/abstracts/variables';
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cover-photo {
+  width: 100%;
+  overflow: hidden;
+}
+
+.cover-photo img {
+  width: 100%;
+}
+
+.round-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: $color-indigo;
+  color: #fff;
+  font-size: 18px;
+  border: none;
+  cursor: pointer;
+}

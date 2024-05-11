@@ -1,0 +1,26 @@
+<div class="sidebar-fix hide-only-mobile">
+  <app-sidebar-menu></app-sidebar-menu>
+</div>
+<div class="content">
+  <header class="content-header">
+    <button
+      pButton
+      pRipple
+      type="button"
+      (click)="display = true"
+      class="p-button-text p-button-plain content-header__menu-button show-only-mobile"
+    >
+      <i class="pi pi-bars"></i>
+    </button>
+    <app-header></app-header>
+  </header>
+  <div class="layout">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<app-floating-menu></app-floating-menu>
+
+<p-sidebar [(visible)]="display">
+  <app-sidebar-menu></app-sidebar-menu>
+</p-sidebar>

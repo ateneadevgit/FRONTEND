@@ -1,0 +1,68 @@
+@import '../abstracts/variables';
+th {
+  background-color: $color-jelly-bean-blue;
+  color: $color-white;
+  font-weight: 400;
+  font-size: 12px;
+  font-family: $font-medium;
+}
+
+td {
+  color: $color-text-view-data;
+  font-size: 13px;
+  font-family: $font-medium;
+}
+
+tr {
+  border-bottom: 1px solid $color-cultured;
+}
+
+thead {
+  padding: 10px 20px !important;
+}
+.action-right {
+  text-align: right;
+  i {
+    margin: 0px 6px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+}
+.action-center {
+  text-align: center;
+  i {
+    margin: 0px 6px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+}
+.p-datatable > .p-datatable-wrapper {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.container-image {
+  background-color: $color-indigo;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  box-shadow: 0px 0px 5px $color-indigo;
+  display: contents;
+  &__img {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+  }
+  &__text {
+    margin-left: 10px;
+  }
+}
+
+.title-table {
+  color: $color-indigo;
+  font-size: 14px;
+  font-family: $font-medium;
+}
+.table-space {
+  padding: 8px 2px;
+}

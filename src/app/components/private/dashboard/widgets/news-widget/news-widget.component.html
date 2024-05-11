@@ -1,0 +1,23 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<div class="col-12 subtitle-card-dashboard mt-2">
+  <span class="pi pi pi-copy" style="font-size: 1.7rem"> </span>Noticias
+</div>
+
+<div class="row">
+  <div class="col-3" *ngFor="let item of listNew; let i = index">
+    <div class="card card-link" (click)="redireccionarAPantalla(item.newId)">
+      <div class="contenedor">
+        <div class="imagen-fondo" [style.background-image]="'url(' + item.cover + ')'"></div>
+        <div class="footer" [style.backgroundColor]="getColor(i)">
+          <div class="row w-100">
+            <div class="col-12 title-news">
+              <div class="date-news">{{ dateFormatLabel(item.createdAt || '') }}</div>
+              {{ item.tittle }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

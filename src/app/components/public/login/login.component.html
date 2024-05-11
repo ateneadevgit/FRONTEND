@@ -1,0 +1,78 @@
+<div class="row container-login">
+  <div class="col-md-6 container-login-form">
+    <img src="./assets/images/LOGO-ATENEA-blanco.svg" alt="logo atenea blanco" />
+  </div>
+  <div class="col-md-6 container-login-form">
+    <form [formGroup]="formLogin" class="login-form">
+      <div class="container-login-form__center">
+        <img src="./assets/images/logo-sanmartin-new.svg" alt="logo san martin" />
+      </div>
+      <div class="login-form-items">
+        <h6 class="login-form__title">INICIA SESIÓN</h6>
+        <div class="login-form__line"></div>
+      </div>
+
+      <div class="flex flex-column gap-2">
+        <label htmlFor="">
+          <span class="pi pi-envelope icon-label"></span>
+          Correo electrónico
+        </label>
+        <input
+          pInputText
+          formControlName="email"
+          class="ng-invalid"
+          placeholder="example@sanmartin.edu.co"
+        />
+        <div *ngIf="(formControls['email'].errors && formControls['email'].touched) || send">
+          <small
+            class="error"
+            *ngIf="formControls['email'].errors && formControls['email'].errors['required']"
+          >
+            * Email es obligatorio.
+          </small>
+          <small
+            class="error"
+            *ngIf="formControls['email'].errors && formControls['email'].errors['email']"
+          >
+            * No es un formato válido.
+          </small>
+        </div>
+      </div>
+      <div class="flex flex-column gap-2 mt-2">
+        <label htmlFor="">
+          <span class="pi pi-envelope icon-label"></span>
+          Contraseña
+        </label>
+        <input
+          type="password"
+          pInputText
+          formControlName="password"
+          class="ng-invalid"
+          placeholder="Ingrese su contraseña"
+        />
+        <div *ngIf="(formControls['password'].errors && formControls['password'].touched) || send">
+          <small
+            class="error"
+            *ngIf="formControls['password'].errors && formControls['password'].errors['required']"
+          >
+            * Contraseña es obligatorio.
+          </small>
+        </div>
+      </div>
+      <div class="login-form-items">
+        <button
+          pButton
+          severity="warning"
+          pRipple
+          class="p-button-warning"
+          (click)="login()"
+          [disabled]="!formLogin.valid || send"
+        >
+          INGRESAR
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<p-toast></p-toast>

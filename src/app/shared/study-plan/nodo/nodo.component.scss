@@ -1,0 +1,359 @@
+@import '../../../../assets/styles/abstracts/variables';
+
+.component-tab {
+  background-color: $color-dark-blur-gray;
+  padding: 15px 5px;
+  color: $color-jelly-bean-blue;
+  font-family: $font-medium;
+  cursor: pointer;
+  position: relative;
+  margin-top: 5px;
+  &:hover {
+    background-color: $color-jelly-bean-blue;
+    color: $color-white;
+  }
+}
+
+.sub-component {
+  background-color: $color-dark-blur-gray;
+  margin: 5px 0;
+  padding: 8px;
+  color: $color-indigo;
+  font-family: $font-medium;
+  cursor: pointer;
+  position: relative;
+}
+
+.component-active {
+  background-color: $color-jelly-bean-blue;
+  color: $color-white;
+}
+
+.delete-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 12px;
+  //color: $color-declined;
+  color: $color-vermilion;
+}
+
+.table-edit {
+  font-size: 12px;
+  color: $color-tangerine-yellow;
+
+  margin: 3px;
+}
+
+.table-delete {
+  font-size: 12px;
+  color: $color-vermilion;
+  margin: 3px;
+}
+
+.edit-icon {
+  position: absolute;
+  top: 8px;
+  right: 30px;
+  font-size: 12px;
+  color: $color-tangerine-yellow;
+  font-size: 12px;
+}
+.close-modal {
+  margin-top: -70px;
+}
+
+.level-0 {
+  padding: 15px 5px;
+  position: relative;
+  background: rgb(228, 255, 234);
+  background: linear-gradient(90deg, #e4ffeb 0%, #97ffb4 100%);
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.level-1 {
+  padding: 15px 5px;
+  position: relative;
+  background: rgb(230, 240, 254);
+  background: linear-gradient(90deg, #e7f1ff 0%, #89addb 100%);
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.level-2 {
+  padding: 15px 5px;
+  position: relative;
+  background: rgb(230, 240, 254);
+  background: linear-gradient(90deg, #ffe7e7 0%, #db8989 100%);
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.level-3 {
+  padding: 15px 5px;
+  position: relative;
+  background: rgb(230, 240, 254);
+  background: linear-gradient(90deg, #fffde7 0%, #c2db89 100%);
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.level-4 {
+  padding: 15px 5px;
+  position: relative;
+  background: rgb(230, 240, 254);
+  background: linear-gradient(90deg, #fff5e7 0%, #e9a853 100%);
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.level-5 {
+  padding: 15px 5px;
+  position: relative;
+  background: rgb(230, 240, 254);
+  background: linear-gradient(90deg, #ffe7fd 0%, #db89c8 100%);
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.level-6 {
+  padding: 15px 5px;
+  position: relative;
+  background: rgb(230, 240, 254);
+  background: linear-gradient(90deg, #fde7ff 0%, #c889db 100%);
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.level-7 {
+  padding: 15px 5px;
+  position: relative;
+  background: rgb(230, 240, 254);
+  background: linear-gradient(90deg, #e7fdff 0%, #89dbce 100%);
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.level-8 {
+  padding: 15px 5px;
+  position: relative;
+  background: rgb(230, 240, 254);
+  background: linear-gradient(90deg, #cdfaff 0%, #5a999f 100%);
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.level-9 {
+  padding: 15px 5px;
+  position: relative;
+  background: rgb(230, 240, 254);
+  background: linear-gradient(90deg, #e7f7ff 0%, #6d92e7 100%);
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.levels {
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+  font-family: $font-light;
+  &-item {
+    flex: 1;
+    cursor: pointer;
+    padding: 0px 1px;
+  }
+}
+
+.item-third {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  &-name {
+    flex: 1;
+    position: relative;
+    &-item {
+      //background-color: #ccffda;
+      padding: 15px 5px;
+      cursor: pointer;
+      margin: 1px;
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+}
+
+.area {
+  background: #e4ffeb;
+}
+
+.area-0-1 {
+  background: #89db9e;
+}
+
+.area-1-0 {
+  background: #c5f4ff;
+}
+
+.area-1-1 {
+  background: #9cd5e2;
+}
+
+.area-2-0 {
+  background: #fce0e0;
+}
+
+.area-2-1 {
+  background: #fdcbcb;
+}
+
+.area-3-0 {
+  background: #f8f9dc;
+}
+
+.area-3-1 {
+  background: #f6f8c5;
+}
+
+.area-4-0 {
+  background: #fef4e5;
+}
+
+.area-4-1 {
+  background: #ffe6c2;
+}
+
+.area-5-1 {
+  background: #fbddf8;
+}
+
+.area-5-0 {
+  background: #ffccfa;
+}
+
+.area-6-1 {
+  background: #fce0ff;
+}
+
+.area-6-0 {
+  background: #eac1ef;
+}
+
+.area-7-1 {
+  background: #e6fcfe;
+}
+
+.area-7-0 {
+  background: #c6faff;
+}
+
+.area-8-1 {
+  background: #c9f7fc;
+}
+
+.area-8-0 {
+  background: #aceef6;
+}
+
+.area-9-1 {
+  background: #e3eefe;
+}
+
+.area-9-0 {
+  background: #c4d9f8;
+}
+
+.subject {
+  background: #bff5dc;
+  margin: 0 1px;
+}
+
+.subject-1 {
+  background: #96d4b8;
+}
+
+.subject-2 {
+  background: #c5dbff;
+}
+.subject-3 {
+  background: #9cb6e1;
+}
+.subject-4 {
+  background: #f1c4c4;
+}
+.subject-5 {
+  background: #f1afaf;
+}
+.subject-6 {
+  background: #ebf2c8;
+}
+.subject-7 {
+  background: #d6e1a1;
+}
+.subject-8 {
+  background: #f9e0bf;
+}
+.subject-9 {
+  background: #f5d4aa;
+}
+.subject-10 {
+  background: #f7d3f1;
+}
+.subject-11 {
+  background: #eeb0e3;
+}
+.subject-12 {
+  background: #eecdf5;
+}
+.subject-13 {
+  background: #eab9f5;
+}
+.subject-14 {
+  background: #c7f1ee;
+}
+.subject-15 {
+  background: #a6f0eb;
+}
+.subject-16 {
+  background: #bbebf0;
+}
+.subject-17 {
+  background: #9ce5ec;
+}
+.subject-18 {
+  background: #c9daf9;
+}
+.subject-19 {
+  background: #9fb6e0;
+}
+.span-h6 {
+  color: #16395f;
+  font-family: 'monserrat-medium';
+  font-weight: 300;
+  font-size: 22px;
+  margin: 20px 10px;
+}
+
+.component-active {
+  background: #16395f !important;
+  color: #fff;
+}
+
+.detail-icon {
+  color: $color-indigo;
+  position: absolute;
+  top: 8px;
+  right: 30px;
+  font-size: 12px;
+}

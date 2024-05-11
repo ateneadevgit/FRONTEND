@@ -1,0 +1,300 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- Step 1 Confirmación -->
+<div class="row" *ngIf="step === 1">
+  <div class="col-12 text-center">
+    Para la <strong>solicitud de actualización</strong>, es esencial
+    <strong>descargar los instrumentos</strong> específicos para cada componente curricular.
+    Asegúrese de <strong>descargar y adjuntar</strong> estos instrumentos junto con el
+    <strong>acta de aprobación</strong> al solicitar la <strong>actualización del programa</strong>.
+  </div>
+  <div class="col-12 text-center mt-4" *ngIf="!editOnline">
+    <button pButton pRipple class="btn btn-primary" (click)="changeStep(2)">Siguiente</button>
+  </div>
+  <div class="col-12 text-center mt-3" *ngIf="editOnline">
+    <strong>Existe una actualización en curso.</strong>
+  </div>
+  <div class="col-12 text-center mt-4" *ngIf="editOnline">
+    <button pButton pRipple class="btn btn-warning me-2" (click)="changeStep(4)">
+      Solicitar nuevo
+    </button>
+    <button pButton pRipple class="btn btn-primary" (click)="changeStep(2)">Ver actual</button>
+  </div>
+</div>
+
+<!-- Step 2 Solicitar Edicion -->
+
+<div class="row" *ngIf="step === 2">
+  <div class="col-12 text-center">
+    <h4>
+      Cargue acta de aprobación <br />
+      del programa académico
+    </h4>
+  </div>
+
+  <div class="row container d-flex justify-content-center">
+    <div class="col-md-4">
+      <div class="flex flex-column gap-2">
+        <label htmlFor="username">Adjuntar acta de solicitud</label>
+        <br />
+        <!--   <label for="file" class="custom-file-input"> Seleccionar </label>
+            <input type="file"  (change)="onFileChange($event)" /> -->
+        <input
+          type="file"
+          id="archivo"
+          name="archivo"
+          class="input-file"
+          [accept]="allowedExtension"
+          (change)="loadFile($event)"
+        />
+        <label for="archivo" class="btn">Adjuntar</label>
+      </div>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+      <p>{{ fileName }}</p>
+    </div>
+  </div>
+  <div class="row div-selectmodules mt-4">
+    <div class="row d-flex justify-content-center" *ngFor="let item of programModules">
+      <div class="col-6">
+        <label for="label">
+          <p-checkbox
+            [binary]="true"
+            [(ngModel)]="item.isSelected"
+            (ngModelChange)="updateSelection(item)"
+          ></p-checkbox>
+          {{ item.name }}</label
+        >
+      </div>
+    </div>
+  </div>
+  <div class="row d-flex justify-content-center">
+    <div class="col-6 disclaimer">
+      *Para el cambio de créditos académicos es necesaria la aprobación de vicerrectoría académica
+    </div>
+  </div>
+  <form [formGroup]="formEdit">
+    <div class="row d-flex justify-content-center">
+      <div class="col-6 d-flex justify-content-center">
+        <label for="label">
+          <p-checkbox [binary]="true" formControlName="checkVicerrector"></p-checkbox>
+          Aprobación por vicerrectoría académica</label
+        >
+      </div>
+      <div class="col-12 text-center">
+        <button
+          pButton
+          pRipple
+          *ngIf="Role.DECANO === role"
+          class="btn btn-primary"
+          (click)="sendUpgradeProgram()"
+        >
+          Enviar
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Step 3 Ver modulos en Edicion y evaluados -->
+
+<div class="row d-flex justify-content-center" *ngIf="step === 3">
+  <div class="col-12">
+    <div class="row" *ngIf="programActive">
+      <div class="col-12 text-center my-4">
+        <div class="container-image">
+          <img class="container-image__img" [src]="programActive.logo" alt="" />
+          <span class="container-image__text">
+            {{ programActive.name }}
+          </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label for="">Facultad</label>
+        <p>{{ programActive.nameFaculty }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="">Lugar de desarrollo</label>
+        <p>{{ programActive.nameCampusList }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="">Nivel de formación</label>
+        <p>{{ programActive.nameLevelFormation }}</p>
+      </div>
+      <div class="col-md-6">
+        <label for="">Fecha de desarrollo</label>
+        <p>{{ programActive.developmentDate }}</p>
+      </div>
+      <div class="col-12">
+        <p-tabView>
+          <p-tabPanel header="Acta de solicitud">
+            <div class="row" *ngIf="dataEditProgram">
+              <div class="col-md-12">
+                <label for="">Documento adjunto</label>
+                <div class="input-document">
+                  <div class="row">
+                    <div class="col-md-8">
+                      {{ dataEditProgram.requestMinute | slice: 0 : 45 }}...
+                    </div>
+                    <div class="col-md-2 text-end">
+                      <i
+                        class="pi pi-eye"
+                        (click)="previewDocumentEvent(dataEditProgram.requestMinute)"
+                      ></i>
+                    </div>
+                    <div class="col-md-2">
+                      <i
+                        class="pi pi-download"
+                        (click)="downloadDocument(dataEditProgram!.requestMinute)"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row div-selectmodules mt-4">
+              <div class="row d-flex justify-content-center" *ngFor="let item of programModules">
+                <div class="col-12">
+                  <label for="label">
+                    <p-checkbox
+                      [binary]="true"
+                      [disabled]="true"
+                      [(ngModel)]="item.isSelected"
+                      (ngModelChange)="updateSelection(item)"
+                    ></p-checkbox>
+                    {{ item.name }}</label
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="disabledSelect">
+              <div class="col-12 text-center">
+                <button pButton pRipple class="btn btn-primary" (click)="redirectEditProgram()">
+                  {{ role === Role.DECANO ? 'Iniciar actualización' : 'Ver actualización' }}
+                </button>
+              </div>
+            </div>
+          </p-tabPanel>
+          <p-tabPanel header="Acta de respuesta">
+            <div
+              class="row container d-flex justify-content-center"
+              *ngIf="!disabledSelect && role === 2"
+            >
+              <div class="col-md-8">
+                <div class="flex flex-column gap-2">
+                  <label htmlFor="username">Adjuntar acta de respuesta</label>
+                  <br />
+                  <!--   <label for="file" class="custom-file-input"> Seleccionar </label>
+                      <input type="file"  (change)="onFileChange($event)" /> -->
+                  <input
+                    type="file"
+                    id="archivo"
+                    name="archivo"
+                    class="input-file"
+                    [accept]="allowedExtension"
+                    (change)="loadFile($event)"
+                  />
+                  <label for="archivo" class="btn">Adjuntar</label>
+                </div>
+              </div>
+              <div class="col-md-4 d-flex align-items-end">
+                <p>{{ fileName }}</p>
+              </div>
+            </div>
+            <div class="row" *ngIf="dataEditProgram && disabledSelect">
+              <div class="col-md-12">
+                <label for="">Documento adjunto</label>
+                <div class="input-document">
+                  <div class="row">
+                    <div class="col-md-8">
+                      {{ dataEditProgram.responseMinute | slice: 0 : 20 }}...
+                    </div>
+                    <div class="col-md-2 text-end">
+                      <i class="pi pi-eye"></i>
+                    </div>
+                    <div class="col-md-2">
+                      <i
+                        class="pi pi-download"
+                        (click)="downloadDocument(dataEditProgram!.responseMinute)"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row div-selectmodules mt-4">
+              <div class="row d-flex justify-content-center" *ngFor="let item of moduleForEdit">
+                <div class="col-12">
+                  <label for="label" class="d-flex justify-content-between mb-1">
+                    <div>
+                      <p-checkbox
+                        [binary]="true"
+                        [(ngModel)]="item.isSelected"
+                        [disabled]="true"
+                        (ngModelChange)="updateSelectionEvaluate(item)"
+                      ></p-checkbox>
+                      {{ item.name }}
+                    </div>
+                    <div>
+                      <p-checkbox
+                        class="me-2 checkbox-red"
+                        [binary]="true"
+                        [checkboxIcon]="'pi pi-minus'"
+                        [(ngModel)]="item.declined"
+                        [disabled]="disabledSelect || (!disabledSelect && Role.DECANO === role)"
+                        (ngModelChange)="updateSelectionEvaluateApproved(item, false)"
+                      ></p-checkbox>
+                      <p-checkbox
+                        [binary]="true"
+                        [(ngModel)]="item.approved"
+                        [disabled]="disabledSelect || (!disabledSelect && Role.DECANO === role)"
+                        (ngModelChange)="updateSelectionEvaluateApproved(item, true)"
+                      ></p-checkbox>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2" *ngIf="!disabledSelect && role === 2">
+              <div class="col-12 d-flex justify-content-between">
+                <button
+                  *ngIf="Role.VICERRECTOR === role"
+                  pButton
+                  pRipple
+                  class="btn declined"
+                  (click)="sendUpgradeEvaluateProgram(false)"
+                >
+                  <span class="pi pi-minus"></span>
+                  En actualización
+                </button>
+                <button
+                  *ngIf="Role.VICERRECTOR === role"
+                  pButton
+                  pRipple
+                  class="btn approve"
+                  (click)="sendUpgradeEvaluateProgram(true)"
+                >
+                  <span class="pi pi-check"></span>
+                  Aprobar
+                </button>
+              </div>
+            </div>
+            <div class="row mt-4" *ngIf="disabledSelect">
+              <div class="col-12 text-center">
+                <button pButton pRipple class="btn btn-primary" (click)="redirectEditProgram()">
+                  {{ role === Role.DECANO ? 'Iniciar actualización' : 'Ver actualización' }}
+                </button>
+              </div>
+            </div>
+          </p-tabPanel>
+        </p-tabView>
+      </div>
+    </div>
+  </div>
+</div>
+<app-preview-document
+  *ngIf="previewDocument"
+  [visible]="visiblePreviewDocument"
+  (closeModal)="closeModalPreviewDocument($event)"
+  [previewDocument]="previewDocument"
+></app-preview-document>
